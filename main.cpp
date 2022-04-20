@@ -7,11 +7,7 @@
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
 using namespace DirectX;
-#define DIRECTINPUT_VERSION 0x0800
-#include <dinput.h>
-
-#pragma comment(lib,"dinput8.lib")
-#pragma comment(lib,"dxguid.lib")
+#include "Input.h"
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -196,22 +192,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 	//	キー入力
-	//	DirectInput初期化
-	IDirectInput8* directInput = nullptr;
-	result = DirectInput8Create(
-		w.hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&directInput, nullptr);
-	assert(SUCCEEDED(result));
-	//	デバイス生成(キーボード以外も可能)
-	IDirectInputDevice8* keyboard = nullptr;
-	result = directInput->CreateDevice(GUID_SysKeyboard, &keyboard, NULL);
-	assert(SUCCEEDED(result));
-	//	入力形成のセット
-	result = keyboard->SetDataFormat(&c_dfDIKeyboard);
-	assert(SUCCEEDED(result));
-	//	排他制御のレベルセット
-	result = keyboard->SetCooperativeLevel(
-		hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
-	assert(SUCCEEDED(result));
+	Input input(hwnd, w);
 
 	//	描画初期化
 	// 頂点データ
@@ -406,10 +387,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		//	DirectX毎フレーム処理
 		
 		//	キー情報取得
-		keyboard->Acquire();
-		//	全キーの入力情報取得
-		BYTE key[256] = {};
-		keyboard->GetDeviceState(sizeof(key), key);
+		input.Update();
 		
 		//	リリースバリア
 		// バックバッファの番号を取得(2つなので0番か1番)
@@ -431,7 +409,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		//	画面クリアコマンド
 		// 3.画面クリア			R	　G		B	 A
 		FLOAT clearColor[] = { 0.1f,0.25f, 0.5f,0.0f }; // 青っぽい色
-		if (key[DIK_SPACE])	//	スペース押したら色変え
+		if (input.ReleaseKey(DIK_SPACE))	//	スペース押したら色変え
 		{
 			clearColor[0] = 0.0f;
 			clearColor[1] = 0.5f;
