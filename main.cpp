@@ -11,51 +11,13 @@ using namespace DirectX;
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3dcompiler.lib")
+#include "Window.h"
 
-LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
-{
-	switch (msg)
-	{
-	case WM_DESTROY:
-		PostQuitMessage(0);
-		return 0;
-	}
-
-	return DefWindowProc(hwnd, msg, wparam, lparam);
-}
+LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
-	const int window_width = 1280;
-	const int window_height = 720;
-
-	//	クラス設定
-	WNDCLASSEX w{};
-	w.cbSize = sizeof(WNDCLASSEX);
-	w.lpfnWndProc = (WNDPROC)WindowProc;
-	w.lpszClassName = L"DirectXGame";
-	w.hInstance = GetModuleHandle(nullptr);
-	w.hCursor = LoadCursor(NULL, IDC_ARROW);
-	//	サイズ調節
-	RegisterClassEx(&w);
-	RECT wrc = { 0,0,window_width,window_height };
-	AdjustWindowRect(&wrc, WS_OVERLAPPEDWINDOW, false);
-	//	生成
-	HWND hwnd = CreateWindow(w.lpszClassName,
-		L"CG1_test",
-		WS_OVERLAPPEDWINDOW,
-		CW_USEDEFAULT,
-		CW_USEDEFAULT,
-		wrc.right - wrc.left,
-		wrc.bottom - wrc.top,
-		nullptr,
-		nullptr,
-		w.hInstance,
-		nullptr);
-
-	ShowWindow(hwnd, SW_SHOW);
-
-	MSG msg{};
+	Window win((WNDPROC)WindowProc);
 
 	//	初期化
 	HRESULT result;
@@ -152,7 +114,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 	// スワップチェーンの生成
 	result = dxgiFactory->CreateSwapChainForHwnd(
-		commandQueue, hwnd, &swapChainDesc, nullptr, nullptr,
+		commandQueue, win.hwnd, &swapChainDesc, nullptr, nullptr,
 		(IDXGISwapChain1**)&swapChain);
 	assert(SUCCEEDED(result));
 
@@ -190,7 +152,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	result = device->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
 
 	//	キー入力
-	Input input(hwnd, w);
+	Input input(win.hwnd, win.w);
 
 	//	描画初期化
 	// 頂点データ
@@ -371,19 +333,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	while (true)
 	{
 		//	ウィンドウメッセージ処理
-		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
-
-		if (msg.message == WM_QUIT)
-		{
-			break;
-		}
+		win.MessageUpdate();
+		if (win.EndLoop()) { break; }
 
 		//	DirectX毎フレーム処理
-		
 		//	キー情報取得
 		input.Update();
 		
@@ -411,20 +364,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
 
 		// 4.描画コマンドここから
-		
-		// ビューポート設定コマンド
-		D3D12_VIEWPORT viewport{};
-		viewport.Width = window_width;		//	横幅
-		viewport.Height = window_height;	//	縦幅
-		viewport.TopLeftX = 0;				//	左上X
-		viewport.TopLeftY = 0;				//	左上Y
-		viewport.MinDepth = 0.0f;			//	最小深度
-		viewport.MaxDepth = 1.0f;			//	最大深度
-		// ビューポート設定コマンドを、コマンドリストに積む
-		commandList->RSSetViewports(1, &viewport);
 
 		// シザー矩形
 		D3D12_RECT scissorRect{};
+		// シザー矩形
 		scissorRect.left = 0; // 切り抜き座標左
 		scissorRect.right = scissorRect.left + window_width; // 切り抜き座標右
 		scissorRect.top = 0; // 切り抜き座標上
@@ -441,9 +384,26 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		// 頂点バッファビューの設定コマンド
 		commandList->IASetVertexBuffers(0, 1, &vbView);
+		
+		// ビューポート設定コマンド
+		D3D12_VIEWPORT viewport[4]{};
+		for (size_t i = 0; i < _countof(viewport); i++)
+		{
+			viewport[i].Width = window_width / 4;		//	横幅
+			viewport[i].Height = window_height;	//	縦幅
+			viewport[i].TopLeftX = window_width / 4 * i;				//	左上X
+			viewport[i].TopLeftY = 0;				//	左上Y
+			viewport[i].MinDepth = 0.0f;			//	最小深度
+			viewport[i].MaxDepth = 1.0f;			//	最大深度
 
-		// 描画コマンド
-		commandList->DrawInstanced(_countof(vertices), 1, 0, 0); // 全ての頂点を使って描画
+			// ビューポート設定コマンドを、コマンドリストに積む
+			commandList->RSSetViewports(1, &viewport[i]);
+			
+
+			// 描画コマンド
+			commandList->DrawInstanced(_countof(vertices), 1, 0, 0); // 全ての頂点を使って描画
+		}
+		
 
 		if (input.GetKey(DIK_SPACE))	//	スペース押したら色変え
 		{
@@ -483,7 +443,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		assert(SUCCEEDED(result));
 	}
 
-	UnregisterClass(w.lpszClassName, w.hInstance);
+	UnregisterClass(win.w.lpszClassName, win.w.hInstance);
 
 	return 0;
+}
+
+LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+{
+	switch (msg)
+	{
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		return 0;
+	}
+
+	return DefWindowProc(hwnd, msg, wparam, lparam);
 }
