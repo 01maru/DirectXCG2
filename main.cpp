@@ -189,7 +189,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	UINT64 fenceVal = 0;
 	result = device->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
 
-
 	//	キー入力
 	Input input(hwnd, w);
 
@@ -407,14 +406,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		//	画面クリアコマンド
 		// 3.画面クリア			R	　G		B	 A
-		FLOAT clearColor[] = { 0.1f,0.25f, 0.5f,0.0f }; // 青っぽい色
-		if (input.ReleaseKey(DIK_SPACE))	//	スペース押したら色変え
-		{
-			clearColor[0] = 0.0f;
-			clearColor[1] = 0.5f;
-			clearColor[2] = 0.0f;
-			clearColor[3] = 0.0f;
-		}
+		FLOAT clearColor[] = { 1,0.25f, 0.25f,0.0f }; // 青っぽい色
+		
 		commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
 
 		// 4.描画コマンドここから
@@ -452,6 +445,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		// 描画コマンド
 		commandList->DrawInstanced(_countof(vertices), 1, 0, 0); // 全ての頂点を使って描画
 
+		if (input.GetKey(DIK_SPACE))	//	スペース押したら色変え
+		{
+			commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
+		}
 		// 4.描画コマンドここまで
 
 		// 5.リソースバリアを戻す
