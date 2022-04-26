@@ -11,8 +11,12 @@ public:
 	HWND hwnd;
 	MSG msg{};
 public:
+
 	Window(const WNDPROC& WindowProc);
 	void MessageUpdate();
 	bool EndLoop();
+
+	//	ÉQÉbÉ^Å[
+	//void GetWNDCLASSEX(WNDCLASSEX* wc);
 };
 

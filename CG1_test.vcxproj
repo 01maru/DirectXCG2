@@ -19,8 +19,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Buffer.cpp" />
+    <ClCompile Include="CmdList.cpp" />
+    <ClCompile Include="CmdQueue.cpp" />
+    <ClCompile Include="DesHeap.cpp" />
+    <ClCompile Include="Device.cpp" />
+    <ClCompile Include="EnumAdapter.cpp" />
+    <ClCompile Include="Fence.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="SwapChain.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -38,7 +46,15 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Buffer.h" />
+    <ClInclude Include="CmdList.h" />
+    <ClInclude Include="CmdQueue.h" />
+    <ClInclude Include="DesHeap.h" />
+    <ClInclude Include="Device.h" />
+    <ClInclude Include="EnumAdapter.h" />
+    <ClInclude Include="Fence.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="SwapChain.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
