@@ -26,11 +26,9 @@ using namespace DirectX;
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
-
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
-	Window win((WNDPROC)WindowProc);
+	Window win;
 
 	//	初期化
 	HRESULT result;
@@ -93,7 +91,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	};
 	UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indices));
 
-	
 	// 頂点バッファ
 	VertexBuffer vertBuff(sizeVB, device.dev, vertices, _countof(vertices), sizeIB, indices, _countof(indices));
 
@@ -236,19 +233,4 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	UnregisterClass(win.w.lpszClassName, win.w.hInstance);
 
 	return 0;
-}
-
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
-{
-	switch (msg)
-	{
-	case WM_CLOSE:		//	ウィンドウが閉じられた
-	case WM_DESTROY:	//	ウィンドウが破棄された
-		PostQuitMessage(0);
-		return 0;
-		break;
-	default:
-		return DefWindowProc(hwnd, msg, wparam, lparam);
-		break;
-	}
 }

@@ -10,9 +10,11 @@ public:
 	WNDCLASSEX w{};
 	HWND hwnd;
 	MSG msg{};
-public:
 
-	Window(const WNDPROC& WindowProc);
+public:
+	static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
+
+	Window();
 	void MessageUpdate();
 	bool EndLoop();
 

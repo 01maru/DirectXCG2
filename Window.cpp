@@ -1,6 +1,21 @@
 #include "Window.h"
 
-Window::Window(const WNDPROC& WindowProc)
+LRESULT Window::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+{
+	switch (msg)
+	{
+	case WM_CLOSE:		//	ウィンドウが閉じられた
+	case WM_DESTROY:	//	ウィンドウが破棄された
+		PostQuitMessage(0);
+		return 0;
+		break;
+	default:
+		return DefWindowProc(hwnd, msg, wparam, lparam);
+		break;
+	}
+}
+
+Window::Window()
 {
 	w.cbSize = sizeof(WNDCLASSEX);
 	w.lpfnWndProc = (WNDPROC)WindowProc;
