@@ -71,18 +71,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	//	描画初期化
 	// 頂点データ
 	XMFLOAT3 vertices[] = {
-	{ -0.5f, -0.5f, 0.0f }, // 左下
 	{ -0.5f, +0.5f, 0.0f }, // 左上
-	{ +0.5f, -0.5f, 0.0f }, // 右下
 	{ +0.5f, +0.5f, 0.0f }, // 右上
+	{ -0.5f, 0.0f, 0.0f },	// 左
+	{ +0.5f, 0.0f, 0.0f },	// 右
+	{ -0.5f, -0.5f, 0.0f }, // 左下
+	{ +0.5f, -0.5f, 0.0f }, // 右下
 	};
 	// 頂点データ全体のサイズ = 頂点データ一つ分のサイズ * 頂点データの要素数
 	UINT sizeVB = static_cast<UINT>(sizeof(XMFLOAT3) * _countof(vertices));
 	//	インデックスデータ
 	uint16_t indices[] =
 	{
-		0,1,2,	//	一つ目
-		1,2,3,	//	二つ目
+		0,1,
+		1,2,
+		2,3,
+		3,4,
+		4,5,
+		0,3,
+		2,5,
 	};
 	UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indices));
 
@@ -176,7 +183,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		cmdList.commandList->SetGraphicsRootSignature(gPipeLine.rootSignature);
 
 		// プリミティブ形状の設定コマンド
-		cmdList.commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角形リスト
+		cmdList.commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST); // 三角形リスト
 
 		// 頂点バッファビューの設定コマンド
 		cmdList.commandList->IASetVertexBuffers(0, 1, &vertBuff.view);
