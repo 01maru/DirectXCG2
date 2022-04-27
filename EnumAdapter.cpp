@@ -35,3 +35,13 @@ EnumAdapter::EnumAdapter()
 		}
 	}
 }
+
+IDXGIAdapter4* EnumAdapter::TmpAdapter()
+{
+	return tmpAdapter;
+}
+
+IDXGIFactory7* EnumAdapter::DxgiFactory()
+{
+	return dxgiFactory;
+}

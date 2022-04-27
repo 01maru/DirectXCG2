@@ -7,11 +7,15 @@
 #pragma comment(lib, "dxgi.lib")
 class EnumAdapter
 {
-public:
+private:
 	IDXGIAdapter4* tmpAdapter = nullptr;	// ここに特定の名前を持つアダプターオブジェクトが入る
 	IDXGIFactory7* dxgiFactory = nullptr;
 
 public:
 	EnumAdapter();
+
+	//	ゲッター
+	IDXGIAdapter4* TmpAdapter();
+	IDXGIFactory7* DxgiFactory();
 };
 

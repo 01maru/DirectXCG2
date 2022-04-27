@@ -33,6 +33,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	//	初期化
 	HRESULT result;
 
+	//	アダプター列挙(一つだけ)
 	EnumAdapter adapter;
 
 #ifdef _DEBUG
@@ -43,7 +44,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	}
 #endif // _DEBUG
 
-	Device device(adapter.tmpAdapter);
+	Device device(adapter.TmpAdapter());
 
 	//	コマンドリスト
 	CmdList cmdList(device.dev);
@@ -52,7 +53,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	CmdQueue cmdQueue(device.dev);
 
 	//	スワップチェーン(ダブルバッファリング用)
-	SwapChain swapChain(adapter.dxgiFactory, cmdQueue.commandQueue, win.hwnd);
+	SwapChain swapChain(adapter.DxgiFactory(), cmdQueue.commandQueue, win.hwnd);
 
 	// デスクリプタヒープの設定(GPUにメモリ領域確保しそれから使う)
 	DesHeap desHeap(swapChain.swapChainDesc, device.dev);
