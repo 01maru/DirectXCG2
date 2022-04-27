@@ -15,7 +15,7 @@ public:
 	ID3D12PipelineState* state = nullptr;
 
 public:
-	GraphicsPipeLine(VertexShader vertShade, D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT size, ID3D12Device* dev);
+	GraphicsPipeLine(VertexShader vertShade, D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT size, ID3D12Device* dev, D3D12_ROOT_PARAMETER rootParam);
 
 };
 

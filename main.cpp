@@ -18,6 +18,7 @@
 #include "VertexBuffer.h"
 #include "VertexShader.h"
 #include "GraphicsPipeLine.h"
+#include "ConstBuffer.h"
 #include <DirectXMath.h>
 using namespace DirectX;
 
@@ -25,20 +26,7 @@ using namespace DirectX;
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
-{
-	switch (msg)
-	{
-	case WM_CLOSE:		//	ウィンドウが閉じられた
-	case WM_DESTROY:	//	ウィンドウが破棄された
-		PostQuitMessage(0);
-		return 0;
-		break;
-	default:
-		return DefWindowProc(hwnd, msg, wparam, lparam);
-		break;
-	}
-}
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
@@ -105,8 +93,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		},
 	};
 
+	//	ルートパラメータの設定
+	D3D12_ROOT_PARAMETER rootParam = {};
+	rootParam.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;	//	定数バッファビュー
+	rootParam.Descriptor.ShaderRegister = 0;					//	定数バッファ番号
+	rootParam.Descriptor.RegisterSpace = 0;						//	デフォルト値
+	rootParam.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;	//	すべてのシェーダから見る
+
 	//	グラフィックスパイプライン
-	GraphicsPipeLine gPipeLine(vertShade, inputLayout, _countof(inputLayout), device.dev);
+	GraphicsPipeLine gPipeLine(vertShade, inputLayout, _countof(inputLayout), device.dev, rootParam);
+
+	//	定数バッファ
+	ConstBuffer cBuff(device.dev);
+
 
 	//	ゲームループ
 	while (true)
@@ -173,6 +172,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		// 頂点バッファビューの設定コマンド
 		cmdList.commandList->IASetVertexBuffers(0, 1, &vertBuff.view);
 
+		//	グラフィックスコマンド
+		cmdList.commandList->SetGraphicsRootConstantBufferView(0, cBuff.material->GetGPUVirtualAddress());	//	定数バッファビューの設定コマンド
+
 		// 描画コマンド
 		cmdList.commandList->DrawInstanced(_countof(vertices), 1, 0, 0); // 全ての頂点を使って描画
 
@@ -213,4 +215,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	UnregisterClass(win.w.lpszClassName, win.w.hInstance);
 
 	return 0;
+}
+
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+{
+	switch (msg)
+	{
+	case WM_CLOSE:		//	ウィンドウが閉じられた
+	case WM_DESTROY:	//	ウィンドウが破棄された
+		PostQuitMessage(0);
+		return 0;
+		break;
+	default:
+		return DefWindowProc(hwnd, msg, wparam, lparam);
+		break;
+	}
 }
