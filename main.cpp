@@ -17,6 +17,7 @@
 #include "Input.h"
 #include "VertexBuffer.h"
 #include "VertexShader.h"
+#include "GraphicsPipeLine.h"
 #include <DirectXMath.h>
 using namespace DirectX;
 
@@ -55,7 +56,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		debugController->EnableDebugLayer();
 	}
 #endif // _DEBUG
-
 
 	Device device(adapter.tmpAdapter);
 
@@ -98,96 +98,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	// 頂点レイアウト(頂点一つ分のデータに何を持たせるか(今は最低限の３次元座標のみ))
 	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
-	{
-	"POSITION",
-	0,
-	DXGI_FORMAT_R32G32B32_FLOAT,
-	0,
-	D3D12_APPEND_ALIGNED_ELEMENT,
-	D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
-	0
-	}, 
+		{
+		"POSITION",0,DXGI_FORMAT_R32G32B32_FLOAT,0,
+		D3D12_APPEND_ALIGNED_ELEMENT,
+		D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,0
+		},
 	};
 
 	//	グラフィックスパイプライン
-	// グラフィックスパイプライン構造体設定
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc{};
-
-	// シェーダーの設定
-	pipelineDesc.VS.pShaderBytecode = vertShade.vsBlob->GetBufferPointer();
-	pipelineDesc.VS.BytecodeLength = vertShade.vsBlob->GetBufferSize();
-	pipelineDesc.PS.pShaderBytecode = vertShade.psBlob->GetBufferPointer();
-	pipelineDesc.PS.BytecodeLength = vertShade.psBlob->GetBufferSize();
-
-	// サンプルマスクの設定
-	pipelineDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK; // 標準設定
-
-	// ラスタライザの設定
-	pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE; // カリングしない
-	pipelineDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID; // ポリゴン内塗りつぶしorワイヤーフレーム
-	pipelineDesc.RasterizerState.DepthClipEnable = true; // 深度クリッピングを有効に
-
-	// ブレンドステート
-	//pipelineDesc.BlendState.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
-	D3D12_RENDER_TARGET_BLEND_DESC& blenddesc = pipelineDesc.BlendState.RenderTarget[0];
-	blenddesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;	//	RGBAすべてのチャンネル描画
-
-	//blenddesc.BlendEnable = true;					//	有効に
-	//blenddesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;	//	加算
-	//blenddesc.SrcBlendAlpha = D3D12_BLEND_ONE;		//	ソースの値を100％使う
-	//blenddesc.DestBlendAlpha = D3D12_BLEND_ZERO;	//	使わない
-
-	////	加算合成
-	//blenddesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;	//	加算
-	//blenddesc.SrcBlendAlpha = D3D12_BLEND_ONE;		//	ソースの値を100％使う
-	//blenddesc.DestBlendAlpha = D3D12_BLEND_ONE;		//	デストの値を100％使う
-	////	減算合成
-	//blenddesc.BlendOpAlpha = D3D12_BLEND_OP_REV_SUBTRACT;	//	減算
-	//blenddesc.SrcBlendAlpha = D3D12_BLEND_ONE;				//	ソースの値を100％使う
-	//blenddesc.DestBlendAlpha = D3D12_BLEND_ONE;				//	デストの値を100％使う
-	////	色反転
-	//blenddesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;			//	加算
-	//blenddesc.SrcBlendAlpha = D3D12_BLEND_INV_DEST_COLOR;	//	1.0f-デストカラーの値を使う
-	//blenddesc.DestBlendAlpha = D3D12_BLEND_ZERO;			//	使わない
-	////	半透明合成
-	//blenddesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;			//	加算
-	//blenddesc.SrcBlendAlpha = D3D12_BLEND_SRC_ALPHA;		//	ソースのα値を使う
-	//blenddesc.DestBlendAlpha = D3D12_BLEND_INV_SRC_ALPHA;	//	1.0f-ソースのα値を使う
-
-
-	// 頂点レイアウトの設定
-	pipelineDesc.InputLayout.pInputElementDescs = inputLayout;
-	pipelineDesc.InputLayout.NumElements = _countof(inputLayout);
-
-	// 図形の形状設定
-	pipelineDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-
-	// その他の設定
-	pipelineDesc.NumRenderTargets = 1; // 描画対象は1つ
-	pipelineDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM; // 0~255指定のRGBA
-	pipelineDesc.SampleDesc.Count = 1; // 1ピクセルにつき1回サンプリング
-
-	// ルートシグネチャ
-	ID3D12RootSignature* rootSignature;
-	// ルートシグネチャの設定
-	D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{};
-	rootSignatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
-	// ルートシグネチャのシリアライズ
-	ID3DBlob* rootSigBlob = nullptr;
-	result = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0,
-		&rootSigBlob, &vertShade.errorBlob);
-	assert(SUCCEEDED(result));
-	result = device.dev->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(),
-		IID_PPV_ARGS(&rootSignature));
-	assert(SUCCEEDED(result));
-	rootSigBlob->Release();
-	// パイプラインにルートシグネチャをセット
-	pipelineDesc.pRootSignature = rootSignature;
-
-	// パイプランステートの生成
-	ID3D12PipelineState* pipelineState = nullptr;
-	result = device.dev->CreateGraphicsPipelineState(&pipelineDesc, IID_PPV_ARGS(&pipelineState));
-	assert(SUCCEEDED(result));
+	GraphicsPipeLine gPipeLine(vertShade, inputLayout, _countof(inputLayout), device.dev);
 
 	//	ゲームループ
 	while (true)
@@ -245,8 +164,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		cmdList.commandList->RSSetScissorRects(1, &scissorRect);
 
 		// パイプラインステートとルートシグネチャの設定コマンド
-		cmdList.commandList->SetPipelineState(pipelineState);
-		cmdList.commandList->SetGraphicsRootSignature(rootSignature);
+		cmdList.commandList->SetPipelineState(gPipeLine.state);
+		cmdList.commandList->SetGraphicsRootSignature(gPipeLine.rootSignature);
 
 		// プリミティブ形状の設定コマンド
 		cmdList.commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角形リスト

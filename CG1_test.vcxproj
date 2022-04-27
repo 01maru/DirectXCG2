@@ -26,6 +26,7 @@
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="EnumAdapter.cpp" />
     <ClCompile Include="Fence.cpp" />
+    <ClCompile Include="GraphicsPipeLine.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SwapChain.cpp" />
@@ -55,6 +56,7 @@
     <ClInclude Include="Device.h" />
     <ClInclude Include="EnumAdapter.h" />
     <ClInclude Include="Fence.h" />
+    <ClInclude Include="GraphicsPipeLine.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="SwapChain.h" />
     <ClInclude Include="VertexBuffer.h" />
