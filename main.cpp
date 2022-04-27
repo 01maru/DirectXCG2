@@ -46,6 +46,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	EnumAdapter adapter;
 
+#ifdef _DEBUG
+	//	デバッグレイヤーをオン
+	ID3D12Debug* debugController;
+	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
+		debugController->EnableDebugLayer();
+	}
+#endif // _DEBUG
+
+
 	Device device(adapter.tmpAdapter);
 
 	//	コマンドリスト
