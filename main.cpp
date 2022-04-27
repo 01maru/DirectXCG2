@@ -106,15 +106,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		},
 	};
 
-	//	ルートパラメータの設定
-	D3D12_ROOT_PARAMETER rootParam = {};
-	rootParam.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;	//	定数バッファビュー
-	rootParam.Descriptor.ShaderRegister = 0;					//	定数バッファ番号
-	rootParam.Descriptor.RegisterSpace = 0;						//	デフォルト値
-	rootParam.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;	//	すべてのシェーダから見る
-
 	//	グラフィックスパイプライン
-	GraphicsPipeLine gPipeLine(vertShade, inputLayout, _countof(inputLayout), device.dev, rootParam);
+	GraphicsPipeLine gPipeLine(vertShade, inputLayout, _countof(inputLayout), device.dev);
 
 	//	定数バッファ
 	ConstBuffer cBuff(device.dev);

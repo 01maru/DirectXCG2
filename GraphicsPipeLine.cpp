@@ -1,7 +1,13 @@
 #include "GraphicsPipeLine.h"
 
-GraphicsPipeLine::GraphicsPipeLine(VertexShader vertShade, D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT size, ID3D12Device* dev, D3D12_ROOT_PARAMETER rootParam)
+GraphicsPipeLine::GraphicsPipeLine(VertexShader vertShade, D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT size, ID3D12Device* dev)
 {
+	//	ルートパラメータの設定
+	rootParam.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;	//	定数バッファビュー
+	rootParam.Descriptor.ShaderRegister = 0;					//	定数バッファ番号
+	rootParam.Descriptor.RegisterSpace = 0;						//	デフォルト値
+	rootParam.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;	//	すべてのシェーダから見る
+
 	// シェーダーの設定
 	desc.VS.pShaderBytecode = vertShade.vsBlob->GetBufferPointer();
 	desc.VS.BytecodeLength = vertShade.vsBlob->GetBufferSize();

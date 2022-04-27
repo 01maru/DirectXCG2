@@ -10,12 +10,13 @@
 class GraphicsPipeLine
 {
 public:
+	D3D12_ROOT_PARAMETER rootParam = {};		//	ルートパラメータ
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC desc{};	// グラフィックスパイプライン構造体
 	ID3D12RootSignature* rootSignature;
 	ID3D12PipelineState* state = nullptr;
 
 public:
-	GraphicsPipeLine(VertexShader vertShade, D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT size, ID3D12Device* dev, D3D12_ROOT_PARAMETER rootParam);
+	GraphicsPipeLine(VertexShader vertShade, D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT size, ID3D12Device* dev);
 
 };
 
