@@ -74,12 +74,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	{ -0.5f, -0.5f, 0.0f }, // 左下
 	{ -0.5f, +0.5f, 0.0f }, // 左上
 	{ +0.5f, -0.5f, 0.0f }, // 右下
+	{ +0.5f, +0.5f, 0.0f }, // 右上
 	};
 	// 頂点データ全体のサイズ = 頂点データ一つ分のサイズ * 頂点データの要素数
 	UINT sizeVB = static_cast<UINT>(sizeof(XMFLOAT3) * _countof(vertices));
+	//	インデックスデータ
+	uint16_t indices[] =
+	{
+		0,1,2,	//	一つ目
+		1,2,3,	//	二つ目
+	};
+	UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indices));
 
+	
 	// 頂点バッファ
-	VertexBuffer vertBuff(sizeVB, device.dev, vertices, _countof(vertices));
+	VertexBuffer vertBuff(sizeVB, device.dev, vertices, _countof(vertices), sizeIB, indices, _countof(indices));
 
 	//	頂点シェーダファイル読み込み＆コンパイル
 	VertexShader vertShade;
@@ -172,11 +181,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		// 頂点バッファビューの設定コマンド
 		cmdList.commandList->IASetVertexBuffers(0, 1, &vertBuff.view);
 
+
+
 		//	グラフィックスコマンド
 		cmdList.commandList->SetGraphicsRootConstantBufferView(0, cBuff.material->GetGPUVirtualAddress());	//	定数バッファビューの設定コマンド
 
+		//	インデックスバッファビューの設定
+		cmdList.commandList->IASetIndexBuffer(&vertBuff.ibView);
+
 		// 描画コマンド
-		cmdList.commandList->DrawInstanced(_countof(vertices), 1, 0, 0); // 全ての頂点を使って描画
+		cmdList.commandList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0); // 全ての頂点を使って描画
 
 		// 4.描画コマンドここまで
 

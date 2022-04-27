@@ -29,5 +29,5 @@ ConstBuffer::ConstBuffer(ID3D12Device* dev)
 	result = material->Map(0, nullptr, (void**)&mapMaterial);	//	マッピング
 	assert(SUCCEEDED(result));
 	//	GPUのメモリにデータ転送
-	mapMaterial->color = XMFLOAT4(1, 0, 0, 0.5f);
+	mapMaterial->color = XMFLOAT4(1, 1, 1, 1);
 }
