@@ -1,6 +1,5 @@
 #include "Device.h"
 
-
 // ‘Î‰žƒŒƒxƒ‹‚Ì”z—ñ
 D3D_FEATURE_LEVEL levels[] = {
 D3D_FEATURE_LEVEL_12_1,
@@ -22,4 +21,9 @@ Device::Device(IDXGIAdapter4* tmpAdapter)
 			break;
 		}
 	}
+}
+
+ID3D12Device* Device::Dev()
+{
+	return dev;
 }

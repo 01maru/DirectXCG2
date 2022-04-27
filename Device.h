@@ -8,10 +8,13 @@
 
 class Device
 {
-public:
+private:
 	ID3D12Device* dev = nullptr;
 
 public:
 	Device(IDXGIAdapter4* tmpAdapter);
+
+	//	ÉQÉbÉ^Å[
+	ID3D12Device* Dev();
 };
 

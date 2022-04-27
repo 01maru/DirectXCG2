@@ -47,22 +47,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Device device(adapter.TmpAdapter());
 
 	//	コマンドリスト
-	CmdList cmdList(device.dev);
+	CmdList cmdList(device.Dev());
 
 	//コマンドキュー
-	CmdQueue cmdQueue(device.dev);
+	CmdQueue cmdQueue(device.Dev());
 
 	//	スワップチェーン(ダブルバッファリング用)
 	SwapChain swapChain(adapter.DxgiFactory(), cmdQueue.commandQueue, win.hwnd);
 
 	// デスクリプタヒープの設定(GPUにメモリ領域確保しそれから使う)
-	DesHeap desHeap(swapChain.swapChainDesc, device.dev);
+	DesHeap desHeap(swapChain.swapChainDesc, device.Dev());
 
 	// バックバッファ
-	Buffer buffer(swapChain, desHeap, device.dev);
+	Buffer buffer(swapChain, desHeap, device.Dev());
 
 	// フェンスの生成
-	Fence fence(device.dev);
+	Fence fence(device.Dev());
 
 	//	キー入力
 	Input input(win.hwnd, win.w);
@@ -93,7 +93,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indices));
 
 	// 頂点バッファ
-	VertexBuffer vertBuff(sizeVB, device.dev, vertices, _countof(vertices), sizeIB, indices, _countof(indices));
+	VertexBuffer vertBuff(sizeVB, device.Dev(), vertices, _countof(vertices), sizeIB, indices, _countof(indices));
 
 	//	頂点シェーダファイル読み込み＆コンパイル
 	VertexShader vertShade;
@@ -108,10 +108,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	};
 
 	//	グラフィックスパイプライン
-	GraphicsPipeLine gPipeLine(vertShade, inputLayout, _countof(inputLayout), device.dev);
+	GraphicsPipeLine gPipeLine(vertShade, inputLayout, _countof(inputLayout), device.Dev());
 
 	//	定数バッファ
-	ConstBuffer cBuff(device.dev);
+	ConstBuffer cBuff(device.Dev());
 
 
 	//	ゲームループ
@@ -139,7 +139,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		// 2.描画先の変更
 		// レンダーターゲットビューのハンドルを取得
 		D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = desHeap.rtvHeap->GetCPUDescriptorHandleForHeapStart();
-		rtvHandle.ptr += bbIndex * device.dev->GetDescriptorHandleIncrementSize(desHeap.rtvHeapDesc.Type);
+		rtvHandle.ptr += bbIndex * device.Dev()->GetDescriptorHandleIncrementSize(desHeap.rtvHeapDesc.Type);
 		cmdList.commandList->OMSetRenderTargets(1, &rtvHandle, false, nullptr);
 
 		//	画面クリアコマンド
