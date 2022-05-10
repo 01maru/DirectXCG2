@@ -61,26 +61,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	//	描画初期化
 	// 頂点データ
-	XMFLOAT3 vertices[] = {
-	{ -0.5f, +0.5f, 0.0f }, // 左上
-	{ +0.5f, +0.5f, 0.0f }, // 右上
-	{ -0.5f, 0.0f, 0.0f },	// 左
-	{ +0.5f, 0.0f, 0.0f },	// 右
-	{ -0.5f, -0.5f, 0.0f }, // 左下
-	{ +0.5f, -0.5f, 0.0f }, // 右下
+	Vertex vertices[] = {
+		{{ -0.5f, -0.5f, 0.0f }, {0.0f, 1.0f}}, // 左下
+		{{ -0.5f, +0.5f, 0.0f }, {0.0f, 0.0f}}, // 左上
+		{{ +0.5f, -0.5f, 0.0f }, {1.0f, 1.0f}}, // 右下
+		{{ +0.5f, +0.5f, 0.0f }, {1.0f, 0.0f}}, // 右上
 	};
 	// 頂点データ全体のサイズ = 頂点データ一つ分のサイズ * 頂点データの要素数
-	UINT sizeVB = static_cast<UINT>(sizeof(XMFLOAT3) * _countof(vertices));
+	UINT sizeVB = static_cast<UINT>(sizeof(vertices[0]) * _countof(vertices));
 	//	インデックスデータ
 	uint16_t indices[] =
 	{
-		0,1,
-		1,2,
-		2,3,
-		3,4,
-		4,5,
-		0,3,
-		2,5,
+		0,1,2,
+		1,2,3,
 	};
 	UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indices));
 
@@ -96,6 +89,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		"POSITION",0,DXGI_FORMAT_R32G32B32_FLOAT,0,
 		D3D12_APPEND_ALIGNED_ELEMENT,
 		D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,0
+		},
+		{
+			"TEXCOORD",0,DXGI_FORMAT_R32G32_FLOAT,0,
+			D3D12_APPEND_ALIGNED_ELEMENT,
+			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,0
 		},
 	};
 
@@ -167,7 +165,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		cmdList.List()->SetGraphicsRootSignature(gPipeLine.rootSignature);
 
 		// プリミティブ形状の設定コマンド
-		cmdList.List()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST); // 三角形リスト
+		cmdList.List()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角形リスト
 
 		// 頂点バッファビューの設定コマンド
 		cmdList.List()->IASetVertexBuffers(0, 1, &vertBuff.view);

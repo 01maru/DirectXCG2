@@ -1,6 +1,6 @@
 #include "VertexBuffer.h"
 
-VertexBuffer::VertexBuffer(UINT sizeVB, ID3D12Device* dev, XMFLOAT3* vertices, UINT size, UINT sizeIB, uint16_t* indices, UINT ibNum)
+VertexBuffer::VertexBuffer(UINT sizeVB, ID3D12Device* dev, Vertex* vertices, UINT size, UINT sizeIB, uint16_t* indices, UINT ibNum)
 {
 	// 頂点バッファの設定
 	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD; // GPUへの転送用
@@ -39,7 +39,7 @@ VertexBuffer::VertexBuffer(UINT sizeVB, ID3D12Device* dev, XMFLOAT3* vertices, U
 	// 頂点バッファのサイズ
 	view.SizeInBytes = sizeVB;
 	// 頂点1つ分のデータサイズ
-	view.StrideInBytes = sizeof(XMFLOAT3);
+	view.StrideInBytes = sizeof(vertices[0]);
 
 	//	インデックスバッファ
 	// リソース設定
