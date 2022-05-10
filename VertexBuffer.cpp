@@ -22,6 +22,7 @@ VertexBuffer::VertexBuffer(UINT sizeVB, ID3D12Device* dev, XMFLOAT3* vertices, U
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(&vertBuff));
+	assert(SUCCEEDED(result));
 
 	//	GPUメモリの値書き換え
 	result = vertBuff->Map(0, nullptr, (void**)&map);
@@ -31,7 +32,7 @@ VertexBuffer::VertexBuffer(UINT sizeVB, ID3D12Device* dev, XMFLOAT3* vertices, U
 		map[i] = vertices[i]; // 座標をコピー
 	}
 	// 繋がりを解除
-	vertBuff->Unmap(0, nullptr);
+	vertBuff->Unmap(0, nullptr); 
 
 	// GPU仮想アドレス
 	view.BufferLocation = vertBuff->GetGPUVirtualAddress();

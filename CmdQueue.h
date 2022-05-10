@@ -8,10 +8,13 @@
 
 class CmdQueue
 {
-public:
+private:
+	D3D12_COMMAND_QUEUE_DESC commandQueueDesc{};
 	ID3D12CommandQueue* commandQueue = nullptr;
 
 public:
 	CmdQueue(ID3D12Device* dev);
+
+	ID3D12CommandQueue* Queue();
 };
 

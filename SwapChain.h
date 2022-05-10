@@ -8,11 +8,14 @@
 
 class SwapChain
 {
-public:
+private:
 	IDXGISwapChain4* swapChain = nullptr;
 	DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
 
 public:
 	SwapChain(IDXGIFactory7* dxgiFactory, ID3D12CommandQueue* commandQueue, HWND hwnd);
+
+	IDXGISwapChain4* Chain();
+	DXGI_SWAP_CHAIN_DESC1 Desc();
 };
 

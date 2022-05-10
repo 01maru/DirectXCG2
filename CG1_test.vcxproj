@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Buffer.cpp" />
+    <ClCompile Include="BackBuffer.cpp" />
     <ClCompile Include="CmdList.cpp" />
     <ClCompile Include="CmdQueue.cpp" />
     <ClCompile Include="ConstBuffer.cpp" />
@@ -50,7 +50,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Buffer.h" />
+    <ClInclude Include="BackBuffer.h" />
     <ClInclude Include="CmdList.h" />
     <ClInclude Include="CmdQueue.h" />
     <ClInclude Include="ConstBuffer.h" />

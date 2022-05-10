@@ -9,10 +9,13 @@
 class Fence
 {
 public:
-	ID3D12Fence* fnc = nullptr;
 	UINT64 fenceVal = 0;
+private:
+	ID3D12Fence* fnc = nullptr;
 
 public:
 	Fence(ID3D12Device* dev);
+
+	ID3D12Fence* Fnc();
 };
 

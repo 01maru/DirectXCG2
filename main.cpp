@@ -1,10 +1,3 @@
-#include <Windows.h>
-#include <d3d12.h>
-#include <dxgi1_6.h>
-#include <cassert>
-#include <vector>
-#include <string>
-#include <d3dcompiler.h>
 #include "Window.h"
 #include "EnumAdapter.h"
 #include "Device.h"
@@ -12,22 +5,21 @@
 #include "CmdQueue.h"
 #include "SwapChain.h"
 #include "DesHeap.h"
-#include "Buffer.h"
+#include "BackBuffer.h"
 #include "Fence.h"
 #include "Input.h"
 #include "VertexBuffer.h"
 #include "VertexShader.h"
 #include "GraphicsPipeLine.h"
 #include "ConstBuffer.h"
-#include <DirectXMath.h>
-using namespace DirectX;
 
-#pragma comment(lib, "d3d12.lib")
-#pragma comment(lib, "dxgi.lib")
+#include <d3dcompiler.h>
+
 #pragma comment(lib, "d3dcompiler.lib")
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
+	#pragma region Initialize
 	Window win;
 
 	//	初期化
@@ -53,13 +45,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	CmdQueue cmdQueue(device.Dev());
 
 	//	スワップチェーン(ダブルバッファリング用)
-	SwapChain swapChain(adapter.DxgiFactory(), cmdQueue.commandQueue, win.hwnd);
+	SwapChain swapChain(adapter.DxgiFactory(), cmdQueue.Queue(), win.hwnd);
 
 	// デスクリプタヒープの設定(GPUにメモリ領域確保しそれから使う)
-	DesHeap desHeap(swapChain.swapChainDesc, device.Dev());
+	DesHeap desHeap(swapChain.Desc(), device.Dev());
 
 	// バックバッファ
-	Buffer buffer(swapChain, desHeap, device.Dev());
+	BackBuffer buffer(swapChain, desHeap, device.Dev());
 
 	// フェンスの生成
 	Fence fence(device.Dev());
@@ -113,6 +105,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	//	定数バッファ
 	ConstBuffer cBuff(device.Dev());
 
+	#pragma endregion Initialize
 
 	//	ゲームループ
 	while (true)
@@ -127,28 +120,28 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		
 		//	リリースバリア
 		// バックバッファの番号を取得(2つなので0番か1番)
-		UINT bbIndex = swapChain.swapChain->GetCurrentBackBufferIndex();
+		UINT bbIndex = swapChain.Chain()->GetCurrentBackBufferIndex();
 		// 1.リソースバリアで書き込み可能に変更
 		D3D12_RESOURCE_BARRIER barrierDesc{};
-		barrierDesc.Transition.pResource = buffer.backBuffers[bbIndex]; // バックバッファを指定
+		barrierDesc.Transition.pResource = buffer.BackBuff()[bbIndex]; // バックバッファを指定
 		barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT; // 表示状態から
 		barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態へ
-		cmdList.commandList->ResourceBarrier(1, &barrierDesc);
+		cmdList.List()->ResourceBarrier(1, &barrierDesc);
 
 		//	描画先指定コマンド
 		// 2.描画先の変更
 		// レンダーターゲットビューのハンドルを取得
-		D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = desHeap.rtvHeap->GetCPUDescriptorHandleForHeapStart();
-		rtvHandle.ptr += bbIndex * device.Dev()->GetDescriptorHandleIncrementSize(desHeap.rtvHeapDesc.Type);
-		cmdList.commandList->OMSetRenderTargets(1, &rtvHandle, false, nullptr);
+		D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = desHeap.RtvHeap()->GetCPUDescriptorHandleForHeapStart();
+		rtvHandle.ptr += bbIndex * device.Dev()->GetDescriptorHandleIncrementSize(desHeap.Desc().Type);
+		cmdList.List()->OMSetRenderTargets(1, &rtvHandle, false, nullptr);
 
 		//	画面クリアコマンド
 		// 3.画面クリア			R	　G		B	 A
 		FLOAT clearColor[] = { 0.1, 0.25f, 0.5f, 0.0f }; // 青っぽい色
-		cmdList.commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
+		cmdList.List()->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
 
 		// 4.描画コマンドここから
-		
+		#pragma region DrawCommand
 		// ビューポート設定コマンド
 		D3D12_VIEWPORT viewport{};
 		viewport.Width = window_width;		//	横幅
@@ -158,7 +151,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		viewport.MinDepth = 0.0f;			//	最小深度
 		viewport.MaxDepth = 1.0f;			//	最大深度
 		// ビューポート設定コマンドを、コマンドリストに積む
-		cmdList.commandList->RSSetViewports(1, &viewport);
+		cmdList.List()->RSSetViewports(1, &viewport);
 
 		// シザー矩形
 		D3D12_RECT scissorRect{};
@@ -167,64 +160,63 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		scissorRect.top = 0; // 切り抜き座標上
 		scissorRect.bottom = scissorRect.top + window_height; // 切り抜き座標下
 		// シザー矩形設定コマンドを、コマンドリストに積む
-		cmdList.commandList->RSSetScissorRects(1, &scissorRect);
+		cmdList.List()->RSSetScissorRects(1, &scissorRect);
 
 		// パイプラインステートとルートシグネチャの設定コマンド
-		cmdList.commandList->SetPipelineState(gPipeLine.state);
-		cmdList.commandList->SetGraphicsRootSignature(gPipeLine.rootSignature);
+		cmdList.List()->SetPipelineState(gPipeLine.state);
+		cmdList.List()->SetGraphicsRootSignature(gPipeLine.rootSignature);
 
 		// プリミティブ形状の設定コマンド
-		cmdList.commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST); // 三角形リスト
+		cmdList.List()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST); // 三角形リスト
 
 		// 頂点バッファビューの設定コマンド
-		cmdList.commandList->IASetVertexBuffers(0, 1, &vertBuff.view);
+		cmdList.List()->IASetVertexBuffers(0, 1, &vertBuff.view);
 
 
 
 		//	グラフィックスコマンド
-		cmdList.commandList->SetGraphicsRootConstantBufferView(0, cBuff.material->GetGPUVirtualAddress());	//	定数バッファビューの設定コマンド
+		cmdList.List()->SetGraphicsRootConstantBufferView(0, cBuff.material->GetGPUVirtualAddress());	//	定数バッファビューの設定コマンド
 
 		//	インデックスバッファビューの設定
-		cmdList.commandList->IASetIndexBuffer(&vertBuff.ibView);
+		cmdList.List()->IASetIndexBuffer(&vertBuff.ibView);
 
 		// 描画コマンド
-		cmdList.commandList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0); // 全ての頂点を使って描画
+		cmdList.List()->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0); // 全ての頂点を使って描画
 
+		#pragma endregion DrawCommand
 		// 4.描画コマンドここまで
 
 		// 5.リソースバリアを戻す
 		barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態から
 		barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT; // 表示状態へ
-		cmdList.commandList->ResourceBarrier(1, &barrierDesc);
+		cmdList.List()->ResourceBarrier(1, &barrierDesc);
 
 		// 命令のクローズ
-		result = cmdList.commandList->Close();
+		result = cmdList.List()->Close();
 		assert(SUCCEEDED(result));
 		// コマンドリストの実行
-		ID3D12CommandList* commandLists[] = { cmdList.commandList };
-		cmdQueue.commandQueue->ExecuteCommandLists(1, commandLists);
+		ID3D12CommandList* commandLists[] = { cmdList.List() };
+		cmdQueue.Queue()->ExecuteCommandLists(1, commandLists);
 		// 画面に表示するバッファをフリップ(裏表の入替え)
-		result = swapChain.swapChain->Present(1, 0);
+		result = swapChain.Chain()->Present(1, 0);
 		assert(SUCCEEDED(result));
 
 		//	画面入れ替え
 		// コマンドの実行完了を待つ
-		cmdQueue.commandQueue->Signal(fence.fnc, ++fence.fenceVal);
-		if (fence.fnc->GetCompletedValue() != fence.fenceVal) {
+		cmdQueue.Queue()->Signal(fence.Fnc(), ++fence.fenceVal);
+		if (fence.Fnc()->GetCompletedValue() != fence.fenceVal) {
 			HANDLE event = CreateEvent(nullptr, false, false, nullptr);
-			fence.fnc->SetEventOnCompletion(fence.fenceVal, event);
+			fence.Fnc()->SetEventOnCompletion(fence.fenceVal, event);
 			WaitForSingleObject(event, INFINITE);
 			CloseHandle(event);
 		}
 		// キューをクリア
-		result = cmdList.commandAllocator->Reset();
+		result = cmdList.Allocator()->Reset();
 		assert(SUCCEEDED(result));
 		// 再びコマンドリストを貯める準備
-		result = cmdList.commandList->Reset(cmdList.commandAllocator, nullptr);
+		result = cmdList.List()->Reset(cmdList.Allocator(), nullptr);
 		assert(SUCCEEDED(result));
 	}
-
-	UnregisterClass(win.w.lpszClassName, win.w.hInstance);
 
 	return 0;
 }

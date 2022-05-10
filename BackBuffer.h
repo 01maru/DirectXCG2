@@ -10,13 +10,15 @@
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 
-class Buffer
+class BackBuffer
 {
-public:
+private:
 	std::vector<ID3D12Resource*> backBuffers;
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 
 public:
-	Buffer(SwapChain swapChain, DesHeap desHeap, ID3D12Device* dev);
+	BackBuffer(SwapChain swapChain, DesHeap desHeap, ID3D12Device* dev);
+
+	std::vector<ID3D12Resource*> BackBuff();
 };
 

@@ -17,3 +17,14 @@ SwapChain::SwapChain(IDXGIFactory7* dxgiFactory, ID3D12CommandQueue* commandQueu
 		(IDXGISwapChain1**)&swapChain);
 	assert(SUCCEEDED(result));
 }
+
+IDXGISwapChain4* SwapChain::Chain()
+{
+	return swapChain;
+}
+
+DXGI_SWAP_CHAIN_DESC1 SwapChain::Desc()
+{
+	return swapChainDesc;
+}
+

@@ -14,3 +14,13 @@ CmdList::CmdList(ID3D12Device* dev)
 		IID_PPV_ARGS(&commandList));
 	assert(SUCCEEDED(result));
 }
+
+ID3D12CommandAllocator* CmdList::Allocator()
+{
+	return commandAllocator;
+}
+
+ID3D12GraphicsCommandList* CmdList::List()
+{
+	return commandList;
+}

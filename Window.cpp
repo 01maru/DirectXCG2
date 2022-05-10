@@ -9,10 +9,8 @@ LRESULT Window::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		PostQuitMessage(0);
 		return 0;
 		break;
-	default:
-		return DefWindowProc(hwnd, msg, wparam, lparam);
-		break;
 	}
+	return DefWindowProc(hwnd, msg, wparam, lparam);
 }
 
 Window::Window()
@@ -42,6 +40,12 @@ Window::Window()
 		nullptr);
 
 	ShowWindow(hwnd, SW_SHOW);
+}
+
+Window::~Window()
+{
+	//	ウィンドウクラス登録解除
+	UnregisterClass(w.lpszClassName, w.hInstance);
 }
 
 void Window::MessageUpdate()
