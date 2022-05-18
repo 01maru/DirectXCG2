@@ -109,7 +109,6 @@ DirectXInit::DirectXInit(HWND hwnd)
 
 #pragma region DesHeap
 	// デスクリプタヒープの設定(GPUにメモリ領域確保しそれから使う)
-	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
 	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV; // レンダーターゲットビュー
 	rtvHeapDesc.NumDescriptors = swapChainDesc.BufferCount; // 裏表の2つ
 	// デスクリプタヒープの生成
@@ -117,8 +116,6 @@ DirectXInit::DirectXInit(HWND hwnd)
 #pragma endregion DesHeap
 
 #pragma region BackBuff
-	// バックバッファ
-	std::vector<ID3D12Resource*> backBuffers;
 	backBuffers.resize(swapChainDesc.BufferCount);
 #pragma endregion BackBuff
 
@@ -128,7 +125,7 @@ DirectXInit::DirectXInit(HWND hwnd)
 		// スワップチェーンからバッファを取得
 		swapChain->GetBuffer((UINT)i, IID_PPV_ARGS(&backBuffers[i]));
 		// デスクリプタヒープのハンドルを取得
-		D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = rtvHeap->GetCPUDescriptorHandleForHeapStart();
+		rtvHandle = rtvHeap->GetCPUDescriptorHandleForHeapStart();
 		// 裏か表かでアドレスがずれる
 		rtvHandle.ptr += i * device->GetDescriptorHandleIncrementSize(rtvHeapDesc.Type);
 		// レンダーターゲットビューの設定
@@ -143,8 +140,77 @@ DirectXInit::DirectXInit(HWND hwnd)
 
 #pragma region fence
 	// フェンスの生成
-	ID3D12Fence* fence = nullptr;
-	UINT64 fenceVal = 0;
 	result = device->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
 #pragma endregion fence
+}
+
+void DirectXInit::DrawAble()
+{
+	// 1.リソースバリアで書き込み可能に変更
+#pragma region ReleaseBarrier
+	// バックバッファの番号を取得(2つなので0番か1番)
+	UINT bbIndex = swapChain->GetCurrentBackBufferIndex();
+	barrierDesc.Transition.pResource = backBuffers[bbIndex]; // バックバッファを指定
+	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT; // 表示状態から
+	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態へ
+	commandList->ResourceBarrier(1, &barrierDesc);
+#pragma endregion ReleaseBarrier
+	
+	// 2.描画先の変更
+#pragma region Change
+	// レンダーターゲットビューのハンドルを取得
+	rtvHandle = rtvHeap->GetCPUDescriptorHandleForHeapStart();
+	rtvHandle.ptr += bbIndex * device->GetDescriptorHandleIncrementSize(rtvHeapDesc.Type);
+	commandList->OMSetRenderTargets(1, &rtvHandle, false, nullptr);
+#pragma endregion Change
+}
+
+void DirectXInit::DrawEnd()
+{
+	// 5.リソースバリアを戻す
+#pragma region ReleaseBarrier
+	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;	// 描画状態から
+	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;			// 表示状態へ
+	commandList->ResourceBarrier(1, &barrierDesc);
+#pragma endregion ReleaseBarrier
+
+	// 命令のクローズ
+#pragma region CmdClose
+	result = commandList->Close();
+	assert(SUCCEEDED(result));
+	// コマンドリストの実行
+	ID3D12CommandList* commandLists[] = { commandList };
+	commandQueue->ExecuteCommandLists(1, commandLists);
+	// 画面に表示するバッファをフリップ(裏表の入替え)
+	result = swapChain->Present(1, 0);
+	assert(SUCCEEDED(result));
+#pragma endregion CmdClose
+
+#pragma region ChangeScreen
+	// コマンドの実行完了を待つ
+	commandQueue->Signal(fence, ++fenceVal);
+	if (fence->GetCompletedValue() != fenceVal) {
+		HANDLE event = CreateEvent(nullptr, false, false, nullptr);
+		fence->SetEventOnCompletion(fenceVal, event);
+		WaitForSingleObject(event, INFINITE);
+		CloseHandle(event);
+	}
+	// キューをクリア
+	result = commandAllocator->Reset();
+	assert(SUCCEEDED(result));
+	// 再びコマンドリストを貯める準備
+	result = commandList->Reset(commandAllocator, nullptr);
+	assert(SUCCEEDED(result));
+#pragma endregion ChangeScreen
+}
+
+void DirectXInit::ScreenClear(FLOAT* clearColor)
+{
+	commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
+}
+
+void DirectXInit::ScreenClear()
+{
+	FLOAT clearColor[] = { 0.1f,0.25f, 0.5f,0.0f };
+	commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
 }

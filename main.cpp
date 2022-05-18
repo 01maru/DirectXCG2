@@ -8,10 +8,11 @@ using namespace DirectX;
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 {
+	HRESULT result;
 #pragma region Initialize
 	Window win;
 
-	DirectXInit(win.hwnd);
+	DirectXInit dx(win.hwnd);
 
 #pragma endregion Initialize
 
@@ -189,30 +190,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 		win.MsgUpdate();
 		if (win.EndLoop()) { break; }
 		
-		////	リリースバリア
-		//// バックバッファの番号を取得(2つなので0番か1番)
-		//UINT bbIndex = swapChain->GetCurrentBackBufferIndex();
-		//// 1.リソースバリアで書き込み可能に変更
-		//D3D12_RESOURCE_BARRIER barrierDesc{};
-		//barrierDesc.Transition.pResource = backBuffers[bbIndex]; // バックバッファを指定
-		//barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT; // 表示状態から
-		//barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態へ
-		//commandList->ResourceBarrier(1, &barrierDesc);
+		dx.DrawAble();
 
-		////	描画先指定コマンド
-		//// 2.描画先の変更
-		//// レンダーターゲットビューのハンドルを取得
-		//D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = rtvHeap->GetCPUDescriptorHandleForHeapStart();
-		//rtvHandle.ptr += bbIndex * device->GetDescriptorHandleIncrementSize(rtvHeapDesc.Type);
-		//commandList->OMSetRenderTargets(1, &rtvHandle, false, nullptr);
+		// 3.画面クリア			R	　G		B	 A
+		FLOAT clearColor[] = { 0.1f,0.25f, 0.5f,0.0f }; // 青っぽい色
+		dx.ScreenClear(clearColor);
 
-		////	画面クリアコマンド
-		//// 3.画面クリア			R	　G		B	 A
-		//FLOAT clearColor[] = { 0.1f,0.25f, 0.5f,0.0f }; // 青っぽい色
-		//commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
-
+#pragma region Draw
 		//// 4.描画コマンドここから
-		//
+		
 		//// ビューポート設定コマンド
 		//D3D12_VIEWPORT viewport{};
 		//viewport.Width = window_width;
@@ -247,37 +233,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 		//commandList->DrawInstanced(_countof(vertices), 1, 0, 0); // 全ての頂点を使って描画
 
 		//// 4.描画コマンドここまで
+#pragma endregion Draw
 
-		//// 5.リソースバリアを戻す
-		//barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態から
-		//barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT; // 表示状態へ
-		//commandList->ResourceBarrier(1, &barrierDesc);
-
-		//// 命令のクローズ
-		//result = commandList->Close();
-		//assert(SUCCEEDED(result));
-		//// コマンドリストの実行
-		//ID3D12CommandList* commandLists[] = { commandList };
-		//commandQueue->ExecuteCommandLists(1, commandLists);
-		//// 画面に表示するバッファをフリップ(裏表の入替え)
-		//result = swapChain->Present(1, 0);
-		//assert(SUCCEEDED(result));
-
-		////	画面入れ替え
-		//// コマンドの実行完了を待つ
-		//commandQueue->Signal(fence, ++fenceVal);
-		//if (fence->GetCompletedValue() != fenceVal) {
-		//	HANDLE event = CreateEvent(nullptr, false, false, nullptr);
-		//	fence->SetEventOnCompletion(fenceVal, event);
-		//	WaitForSingleObject(event, INFINITE);
-		//	CloseHandle(event);
-		//}
-		//// キューをクリア
-		//result = commandAllocator->Reset();
-		//assert(SUCCEEDED(result));
-		//// 再びコマンドリストを貯める準備
-		//result = commandList->Reset(commandAllocator, nullptr);
-		//assert(SUCCEEDED(result));
+		dx.DrawEnd();
 	}
 
 	return 0;
