@@ -20,7 +20,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXInit.cpp" />
+    <ClCompile Include="GPipeline.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="VertBuff.cpp" />
+    <ClCompile Include="VertShader.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -39,6 +42,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DirectXInit.h" />
+    <ClInclude Include="GPipeline.h" />
+    <ClInclude Include="VertBuff.h" />
+    <ClInclude Include="VertShader.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
