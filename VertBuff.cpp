@@ -24,6 +24,7 @@ VertBuff::VertBuff(UINT sizeVB, XMFLOAT3* vertices, UINT vertSize, ID3D12Device*
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(&vertBuff));
+	assert(SUCCEEDED(result));
 
 	//	GPUメモリの値書き換えよう
 	// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
@@ -44,4 +45,10 @@ VertBuff::VertBuff(UINT sizeVB, XMFLOAT3* vertices, UINT vertSize, ID3D12Device*
 	vbView.SizeInBytes = sizeVB;
 	// 頂点1つ分のデータサイズ
 	vbView.StrideInBytes = sizeof(XMFLOAT3);
+}
+
+void VertBuff::Update(ID3D12GraphicsCommandList* cmdList)
+{
+	// 頂点バッファビューの設定コマンド
+	cmdList->IASetVertexBuffers(0, 1, &vbView);
 }

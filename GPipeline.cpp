@@ -52,3 +52,10 @@ GPipeline::GPipeline(VertShader vShade, D3D12_INPUT_ELEMENT_DESC* inputLayout, U
 	result = dev->CreateGraphicsPipelineState(&pipelineDesc, IID_PPV_ARGS(&state));
 	assert(SUCCEEDED(result));
 }
+
+void GPipeline::Update(ID3D12GraphicsCommandList* cmdList)
+{
+	// パイプラインステートとルートシグネチャの設定コマンド
+	cmdList->SetPipelineState(state);
+	cmdList->SetGraphicsRootSignature(rootSignature);
+}

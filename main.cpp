@@ -6,6 +6,7 @@
 #include "Input.h"
 #include "ViewPort.h"
 #include "ScissorRect.h"
+
 #include <DirectXMath.h>
 using namespace DirectX;
 
@@ -36,8 +37,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 
 	// 頂点レイアウト(頂点一つ分のデータに何を持たせるか(今は最低限の３次元座標のみ))
 	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
-	{
-	"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,	D3D12_APPEND_ALIGNED_ELEMENT,	D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0}, 
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,	D3D12_APPEND_ALIGNED_ELEMENT,	D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
 	};
 
 	//	グラフィックスパイプライン
@@ -80,15 +80,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 
 		scissorRect.Update(dx.commandList);
 
-		// パイプラインステートとルートシグネチャの設定コマンド
-		dx.commandList->SetPipelineState(gPipeLine.state);
-		dx.commandList->SetGraphicsRootSignature(gPipeLine.rootSignature);
+		gPipeLine.Update(dx.commandList);
 
 		// プリミティブ形状の設定コマンド
 		dx.commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角形リスト
 
-		// 頂点バッファビューの設定コマンド
-		dx.commandList->IASetVertexBuffers(0, 1, &vertBuff.vbView);
+		vertBuff.Update(dx.commandList);
 
 		// 描画コマンド
 		dx.commandList->DrawInstanced(_countof(vertices), 1, 0, 0); // 全ての頂点を使って描画

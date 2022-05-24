@@ -15,5 +15,6 @@ public:
 	ID3D12PipelineState* state = nullptr;
 public:
 	GPipeline(VertShader vShade, D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT inputLayoutSize, ID3D12Device* dev);
+	void Update(ID3D12GraphicsCommandList* cmdList);
 };
 
