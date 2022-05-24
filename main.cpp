@@ -6,6 +6,7 @@
 #include "Input.h"
 #include "ViewPort.h"
 #include "ScissorRect.h"
+#include "ConstBuff.h"
 
 #include <DirectXMath.h>
 using namespace DirectX;
@@ -47,6 +48,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	ViewPort viewPort(window_width, window_height, 0, 0);
 	// シザー矩形
 	ScissorRect scissorRect(0, window_width, 0, window_height);
+
+	//	定数バッファ
+	ConstBuff cBuff(dx.device);
 #pragma endregion Initialize
 
 	//	ゲームループ
@@ -81,6 +85,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 		dx.commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角形リスト
 
 		vertBuff.Update(dx.commandList);
+
+		cBuff.Update(dx.commandList);
 
 		// 描画コマンド
 		dx.commandList->DrawInstanced(_countof(vertices), 1, 0, 0); // 全ての頂点を使って描画

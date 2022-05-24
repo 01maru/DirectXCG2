@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ConstBuff.cpp" />
     <ClCompile Include="DirectXInit.cpp" />
     <ClCompile Include="GPipeline.cpp" />
     <ClCompile Include="Input.cpp" />
@@ -44,6 +45,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ConstBuff.h" />
     <ClInclude Include="DirectXInit.h" />
     <ClInclude Include="GPipeline.h" />
     <ClInclude Include="Input.h" />
