@@ -26,14 +26,21 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 		{ -0.5f, -0.5f, 0.0f }, // 左下
 		{ -0.5f, +0.5f, 0.0f }, // 左上
 		{ +0.5f, -0.5f, 0.0f }, // 右下
-		{ +0.5f, -0.5f, 0.0f }, // 右下
-		{ -0.5f, +0.5f, 0.0f }, // 左上
 		{ +0.5f, +0.5f, 0.0f }, // 右上
 	};
 	// 頂点データ全体のサイズ = 頂点データ一つ分のサイズ * 頂点データの要素数
 	UINT sizeVB = static_cast<UINT>(sizeof(XMFLOAT3) * _countof(vertices));
 
-	VertBuff vertBuff(sizeVB, vertices, _countof(vertices), dx.device);
+	//	インデックスデータ
+	uint16_t indices[] =
+	{
+		0,1,2,
+		1,2,3,
+	};
+	//	全体のサイズ
+	UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indices));
+
+	VertBuff vertBuff(sizeVB, vertices, _countof(vertices), sizeIB, indices, _countof(indices), dx.device);
 
 	VertShader vertShade;
 
@@ -85,14 +92,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 		gPipeLine.Update(dx.commandList);
 
 		// プリミティブ形状の設定コマンド
-		dx.commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP); // 三角形リスト
+		dx.commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角形リスト
 
 		vertBuff.Update(dx.commandList);
 
 		cBuff.Update(dx.commandList);
 
 		// 描画コマンド
-		dx.commandList->DrawInstanced(_countof(vertices), 1, 0, 0); // 全ての頂点を使って描画
+		//dx.commandList->DrawInstanced(_countof(vertices), 1, 0, 0); // 全ての頂点を使って描画
+		dx.commandList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
 
 		// 4.描画コマンドここまで
 #pragma endregion Draw
