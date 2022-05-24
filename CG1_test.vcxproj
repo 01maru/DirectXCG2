@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="DirectXInit.cpp" />
     <ClCompile Include="GPipeline.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="VertBuff.cpp" />
     <ClCompile Include="VertShader.cpp" />
@@ -43,6 +44,7 @@
   <ItemGroup>
     <ClInclude Include="DirectXInit.h" />
     <ClInclude Include="GPipeline.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="VertBuff.h" />
     <ClInclude Include="VertShader.h" />
     <ClInclude Include="Window.h" />

@@ -5,6 +5,7 @@
 #include "VertBuff.h"
 #include "VertShader.h"
 #include "GPipeline.h"
+#include "Input.h"
 using namespace DirectX;
 
 #pragma comment(lib, "d3dcompiler.lib")
@@ -33,6 +34,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 
 	VertShader vertShade;
 
+	Input input(win.hwnd, win.w);
+
 	// 頂点レイアウト(頂点一つ分のデータに何を持たせるか(今は最低限の３次元座標のみ))
 	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
 	{
@@ -45,14 +48,25 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	//	ゲームループ
 	while (true)
 	{
+#pragma region  WinMsg
 		win.MsgUpdate();
 		if (win.EndLoop()) { break; }
+#pragma endregion
+
+		input.Update();
 		
 		dx.DrawAble();
 
 		// 3.画面クリア			R	　G		B	 A
 		FLOAT clearColor[] = { 0.1f,0.25f, 0.5f,0.0f }; // 青っぽい色
-		dx.ScreenClear(clearColor);
+		FLOAT clearColorR[] = { 1.0f,0.0f,0.0f,0.0f };
+		if (input.GetKey(DIK_SPACE))
+		{
+			dx.ScreenClear(clearColorR);
+		}
+		else {
+			dx.ScreenClear(clearColor);
+		}
 
 #pragma region Draw
 		// 4.描画コマンドここから
