@@ -17,8 +17,12 @@ GPipeline::GPipeline(VertShader vShade, D3D12_INPUT_ELEMENT_DESC* inputLayout, U
 	pipelineDesc.RasterizerState.DepthClipEnable = true; // 深度クリッピングを有効に
 
 	// ブレンドステート
-	pipelineDesc.BlendState.RenderTarget[0].RenderTargetWriteMask
-		= D3D12_COLOR_WRITE_ENABLE_ALL; // RBGA全てのチャンネルを描画
+	//pipelineDesc.BlendState.RenderTarget[0].RenderTargetWriteMask
+	//	= D3D12_COLOR_WRITE_ENABLE_ALL; // RBGA全てのチャンネルを描画
+	D3D12_RENDER_TARGET_BLEND_DESC& blenddesc = pipelineDesc.BlendState.RenderTarget[0];
+	blenddesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
+	Blend(blenddesc);
 
 	// 頂点レイアウトの設定
 	pipelineDesc.InputLayout.pInputElementDescs = inputLayout;
@@ -58,4 +62,41 @@ void GPipeline::Update(ID3D12GraphicsCommandList* cmdList)
 	// パイプラインステートとルートシグネチャの設定コマンド
 	cmdList->SetPipelineState(state);
 	cmdList->SetGraphicsRootSignature(rootSignature);
+}
+
+void GPipeline::Blend(D3D12_RENDER_TARGET_BLEND_DESC& blenddesc, const int mord)
+{
+	//	共通設定
+	if (mord != NONE_BLEND) {
+		blenddesc.BlendEnable = true;
+		blenddesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
+		blenddesc.SrcBlendAlpha = D3D12_BLEND_ONE;
+		blenddesc.DestBlendAlpha = D3D12_BLEND_ZERO;
+	}
+
+	switch (mord)
+	{
+	case ADD_BLEND:
+		blenddesc.BlendOp = D3D12_BLEND_OP_ADD;
+		blenddesc.SrcBlend = D3D12_BLEND_ONE;
+		blenddesc.DestBlend = D3D12_BLEND_ONE;
+		break;
+	case SUB_BLEND:
+		blenddesc.BlendOp = D3D12_BLEND_OP_REV_SUBTRACT;
+		blenddesc.SrcBlend = D3D12_BLEND_ONE;
+		blenddesc.DestBlend = D3D12_BLEND_ONE;
+		break;
+	case INV_BLEND:
+		blenddesc.BlendOp = D3D12_BLEND_OP_ADD;
+		blenddesc.SrcBlend = D3D12_BLEND_INV_DEST_COLOR;
+		blenddesc.DestBlend = D3D12_BLEND_ZERO;
+		break;
+	case ALPHA_BLEND:
+		blenddesc.BlendOp = D3D12_BLEND_OP_ADD;
+		blenddesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
+		blenddesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+		break;
+	default:
+		break;
+	}
 }

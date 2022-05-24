@@ -62,16 +62,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 #pragma region DrawPrep
 		dx.DrawAble();
 
-		// 3.画面クリア			R	　G		B	 A
-		FLOAT clearColor[] = { 0.1f,0.25f, 0.5f,0.0f }; // 青っぽい色
-		FLOAT clearColorR[] = { 1.0f,0.0f,0.0f,0.0f };
-		if (input.GetKey(DIK_SPACE))
-		{
-			dx.ScreenClear(clearColorR);
-		}
-		else {
-			dx.ScreenClear(clearColor);
-		}
+		// 3.画面クリア			R	　G		 B	   A
+		FLOAT clearColor[] = { 0.1f, 0.25f, 0.5f, 0.0f }; // 青っぽい色
+
+		dx.ScreenClear(clearColor);
+
 #pragma endregion	DrawPrep
 
 #pragma region Draw
