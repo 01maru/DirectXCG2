@@ -27,21 +27,21 @@ GraphicsPipeLine::GraphicsPipeLine(VertexShader vertShade, D3D12_INPUT_ELEMENT_D
 	//blenddesc.DestBlendAlpha = D3D12_BLEND_ZERO;	//	使わない
 
 	////	加算合成
-	//blenddesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;	//	加算
-	//blenddesc.SrcBlendAlpha = D3D12_BLEND_ONE;		//	ソースの値を100％使う
-	//blenddesc.DestBlendAlpha = D3D12_BLEND_ONE;		//	デストの値を100％使う
+	//blenddesc.BlendOp = D3D12_BLEND_OP_ADD;	//	加算
+	//blenddesc.SrcBlend = D3D12_BLEND_ONE;		//	ソースの値を100％使う
+	//blenddesc.DestBlend = D3D12_BLEND_ONE;		//	デストの値を100％使う
 	////	減算合成
-	//blenddesc.BlendOpAlpha = D3D12_BLEND_OP_REV_SUBTRACT;	//	減算
-	//blenddesc.SrcBlendAlpha = D3D12_BLEND_ONE;				//	ソースの値を100％使う
-	//blenddesc.DestBlendAlpha = D3D12_BLEND_ONE;				//	デストの値を100％使う
+	//blenddesc.BlendOp = D3D12_BLEND_OP_REV_SUBTRACT;	//	減算
+	//blenddesc.SrcBlend = D3D12_BLEND_ONE;				//	ソースの値を100％使う
+	//blenddesc.DestBlend = D3D12_BLEND_ONE;				//	デストの値を100％使う
 	////	色反転
-	//blenddesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;			//	加算
-	//blenddesc.SrcBlendAlpha = D3D12_BLEND_INV_DEST_COLOR;	//	1.0f-デストカラーの値を使う
-	//blenddesc.DestBlendAlpha = D3D12_BLEND_ZERO;			//	使わない
+	//blenddesc.BlendOp = D3D12_BLEND_OP_ADD;			//	加算
+	//blenddesc.SrcBlend = D3D12_BLEND_INV_DEST_COLOR;	//	1.0f-デストカラーの値を使う
+	//blenddesc.DestBlend = D3D12_BLEND_ZERO;			//	使わない
 	////	半透明合成
-	//blenddesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;			//	加算
-	//blenddesc.SrcBlendAlpha = D3D12_BLEND_SRC_ALPHA;		//	ソースのα値を使う
-	//blenddesc.DestBlendAlpha = D3D12_BLEND_INV_SRC_ALPHA;	//	1.0f-ソースのα値を使う
+	//blenddesc.BlendOp = D3D12_BLEND_OP_ADD;			//	加算
+	//blenddesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;		//	ソースのα値を使う
+	//blenddesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;	//	1.0f-ソースのα値を使う
 	
 
 	// 頂点レイアウトの設定
