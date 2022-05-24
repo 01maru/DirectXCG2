@@ -1,14 +1,14 @@
 #include "Window.h"
 #include "DirectXInit.h"
-#include <d3dcompiler.h>
-#include <DirectXMath.h>
 #include "VertBuff.h"
 #include "VertShader.h"
 #include "GPipeline.h"
 #include "Input.h"
+#include "ViewPort.h"
+#include "ScissorRect.h"
+#include <DirectXMath.h>
 using namespace DirectX;
 
-#pragma comment(lib, "d3dcompiler.lib")
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 {
@@ -17,8 +17,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	Window win;
 
 	DirectXInit dx(win.hwnd);
-
-#pragma endregion Initialize
 
 	//	描画初期化
 	// 頂点データ
@@ -45,6 +43,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	//	グラフィックスパイプライン
 	GPipeline gPipeLine(vertShade, inputLayout, _countof(inputLayout), dx.device);
 
+	//	ビューポート
+	ViewPort viewPort(window_width, window_height, 0, 0);
+	// シザー矩形
+	ScissorRect scissorRect(0, window_width, 0, window_height);
+#pragma endregion Initialize
+
 	//	ゲームループ
 	while (true)
 	{
@@ -55,6 +59,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 
 		input.Update();
 		
+#pragma region DrawPrep
 		dx.DrawAble();
 
 		// 3.画面クリア			R	　G		B	 A
@@ -67,29 +72,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 		else {
 			dx.ScreenClear(clearColor);
 		}
+#pragma endregion	DrawPrep
 
 #pragma region Draw
 		// 4.描画コマンドここから
-		
-		// ビューポート設定コマンド
-		D3D12_VIEWPORT viewport{};
-		viewport.Width = window_width;
-		viewport.Height = window_height;
-		viewport.TopLeftX = 0;
-		viewport.TopLeftY = 0;
-		viewport.MinDepth = 0.0f;
-		viewport.MaxDepth = 1.0f;
-		// ビューポート設定コマンドを、コマンドリストに積む
-		dx.commandList->RSSetViewports(1, &viewport);
+		viewPort.Update(dx.commandList);
 
-		// シザー矩形
-		D3D12_RECT scissorRect{};
-		scissorRect.left = 0; // 切り抜き座標左
-		scissorRect.right = scissorRect.left + window_width; // 切り抜き座標右
-		scissorRect.top = 0; // 切り抜き座標上
-		scissorRect.bottom = scissorRect.top + window_height; // 切り抜き座標下
-		// シザー矩形設定コマンドを、コマンドリストに積む
-		dx.commandList->RSSetScissorRects(1, &scissorRect);
+		scissorRect.Update(dx.commandList);
 
 		// パイプラインステートとルートシグネチャの設定コマンド
 		dx.commandList->SetPipelineState(gPipeLine.state);

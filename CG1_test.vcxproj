@@ -23,8 +23,10 @@
     <ClCompile Include="GPipeline.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ScissorRect.cpp" />
     <ClCompile Include="VertBuff.cpp" />
     <ClCompile Include="VertShader.cpp" />
+    <ClCompile Include="ViewPort.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -45,8 +47,10 @@
     <ClInclude Include="DirectXInit.h" />
     <ClInclude Include="GPipeline.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="ScissorRect.h" />
     <ClInclude Include="VertBuff.h" />
     <ClInclude Include="VertShader.h" />
+    <ClInclude Include="ViewPort.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
