@@ -172,6 +172,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 
 		cBuff.Update(dx.commandList);
 
+#pragma region 04_02
+		dx.commandList->SetDescriptorHeaps(1, &srvHeap);
+		D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
+		dx.commandList->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+#pragma endregion
+
 		// 描画コマンド
 		//dx.commandList->DrawInstanced(_countof(vertices), 1, 0, 0); // 全ての頂点を使って描画
 		dx.commandList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
