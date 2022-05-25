@@ -1,6 +1,6 @@
 #include "VertBuff.h"
 
-VertBuff::VertBuff(UINT sizeVB, XMFLOAT3* vertices, UINT vertSize, UINT sizeIB, uint16_t* indices, UINT indicesSize, ID3D12Device* dev)
+VertBuff::VertBuff(UINT sizeVB, Vertex* vertices, UINT vertSize, UINT sizeIB, uint16_t* indices, UINT indicesSize, ID3D12Device* dev)
 {
 	// 頂点バッファの設定
 	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD; // GPUへの転送用

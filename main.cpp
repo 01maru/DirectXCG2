@@ -23,10 +23,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	//	描画初期化
 	// 頂点データ
 	Vertex vertices[] = {
-		{{ -0.5f, -0.5f, 0.0f }, {0.0f, 1.0f}}, // 左下
-		{{ -0.5f, +0.5f, 0.0f }, {0.0f, 0.0f}}, // 左上
-		{{ +0.5f, -0.5f, 0.0f }, {1.0f, 1.0f}}, // 右下
-		{{ +0.5f, +0.5f, 0.0f }, {1.0f, 0.0f}}, // 右上
+		{{ -0.4f, -0.7f, 0.0f }, {0.0f, 1.0f}}, // 左下
+		{{ -0.4f, +0.7f, 0.0f }, {0.0f, 0.0f}}, // 左上
+		{{ +0.4f, -0.7f, 0.0f }, {1.0f, 1.0f}}, // 右下
+		{{ +0.4f, +0.7f, 0.0f }, {1.0f, 0.0f}}, // 右上
 	};
 	// 頂点データ全体のサイズ = 頂点データ一つ分のサイズ * 頂点データの要素数
 	UINT sizeVB = static_cast<UINT>(sizeof(vertices[0]) * _countof(vertices));
@@ -48,7 +48,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 
 	// 頂点レイアウト(頂点一つ分のデータに何を持たせるか(今は最低限の３次元座標のみ))
 	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,	D3D12_APPEND_ALIGNED_ELEMENT,	D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,	D3D12_APPEND_ALIGNED_ELEMENT,	D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},		//	xyz座標
+		{"TEXCOORD",0,DXGI_FORMAT_R32G32_FLOAT,0,D3D12_APPEND_ALIGNED_ELEMENT,D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,0},				//	uv座標
 	};
 
 	//	グラフィックスパイプライン
