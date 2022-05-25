@@ -96,6 +96,12 @@ GPipeline::GPipeline(VertShader vShade, D3D12_INPUT_ELEMENT_DESC* inputLayout, U
 	pipelineDesc.pRootSignature = rootSignature;
 #pragma endregion
 
+	//	デプスステンシルステート設定
+	pipelineDesc.DepthStencilState.DepthEnable = true;		//	深度テストを行う
+	pipelineDesc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;		//	書き込み許可
+	pipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;			//	小さければ合格
+	pipelineDesc.DSVFormat = DXGI_FORMAT_D32_FLOAT;			//	深度フォーマット
+
 	// パイプランステートの生成
 	result = dev->CreateGraphicsPipelineState(&pipelineDesc, IID_PPV_ARGS(&state));
 	assert(SUCCEEDED(result));

@@ -37,6 +37,9 @@ public:
 	D3D12_RESOURCE_BARRIER barrierDesc{};
 
 	FLOAT clearColor[4] = {};
+
+	ID3D12DescriptorHeap* dsvHeap = nullptr;
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle;
 public:
 	DirectXInit(HWND hwnd);
 

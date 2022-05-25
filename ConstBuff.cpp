@@ -90,18 +90,18 @@ ConstBuff::ConstBuff(ID3D12Device* dev, const int winwidth, const int winheight)
 	matWorld = XMMatrixIdentity();
 
 	XMMATRIX matScale;
-	matScale = XMMatrixScaling(1.0f, 0.5f, 1.0f);
+	matScale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
 	matWorld *= matScale;
 
 	XMMATRIX matRot;
 	matRot = XMMatrixIdentity();
-	matRot *= XMMatrixRotationZ(XMConvertToRadians(0.0f));
-	matRot *= XMMatrixRotationX(XMConvertToRadians(15.0f));
-	matRot *= XMMatrixRotationY(XMConvertToRadians(30.0f));
+	//matRot *= XMMatrixRotationZ(XMConvertToRadians(0.0f));
+	//matRot *= XMMatrixRotationX(XMConvertToRadians(15.0f));
+	//matRot *= XMMatrixRotationY(XMConvertToRadians(30.0f));
 	matWorld *= matRot;
 
 	XMMATRIX matTrans;
-	matTrans = XMMatrixTranslation(-50.0f, 0, 0);
+	matTrans = XMMatrixTranslation(0.0f, 0, 0);
 	matWorld *= matTrans;
 #pragma endregion
 
