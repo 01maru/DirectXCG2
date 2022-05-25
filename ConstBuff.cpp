@@ -77,9 +77,17 @@ ConstBuff::ConstBuff(ID3D12Device* dev, const int winwidth, const int winheight)
 		0.1f, 1000.0f						//	前端、奥端
 	);
 
+#pragma region ViewMatrix
+	XMMATRIX matView;
+	XMFLOAT3 eye(0, 0, -100);	//	視点座標
+	XMFLOAT3 target(0, 0, 0);	//	注視点座標
+	XMFLOAT3 up(0, 1, 0);		//	上方向ベクトル
+	matView = XMMatrixLookAtLH(XMLoadFloat3(&eye), XMLoadFloat3(&target), XMLoadFloat3(&up));
+#pragma endregion
+
 
 	//	定数バッファに転送
-	constMapTransform->mat = matProjection;
+	constMapTransform->mat = matView * matProjection;
 #pragma endregion
 }
 
