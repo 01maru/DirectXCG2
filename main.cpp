@@ -7,6 +7,7 @@
 #include "ViewPort.h"
 #include "ScissorRect.h"
 #include "ConstBuff.h"
+#include <DirectXTex.h>
 
 #include <DirectXMath.h>
 using namespace DirectX;
