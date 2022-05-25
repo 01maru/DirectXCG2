@@ -8,6 +8,12 @@ using namespace DirectX;
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 
+struct Vertex
+{
+	XMFLOAT3 pos;
+	XMFLOAT2 uv;
+};
+
 class VertBuff
 {
 public:

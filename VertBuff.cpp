@@ -5,6 +5,7 @@ VertBuff::VertBuff(UINT sizeVB, XMFLOAT3* vertices, UINT vertSize, UINT sizeIB, 
 	// 頂点バッファの設定
 	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD; // GPUへの転送用
 
+#pragma region VB
 	// リソース設定
 	SetResDesc(sizeVB);
 
@@ -19,10 +20,9 @@ VertBuff::VertBuff(UINT sizeVB, XMFLOAT3* vertices, UINT vertSize, UINT sizeIB, 
 		IID_PPV_ARGS(&vertBuff));
 	assert(SUCCEEDED(result));
 
-#pragma region マッピング
 	//	GPUメモリの値書き換えよう
 	// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
-	XMFLOAT3* vertMap = nullptr;
+	Vertex* vertMap = nullptr;
 	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
 	assert(SUCCEEDED(result));
 	// 全頂点に対して
@@ -31,7 +31,6 @@ VertBuff::VertBuff(UINT sizeVB, XMFLOAT3* vertices, UINT vertSize, UINT sizeIB, 
 	}
 	// 繋がりを解除
 	vertBuff->Unmap(0, nullptr);
-#pragma endregion
 
 	// 頂点バッファビューの作成
 	// GPU仮想アドレス
@@ -39,7 +38,8 @@ VertBuff::VertBuff(UINT sizeVB, XMFLOAT3* vertices, UINT vertSize, UINT sizeIB, 
 	// 頂点バッファのサイズ
 	vbView.SizeInBytes = sizeVB;
 	// 頂点1つ分のデータサイズ
-	vbView.StrideInBytes = sizeof(XMFLOAT3);
+	vbView.StrideInBytes = sizeof(vertices[0]);
+#pragma endregion
 
 	SetResDesc(sizeIB);
 	ID3D12Resource* indexBuff = nullptr;
