@@ -54,17 +54,38 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	};
 
 #pragma region 画像イメージデータ作成
-	const size_t textureWidth = 256;
-	const size_t textureHeight = 256;
-	const size_t imageDataCount = textureWidth * textureHeight;
-	XMFLOAT4* imageData = new XMFLOAT4[imageDataCount];
+	TexMetadata metadata{};
+	ScratchImage scratchImg{};
 
-	for (size_t i = 0; i < imageDataCount; i++) {
-		imageData[i].x = 1.0f;
-		imageData[i].y = 0.0f;
-		imageData[i].z = 0.0f;
-		imageData[i].w = 1.0f;
+	result = LoadFromWICFile(
+		L"Resource/texture.jpg",
+		WIC_FLAGS_NONE,
+		&metadata, scratchImg);
+
+	//	ミニマップ生成
+	ScratchImage mipChain{};
+	result = GenerateMipMaps(
+		scratchImg.GetImages(), scratchImg.GetImageCount(), scratchImg.GetMetadata(),
+		TEX_FILTER_DEFAULT, 0, mipChain);
+
+	if (SUCCEEDED(result)) {
+		scratchImg = std::move(mipChain);
+		metadata = scratchImg.GetMetadata();
 	}
+
+	metadata.format = MakeSRGB(metadata.format);
+
+	//const size_t textureWidth = 256;
+	//const size_t textureHeight = 256;
+	//const size_t imageDataCount = textureWidth * textureHeight;
+	//XMFLOAT4* imageData = new XMFLOAT4[imageDataCount];
+
+	//for (size_t i = 0; i < imageDataCount; i++) {
+	//	imageData[i].x = 1.0f;
+	//	imageData[i].y = 0.0f;
+	//	imageData[i].z = 0.0f;
+	//	imageData[i].w = 1.0f;
+	//}
 
 	//	ヒープ設定
 	D3D12_HEAP_PROPERTIES textureHeapProp{};
@@ -74,11 +95,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	//	リソース設定
 	D3D12_RESOURCE_DESC tectureResourceDesc{};
 	tectureResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-	tectureResourceDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	tectureResourceDesc.Width = textureWidth;
-	tectureResourceDesc.Height = textureHeight;
-	tectureResourceDesc.DepthOrArraySize = 1;
-	tectureResourceDesc.MipLevels = 1;
+	tectureResourceDesc.Format = metadata.format;
+	tectureResourceDesc.Width = metadata.width;
+	tectureResourceDesc.Height = (UINT)metadata.height;
+	tectureResourceDesc.DepthOrArraySize = (UINT16)metadata.arraySize;
+	tectureResourceDesc.MipLevels = (UINT16)metadata.mipLevels;
 	tectureResourceDesc.SampleDesc.Count = 1;
 
 
@@ -92,9 +113,22 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 		nullptr,
 		IID_PPV_ARGS(&texBuff));
 	//	テクスチャバッファ転送
-	result = texBuff->WriteToSubresource(0, nullptr, imageData, sizeof(XMFLOAT4) * textureWidth, sizeof(XMFLOAT4) * imageDataCount);
+	//result = texBuff->WriteToSubresource(0, nullptr, imageData, sizeof(XMFLOAT4) * textureWidth, sizeof(XMFLOAT4) * imageDataCount);
+	for (size_t i = 0; i < metadata.mipLevels; i++)
+	{
+		const Image* img = scratchImg.GetImage(i, 0, 0);
 
-	delete[] imageData;
+		result = texBuff->WriteToSubresource(
+			(UINT)i,
+			nullptr,
+			img->pixels,
+			(UINT)img->rowPitch,
+			(UINT)img->slicePitch
+		);
+		assert(SUCCEEDED(result));
+	}
+
+	//delete[] imageData;
 
 	const size_t kMaxSRVCount = 2056;
 
@@ -117,10 +151,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
-	srvDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	srvDesc.Format = vertBuff.resDesc.Format;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MipLevels = 1;
+	srvDesc.Texture2D.MipLevels = vertBuff.resDesc.MipLevels;
 
 	dx.device->CreateShaderResourceView(texBuff, &srvDesc, srvHandle);
 #pragma endregion
