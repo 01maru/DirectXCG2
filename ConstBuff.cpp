@@ -62,10 +62,24 @@ ConstBuff::ConstBuff(ID3D12Device* dev, const int winwidth, const int winheight)
 	//	単位行列代入
 	constMapTransform->mat = XMMatrixIdentity();
 
-	constMapTransform->mat.r[0].m128_f32[0] = 2.0f / winwidth;
-	constMapTransform->mat.r[1].m128_f32[1] = -2.0f / winheight;
-	constMapTransform->mat.r[3].m128_f32[0] = -1.0f;
-	constMapTransform->mat.r[3].m128_f32[1] = 1.0f;
+	constMapTransform->mat = XMMatrixOrthographicOffCenterLH(
+		-1.0f, 1.0f,
+		-1.0f, 1.0f,
+		0.0f, 1.0f);
+	//constMapTransform->mat.r[0].m128_f32[0] = 2.0f / winwidth;
+	//constMapTransform->mat.r[1].m128_f32[1] = -2.0f / winheight;
+	//constMapTransform->mat.r[3].m128_f32[0] = -1.0f;
+	//constMapTransform->mat.r[3].m128_f32[1] = 1.0f;
+
+	XMMATRIX matProjection = XMMatrixPerspectiveFovLH(
+		XMConvertToRadians(45.0f),			//	上下画角45度
+		(float)winwidth / winheight,		//	アスペクト比
+		0.1f, 1000.0f						//	前端、奥端
+	);
+
+
+	//	定数バッファに転送
+	constMapTransform->mat = matProjection;
 #pragma endregion
 }
 
