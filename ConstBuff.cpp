@@ -85,9 +85,29 @@ ConstBuff::ConstBuff(ID3D12Device* dev, const int winwidth, const int winheight)
 	matView = XMMatrixLookAtLH(XMLoadFloat3(&eye), XMLoadFloat3(&target), XMLoadFloat3(&up));
 #pragma endregion
 
+#pragma region WorldMatrix
+	XMMATRIX matWorld;
+	matWorld = XMMatrixIdentity();
+
+	XMMATRIX matScale;
+	matScale = XMMatrixScaling(1.0f, 0.5f, 1.0f);
+	matWorld *= matScale;
+
+	XMMATRIX matRot;
+	matRot = XMMatrixIdentity();
+	matRot *= XMMatrixRotationZ(XMConvertToRadians(0.0f));
+	matRot *= XMMatrixRotationX(XMConvertToRadians(15.0f));
+	matRot *= XMMatrixRotationY(XMConvertToRadians(30.0f));
+	matWorld *= matRot;
+
+	XMMATRIX matTrans;
+	matTrans = XMMatrixTranslation(-50.0f, 0, 0);
+	matWorld *= matTrans;
+#pragma endregion
+
 
 	//	定数バッファに転送
-	constMapTransform->mat = matView * matProjection;
+	constMapTransform->mat = matWorld * matView * matProjection;
 #pragma endregion
 }
 

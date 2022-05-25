@@ -24,11 +24,13 @@
     <ClCompile Include="GPipeline.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Mat4x4.cpp" />
     <ClCompile Include="ScissorRect.cpp" />
     <ClCompile Include="VertBuff.cpp" />
     <ClCompile Include="VertShader.cpp" />
     <ClCompile Include="ViewPort.cpp" />
     <ClCompile Include="Window.cpp" />
+    <ClCompile Include="WorldMatrix.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasicPS.hlsl">
@@ -49,11 +51,13 @@
     <ClInclude Include="DirectXInit.h" />
     <ClInclude Include="GPipeline.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="Mat4x4.h" />
     <ClInclude Include="ScissorRect.h" />
     <ClInclude Include="VertBuff.h" />
     <ClInclude Include="VertShader.h" />
     <ClInclude Include="ViewPort.h" />
     <ClInclude Include="Window.h" />
+    <ClInclude Include="WorldMatrix.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Basic.hlsli" />
