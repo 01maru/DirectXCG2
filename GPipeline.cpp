@@ -36,13 +36,25 @@ GPipeline::GPipeline(VertShader vShade, D3D12_INPUT_ELEMENT_DESC* inputLayout, U
 	pipelineDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; // 0~255指定のRGBA
 	pipelineDesc.SampleDesc.Count = 1; // 1ピクセルにつき1回サンプリング
 
+	//デスクリプタレンジの設定
+	D3D12_DESCRIPTOR_RANGE descriptorRange{};
+	descriptorRange.NumDescriptors = 1;
+	descriptorRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	descriptorRange.BaseShaderRegister = 0;
+	descriptorRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
 #pragma region	ルートパラメータ
 	//	ルートパラメータの設定
-	D3D12_ROOT_PARAMETER rootParam = {};
-	rootParam.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;	//	定数バッファビュー
-	rootParam.Descriptor.ShaderRegister = 0;					//	定数バッファ番号
-	rootParam.Descriptor.RegisterSpace = 0;						//	デフォルト値
-	rootParam.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;	//	すべてのシェーダから見る
+	D3D12_ROOT_PARAMETER rootParams[2] = {};
+	rootParams[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;	//	定数バッファビュー
+	rootParams[0].Descriptor.ShaderRegister = 0;					//	定数バッファ番号
+	rootParams[0].Descriptor.RegisterSpace = 0;						//	デフォルト値
+	rootParams[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;	//	すべてのシェーダから見る
+
+	rootParams[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;	//	定数バッファビュー
+	rootParams[1].DescriptorTable.pDescriptorRanges = &descriptorRange;					//	定数バッファ番号
+	rootParams[1].DescriptorTable.NumDescriptorRanges = 1;						//	デフォルト値
+	rootParams[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;	//	すべてのシェーダから見る
 #pragma endregion
 
 
@@ -50,8 +62,8 @@ GPipeline::GPipeline(VertShader vShade, D3D12_INPUT_ELEMENT_DESC* inputLayout, U
 	// ルートシグネチャの設定
 	D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{};
 	rootSignatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
-	rootSignatureDesc.pParameters = &rootParam;		//	ルートパラメータ先頭アドレス
-	rootSignatureDesc.NumParameters = 1;			//	ルートパラメータの数
+	rootSignatureDesc.pParameters = rootParams;		//	先頭アドレス
+	rootSignatureDesc.NumParameters = _countof(rootParams);			//	ルートパラメータ数
 	// ルートシグネチャのシリアライズ
 	ID3DBlob* rootSigBlob = nullptr;
 	HRESULT result = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0,
