@@ -111,17 +111,17 @@ void ConstBuff::CBUpdate(ID3D12GraphicsCommandList* cmdList)
 	cmdList->SetGraphicsRootConstantBufferView(2, transform->GetGPUVirtualAddress());
 }
 
-void ConstBuff::Move(XMMATRIX matTrans)
+void ConstBuff::Move(XMMATRIX matTrans, float rot)
 {
 	matWorld = XMMatrixIdentity();
 
-	matScale = XMMatrixScaling(1.0f, 0.5f, 1.0f);
+	matScale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
 	matWorld *= matScale;
 
 	matRot = XMMatrixIdentity();
 	matRot *= XMMatrixRotationZ(XMConvertToRadians(0.0f));
-	matRot *= XMMatrixRotationX(XMConvertToRadians(15.0f));
-	matRot *= XMMatrixRotationY(XMConvertToRadians(30.0f));
+	matRot *= XMMatrixRotationX(XMConvertToRadians(0.0f));
+	matRot *= XMMatrixRotationY(XMConvertToRadians(rot));
 	matWorld *= matRot;
 
 	matWorld *= matTrans;

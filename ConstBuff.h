@@ -4,7 +4,7 @@
 using namespace DirectX;
 
 #pragma comment(lib, "d3d12.lib")
-
+const float PI = 3.14159265358979f;
 class ConstBuff
 {
 public:
@@ -40,6 +40,6 @@ public:
 	ConstBuff(ID3D12Device* dev, const int winwidth, const int winheight);
 	void Update(ID3D12GraphicsCommandList* cmdList);
 	void CBUpdate(ID3D12GraphicsCommandList* cmdList);
-	void Move(XMMATRIX matTrans);
+	void Move(XMMATRIX matTrans, float rot);
 };
 

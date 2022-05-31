@@ -206,6 +206,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 
 	//	定数バッファ
 	ConstBuff cBuff(dx.device, window_width, window_height);
+
+	XMFLOAT3 pos = { 0.0f,0.0f,0.0f };
+	float rot = 0.0f;
 #pragma endregion Initialize
 
 	//	ゲームループ
@@ -217,7 +220,19 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 #pragma endregion
 
 		input.Update();
-		
+
+#pragma region Update
+		pos.z += input.GetKey(DIK_UP) - input.GetKey(DIK_DOWN);
+		pos.x += input.GetKey(DIK_RIGHT) - input.GetKey(DIK_LEFT);
+		rot += (input.GetKey(DIK_Q) - input.GetKey(DIK_E)) * PI / 4;
+
+		XMMATRIX matTrans;
+		matTrans = XMMatrixTranslation(pos.x, pos.y, pos.z);
+
+		//	定数バッファに転送
+		cBuff.Move(matTrans, rot);
+#pragma endregion
+
 #pragma region DrawPrep
 		dx.DrawAble();
 
