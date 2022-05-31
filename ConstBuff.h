@@ -40,5 +40,6 @@ public:
 	ConstBuff(ID3D12Device* dev, const int winwidth, const int winheight);
 	void Update(ID3D12GraphicsCommandList* cmdList);
 	void CBUpdate(ID3D12GraphicsCommandList* cmdList);
+	void Move(XMMATRIX matTrans);
 };
 

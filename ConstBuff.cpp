@@ -72,7 +72,6 @@ ConstBuff::ConstBuff(ID3D12Device* dev, const int winwidth, const int winheight)
 	//constMapTransform->mat.r[3].m128_f32[1] = 1.0f;
 
 #pragma region ViewMatrix
-	XMMATRIX matView;
 	XMFLOAT3 eye(0, 0, -100);	//	視点座標
 	XMFLOAT3 target(0, 0, 0);	//	注視点座標
 	XMFLOAT3 up(0, 1, 0);		//	上方向ベクトル
@@ -80,21 +79,17 @@ ConstBuff::ConstBuff(ID3D12Device* dev, const int winwidth, const int winheight)
 #pragma endregion
 
 #pragma region WorldMatrix
-	XMMATRIX matWorld;
 	matWorld = XMMatrixIdentity();
 
-	XMMATRIX matScale;
 	matScale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
 	matWorld *= matScale;
 
-	XMMATRIX matRot;
 	matRot = XMMatrixIdentity();
 	//matRot *= XMMatrixRotationZ(XMConvertToRadians(0.0f));
 	//matRot *= XMMatrixRotationX(XMConvertToRadians(15.0f));
 	//matRot *= XMMatrixRotationY(XMConvertToRadians(30.0f));
 	matWorld *= matRot;
 
-	XMMATRIX matTrans;
 	matTrans = XMMatrixTranslation(0.0f, 0, 0);
 	matWorld *= matTrans;
 #pragma endregion
@@ -114,4 +109,22 @@ void ConstBuff::Update(ID3D12GraphicsCommandList* cmdList)
 void ConstBuff::CBUpdate(ID3D12GraphicsCommandList* cmdList)
 {
 	cmdList->SetGraphicsRootConstantBufferView(2, transform->GetGPUVirtualAddress());
+}
+
+void ConstBuff::Move(XMMATRIX matTrans)
+{
+	matWorld = XMMatrixIdentity();
+
+	matScale = XMMatrixScaling(1.0f, 0.5f, 1.0f);
+	matWorld *= matScale;
+
+	matRot = XMMatrixIdentity();
+	matRot *= XMMatrixRotationZ(XMConvertToRadians(0.0f));
+	matRot *= XMMatrixRotationX(XMConvertToRadians(15.0f));
+	matRot *= XMMatrixRotationY(XMConvertToRadians(30.0f));
+	matWorld *= matRot;
+
+	matWorld *= matTrans;
+
+	constMapTransform->mat = matWorld * matView * matProjection;
 }
