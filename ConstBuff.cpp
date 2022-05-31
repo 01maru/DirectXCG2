@@ -71,12 +71,6 @@ ConstBuff::ConstBuff(ID3D12Device* dev, const int winwidth, const int winheight)
 	//constMapTransform->mat.r[3].m128_f32[0] = -1.0f;
 	//constMapTransform->mat.r[3].m128_f32[1] = 1.0f;
 
-	XMMATRIX matProjection = XMMatrixPerspectiveFovLH(
-		XMConvertToRadians(45.0f),			//	上下画角45度
-		(float)winwidth / winheight,		//	アスペクト比
-		0.1f, 1000.0f						//	前端、奥端
-	);
-
 #pragma region ViewMatrix
 	XMMATRIX matView;
 	XMFLOAT3 eye(0, 0, -100);	//	視点座標

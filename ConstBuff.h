@@ -15,6 +15,16 @@ public:
 	struct ConstBufferDataTransform {
 		XMMATRIX mat;
 	};
+	XMMATRIX matWorld;
+	XMMATRIX matScale;
+	XMMATRIX matRot;
+	XMMATRIX matTrans;
+	XMMATRIX matView;
+	XMMATRIX matProjection = XMMatrixPerspectiveFovLH(
+		XMConvertToRadians(45.0f),			//	上下画角45度
+		(float)1280 / 720,		//	アスペクト比
+		0.1f, 1000.0f						//	前端、奥端
+	);
 
 	ID3D12Resource* transform = nullptr;
 	ConstBufferDataTransform* constMapTransform = nullptr;
