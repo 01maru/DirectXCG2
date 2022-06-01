@@ -8,5 +8,7 @@ public:
 public:
 	Vector3D();
 	Vector3D(float x, float y, float z);
+
+
 };
 
