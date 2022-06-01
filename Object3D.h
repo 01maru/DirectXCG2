@@ -1,5 +1,10 @@
 #pragma once
 #include "Vector3D.h"
+#include <d3d12.h>
+#include <DirectXMath.h>
+using namespace DirectX;
+
+#pragma comment(lib, "d3d12.lib")
 
 class Object3D
 {
@@ -7,13 +12,13 @@ public:
 	XMMATRIX matWorld;
 
 	XMMATRIX matScale;
-	XMFLOAT3 scale;
+	Vector3D scale;
 
 	XMMATRIX matRot;
-	XMFLOAT3 rotAngle;
+	Vector3D rotAngle;
 
 	XMMATRIX matTrans;
-	XMFLOAT3 trans;
+	Vector3D trans;
 
 	struct ConstBufferDataTransform {
 		XMMATRIX mat;

@@ -1,6 +1,4 @@
 #include "Object3D.h"
-#include <DirectXMath.h>
-using namespace DirectX;
 
 Object3D::Object3D(ID3D12Device* dev)
 {
@@ -37,9 +35,9 @@ Object3D::Object3D(ID3D12Device* dev)
 #pragma endregion
 
 #pragma region  WorldMatrixèâä˙íl
-	scale = { 1.0f, 1.0f, 1.0f };
-	rotAngle = { 0.0f,0.0f,0.0f };
-	trans = { 0.0f,0.0f,0.0f };
+	scale = Vector3D(1.0f, 1.0f, 1.0f);
+	rotAngle = Vector3D(0.0f, 0.0f, 0.0f);
+	trans = Vector3D(0.0f, 0.0f, 0.0f);
 #pragma endregion
 
 }
