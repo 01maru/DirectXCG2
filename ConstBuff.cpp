@@ -46,3 +46,8 @@ void ConstBuff::Update(ID3D12GraphicsCommandList* cmdList)
 	//	定数バッファビュー(CBV)の設定コマンド
 	cmdList->SetGraphicsRootConstantBufferView(0, material->GetGPUVirtualAddress());
 }
+
+void ConstBuff::LookAtLH()
+{
+
+}

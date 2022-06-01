@@ -1,5 +1,6 @@
 #pragma once
 #include "Vector3D.h"
+#include "Matrix.h"
 #include <d3d12.h>
 #include <DirectXMath.h>
 using namespace DirectX;
@@ -9,19 +10,19 @@ using namespace DirectX;
 class Object3D
 {
 public:
-	XMMATRIX matWorld;
+	Matrix matWorld;
 
-	XMMATRIX matScale;
+	Matrix matScale;
 	Vector3D scale;
 
-	XMMATRIX matRot;
+	Matrix matRot;
 	Vector3D rotAngle;
 
-	XMMATRIX matTrans;
+	Matrix matTrans;
 	Vector3D trans;
 
 	struct ConstBufferDataTransform {
-		XMMATRIX mat;
+		Matrix mat;
 	};
 	ID3D12Resource* transform = nullptr;
 	ConstBufferDataTransform* constMapTransform = nullptr;
@@ -30,7 +31,12 @@ public:
 	Object3D* parent = nullptr;
 public:
 	Object3D(ID3D12Device* dev);
-	void Update(XMMATRIX matView, XMMATRIX matProjection);
-	void Draw(ID3D12GraphicsCommandList* cmdList);
+	void Update(Matrix matView, Matrix matProjection);
+	void Draw(ID3D12GraphicsCommandList* cmdList, UINT indeicesNum);
+
+private:
+	void SetMatScaling();
+	void SetMatRotation();
+	void SetMatTransform();
 };
 

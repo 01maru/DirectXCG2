@@ -1,5 +1,6 @@
 #pragma once
 #include <d3d12.h>
+#include "Matrix.h"
 #include <DirectXMath.h>
 using namespace DirectX;
 
@@ -19,7 +20,7 @@ public:
 	ConstBufferDataMaterial* mapMaterial = nullptr;
 
 
-	XMMATRIX matView;
+	Matrix matView;
 	XMMATRIX matProjection = XMMatrixPerspectiveFovLH(
 		XMConvertToRadians(45.0f),			//	上下画角45度
 		(float)1280 / 720,		//	アスペクト比
@@ -28,5 +29,7 @@ public:
 public:
 	ConstBuff(ID3D12Device* dev, const int winwidth, const int winheight);
 	void Update(ID3D12GraphicsCommandList* cmdList);
+
+	void LookAtLH();
 };
 

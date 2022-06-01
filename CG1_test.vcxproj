@@ -24,7 +24,7 @@
     <ClCompile Include="GPipeline.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Mat4x4.cpp" />
+    <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="MyMath.cpp" />
     <ClCompile Include="Object3D.cpp" />
     <ClCompile Include="ScissorRect.cpp" />
@@ -54,7 +54,7 @@
     <ClInclude Include="DirectXInit.h" />
     <ClInclude Include="GPipeline.h" />
     <ClInclude Include="Input.h" />
-    <ClInclude Include="Mat4x4.h" />
+    <ClInclude Include="Matrix.h" />
     <ClInclude Include="MyMath.h" />
     <ClInclude Include="Object3D.h" />
     <ClInclude Include="ScissorRect.h" />

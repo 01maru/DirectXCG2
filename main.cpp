@@ -234,7 +234,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	//	定数バッファ
 	ConstBuff cBuff(dx.device, window_width, window_height);
 
-	XMFLOAT3 pos = { 0.0f,0.0f,0.0f };
+	Vector3D pos;
 	float rot = 0.0f;
 #pragma endregion Initialize
 
@@ -257,8 +257,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 		pos.x += input.GetKey(DIK_RIGHT) - input.GetKey(DIK_LEFT);
 		rot += (input.GetKey(DIK_Q) - input.GetKey(DIK_E)) * PI / 4;
 
-		XMMATRIX matTrans;
-		matTrans = XMMatrixTranslation(pos.x, pos.y, pos.z);
+
+		obj.trans = pos;
 
 		//	定数バッファに転送
 		obj.Update(cBuff.matView, cBuff.matProjection);
@@ -295,11 +295,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 		dx.commandList->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
 #pragma endregion
 
-		obj.Draw(dx.commandList);
-
-		// 描画コマンド
-		//dx.commandList->DrawInstanced(_countof(vertices), 1, 0, 0); // 全ての頂点を使って描画
-		dx.commandList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
+		obj.Draw(dx.commandList, _countof(indices));
 
 		// 4.描画コマンドここまで
 #pragma endregion Draw

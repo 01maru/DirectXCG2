@@ -43,36 +43,72 @@ Object3D::Object3D(ID3D12Device* dev)
 }
 
 
-void Object3D::Update(XMMATRIX matView, XMMATRIX matProjection)
+void Object3D::Update(Matrix matView, Matrix matProjection)
 {
-	//	単位行列代入
-	constMapTransform->mat = XMMatrixIdentity();
-
-	constMapTransform->mat = XMMatrixOrthographicOffCenterLH(
-		-1.0f, 1.0f,
-		-1.0f, 1.0f,
-		0.0f, 1.0f);
-
 #pragma region WorldMatrix
-	matWorld = XMMatrixIdentity();
-
-	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
+	matWorld.Identity();
+	
+	//	スケーリング
+	SetMatScaling();
 	matWorld *= matScale;
 
-	matRot = XMMatrixIdentity();
-	matRot *= XMMatrixRotationZ(XMConvertToRadians(rotAngle.z));
-	matRot *= XMMatrixRotationX(XMConvertToRadians(rotAngle.x));
-	matRot *= XMMatrixRotationY(XMConvertToRadians(rotAngle.y));
+	//	回転
+	matRot.Identity();
+	SetMatRotation();
 	matWorld *= matRot;
 
-	matTrans = XMMatrixTranslation(trans.x, trans.y, trans.z);
+	//	平行移動
+	SetMatTransform();
 	matWorld *= matTrans;
 #pragma endregion
 
-	constMapTransform->mat = matWorld * matView * matProjection;
+	constMapTransform->mat = matWorld;
+	constMapTransform->mat *= matView;
+	constMapTransform->mat *= matProjection;
 }
 
-void Object3D::Draw(ID3D12GraphicsCommandList* cmdList)
+void Object3D::SetMatScaling()
+{
+	matScale.Identity();
+	matScale.m[0][0] = scale.x;
+	matScale.m[1][1] = scale.y;
+	matScale.m[2][2] = scale.z;
+}
+
+void Object3D::SetMatRotation()
+{
+	Matrix matRotX;
+	matRotX.m[1][1] = cos(rotAngle.x);
+	matRotX.m[1][2] = sin(rotAngle.x);
+	matRotX.m[2][1] = -sin(rotAngle.x);
+	matRotX.m[2][2] = cos(rotAngle.x);
+	Matrix matRotY;
+	matRotY.m[0][0] = cos(rotAngle.y);
+	matRotY.m[2][0] = sin(rotAngle.y);
+	matRotY.m[0][2] = -sin(rotAngle.y);
+	matRotY.m[2][2] = cos(rotAngle.y);
+	Matrix matRotZ;
+	matRotZ.m[0][0] = cos(rotAngle.z);
+	matRotZ.m[0][1] = sin(rotAngle.z);
+	matRotZ.m[1][0] = -sin(rotAngle.z);
+	matRotZ.m[1][1] = cos(rotAngle.z);
+
+	matRot *= matRotZ;
+	matRot *= matRotX;
+	matRot *= matRotY;
+}
+
+void Object3D::SetMatTransform()
+{
+	matTrans.Identity();
+	matTrans.m[3][0] = trans.x;
+	matTrans.m[3][1] = trans.y;
+	matTrans.m[3][2] = trans.z;
+}
+
+void Object3D::Draw(ID3D12GraphicsCommandList* cmdList, UINT indeicesNum)
 {
 	cmdList->SetGraphicsRootConstantBufferView(2, transform->GetGPUVirtualAddress());
+
+	cmdList->DrawIndexedInstanced(indeicesNum, 1, 0, 0, 0);
 }
