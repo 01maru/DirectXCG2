@@ -119,8 +119,8 @@ void ConstBuff::Move(XMMATRIX matTrans, float rot)
 	matWorld *= matScale;
 
 	matRot = XMMatrixIdentity();
-	matRot *= XMMatrixRotationZ(XMConvertToRadians(0.0f));
-	matRot *= XMMatrixRotationX(XMConvertToRadians(0.0f));
+	matRot *= XMMatrixRotationZ(XMConvertToRadians(-40.0f));
+	matRot *= XMMatrixRotationX(XMConvertToRadians(-40.0f));
 	matRot *= XMMatrixRotationY(XMConvertToRadians(rot));
 	matWorld *= matRot;
 
