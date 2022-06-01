@@ -222,7 +222,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	dx.device->CreateShaderResourceView(texBuff, &srvDesc, srvHandle);
 #pragma endregion
 
-
+	
 	//	グラフィックスパイプライン
 	GPipeline gPipeLine(vertShade, inputLayout, _countof(inputLayout), dx.device);
 

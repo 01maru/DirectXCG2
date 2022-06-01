@@ -21,15 +21,12 @@ public:
 
 
 	Matrix matView;
-	XMMATRIX matProjection = XMMatrixPerspectiveFovLH(
-		XMConvertToRadians(45.0f),			//	上下画角45度
-		(float)1280 / 720,		//	アスペクト比
-		0.1f, 1000.0f						//	前端、奥端
-	);
+	Matrix matProjection;
 public:
 	ConstBuff(ID3D12Device* dev, const int winwidth, const int winheight);
 	void Update(ID3D12GraphicsCommandList* cmdList);
 
 	void LookAtLH();
+	void PerspectiveFovLH(const int winwidth, const int winheight);
 };
 

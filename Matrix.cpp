@@ -7,12 +7,12 @@ Matrix::Matrix()
 
 void Matrix::Identity()
 {
-	for (size_t x = 0; x < sizeof(m); x++)
+	for (size_t x = 0; x < 4; x++)
 	{
-		for (size_t y = 0; y < sizeof(m[0]); y++)
+		for (size_t y = 0; y < 4; y++)
 		{
-			if (x == y) m[y][x] = 1;
-			else		m[y][x] = 0;
+			if (x == y) m[y][x] = 1.0f;
+			else		m[y][x] = 0.0f;
 		}
 	}
 }

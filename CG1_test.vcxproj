@@ -33,7 +33,6 @@
     <ClCompile Include="VertShader.cpp" />
     <ClCompile Include="ViewPort.cpp" />
     <ClCompile Include="Window.cpp" />
-    <ClCompile Include="WorldMatrix.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BasicPS.hlsl">
@@ -63,7 +62,6 @@
     <ClInclude Include="VertShader.h" />
     <ClInclude Include="ViewPort.h" />
     <ClInclude Include="Window.h" />
-    <ClInclude Include="WorldMatrix.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Basic.hlsli" />

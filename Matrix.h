@@ -2,10 +2,10 @@
 class Matrix
 {
 public:
-	int m[4][4];
+	float m[4][4];
 public:
 	Matrix();
 	void Identity();
-	Matrix& operator*=(const Matrix& m2)
+	Matrix& operator*=(const Matrix& m2);
 };
 
