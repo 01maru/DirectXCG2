@@ -8,9 +8,16 @@ const float PI = 3.14159265358979f;
 class ConstBuff
 {
 public:
+	HRESULT result;
+	D3D12_HEAP_PROPERTIES heapProp{};
+	D3D12_RESOURCE_DESC resourceDesc{};
+
+
 	struct ConstBufferDataMaterial {
 		XMFLOAT4 color;	//	RGBA
 	};
+	ID3D12Resource* material = nullptr;
+	ConstBufferDataMaterial* mapMaterial = nullptr;
 
 	struct ConstBufferDataTransform {
 		XMMATRIX mat;
@@ -31,10 +38,6 @@ public:
 	D3D12_HEAP_PROPERTIES cbHeapProp{};
 	D3D12_RESOURCE_DESC cbResourceDesc{};
 
-	D3D12_HEAP_PROPERTIES heapProp{};
-	D3D12_RESOURCE_DESC resourceDesc{};
-	ID3D12Resource* material = nullptr;
-	ConstBufferDataMaterial* mapMaterial = nullptr;
 
 public:
 	ConstBuff(ID3D12Device* dev, const int winwidth, const int winheight);

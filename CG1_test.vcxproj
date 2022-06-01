@@ -25,6 +25,7 @@
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mat4x4.cpp" />
+    <ClCompile Include="Object3D.cpp" />
     <ClCompile Include="ScissorRect.cpp" />
     <ClCompile Include="VertBuff.cpp" />
     <ClCompile Include="VertShader.cpp" />
@@ -52,6 +53,7 @@
     <ClInclude Include="GPipeline.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Mat4x4.h" />
+    <ClInclude Include="Object3D.h" />
     <ClInclude Include="ScissorRect.h" />
     <ClInclude Include="VertBuff.h" />
     <ClInclude Include="VertShader.h" />
