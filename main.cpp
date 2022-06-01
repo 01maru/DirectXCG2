@@ -6,6 +6,7 @@
 #include "Input.h"
 #include "ViewPort.h"
 #include "ScissorRect.h"
+#include "Object3D.h"
 
 #include <DirectXMath.h>
 using namespace DirectX;
@@ -48,6 +49,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	// シザー矩形
 	ScissorRect scissorRect(0, window_width, 0, window_height);
 #pragma endregion Initialize
+
+#pragma region  06_05
+	Object3D obj(dx.device);
+#pragma endregion
 
 	//	ゲームループ
 	while (true)
