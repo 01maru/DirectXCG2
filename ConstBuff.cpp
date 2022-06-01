@@ -88,33 +88,22 @@ void ConstBuff::PerspectiveFovLH(const int winwidth, const int winheight)
 	float AspectRatio = (float)winwidth / winheight;
 	float NearZ = 0.1f;
 	float FarZ = 1000.0f;
-		
 
 	float    SinFov;
 	float    CosFov;
 	XMScalarSinCos(&SinFov, &CosFov, 0.5f * FovAngleY);
-	
-	float Width = CosFov / SinFov;
-	float Height = Width * AspectRatio;
+
+	float Height = CosFov / SinFov;
+	float Width = Height / AspectRatio;
 	float fRange = FarZ / (FarZ - NearZ);
-	
+
 	matProjection.m[0][0] = Width;
-	matProjection.m[0][1] = 0.0f;
-	matProjection.m[0][2] = 0.0f;
-	matProjection.m[0][3] = 0.0f;
-	
-	matProjection.m[1][0] = 0.0f;
+
 	matProjection.m[1][1] = Height;
-	matProjection.m[1][2] = 0.0f;
-	matProjection.m[1][3] = 0.0f;
-	
-	matProjection.m[2][0] = 0.0f;
-	matProjection.m[2][1] = 0.0f;
-	matProjection.m[2][2] = (FarZ + NearZ) / (FarZ - NearZ);
+
+	matProjection.m[2][2] = fRange;
 	matProjection.m[2][3] = 1.0f;
-	
-	matProjection.m[3][0] = 0.0f;
-	matProjection.m[3][1] = 0.0f;
-	matProjection.m[3][2] = -2*fRange * NearZ;
+
+	matProjection.m[3][2] = -fRange * NearZ;
 	matProjection.m[3][3] = 0.0f;
 }
