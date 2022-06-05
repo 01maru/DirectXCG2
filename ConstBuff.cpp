@@ -63,11 +63,11 @@ void ConstBuff::LookAtLH()
 
 	baseZ.normalize();
 
-	baseX.cross(baseZ);
+	baseX = baseX.cross(baseZ);
 	baseX.normalize();
 
 	baseY = baseZ;
-	baseY.cross(baseX);
+	baseY = baseY.cross(baseX);
 
 	matView.m[0][0] = baseX.x;
 	matView.m[0][1] = baseX.y;
@@ -84,7 +84,7 @@ void ConstBuff::LookAtLH()
 
 void ConstBuff::PerspectiveFovLH(const int winwidth, const int winheight)
 {
-	float FovAngleY = 45.0f;
+	float FovAngleY = XMConvertToRadians(45.0f);
 	float AspectRatio = (float)winwidth / winheight;
 	float NearZ = 0.1f;
 	float FarZ = 1000.0f;

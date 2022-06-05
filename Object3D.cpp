@@ -36,8 +36,8 @@ Object3D::Object3D(ID3D12Device* dev)
 
 #pragma region  WorldMatrixèâä˙íl
 	scale = Vector3D(1.0f, 1.0f, 1.0f);
-	rotAngle = Vector3D(0.0f, 0.0f, 0.0f);
-	trans = Vector3D(0.0f, 0.0f, 0.0f);
+	rotAngle = Vector3D(0.0f, 10.0f, 0.0f);
+	trans = Vector3D(0.0f, 0.0f, -50.0f);
 #pragma endregion
 
 }
@@ -53,7 +53,6 @@ void Object3D::Update(Matrix matView, Matrix matProjection)
 	matWorld *= matScale;
 
 	//	âÒì]
-	matRot.Identity();
 	SetMatRotation();
 	matWorld *= matRot;
 
@@ -77,6 +76,7 @@ void Object3D::SetMatScaling()
 
 void Object3D::SetMatRotation()
 {
+	matRot.Identity();
 	Matrix matRotX;
 	matRotX.m[1][1] = cos(rotAngle.x);
 	matRotX.m[1][2] = sin(rotAngle.x);
@@ -93,7 +93,7 @@ void Object3D::SetMatRotation()
 	matRotZ.m[1][0] = -sin(rotAngle.z);
 	matRotZ.m[1][1] = cos(rotAngle.z);
 
-	matRot *= matRotZ;
+	matRot = matRotZ;
 	matRot *= matRotX;
 	matRot *= matRotY;
 }
