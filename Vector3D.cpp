@@ -27,6 +27,11 @@ Vector3D& Vector3D::normalize()
 	return *this;
 }
 
+float Vector3D::dot(const Vector3D& v) const
+{
+	return x * v.x + y * v.y + z * v.z;
+}
+
 Vector3D Vector3D::cross(const Vector3D& v) const
 {
 	return Vector3D(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x);

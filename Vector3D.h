@@ -12,7 +12,7 @@ public:
 	float length() const;
 
 	Vector3D& normalize();
-
+	float dot(const Vector3D& v) const;
 	Vector3D cross(const Vector3D& v) const;
 
 	Vector3D operator+() const;

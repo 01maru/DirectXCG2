@@ -61,6 +61,9 @@ void Object3D::Update(Matrix matView, Matrix matProjection)
 	matWorld *= matTrans;
 #pragma endregion
 
+	Matrix view;
+	view.m[3][2] = 100;
+
 	constMapTransform->mat = matWorld;
 	constMapTransform->mat *= matView;
 	constMapTransform->mat *= matProjection;

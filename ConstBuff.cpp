@@ -59,7 +59,7 @@ void ConstBuff::LookAtLH()
 
 	Vector3D baseX = up;
 	Vector3D baseY;
-	Vector3D baseZ = eye - target;
+	Vector3D baseZ = target - eye;
 
 	baseZ.normalize();
 
@@ -80,6 +80,10 @@ void ConstBuff::LookAtLH()
 	matView.m[2][0] = baseZ.x;
 	matView.m[2][1] = baseZ.y;
 	matView.m[2][2] = baseZ.z;
+
+	matView.m[3][0] = -baseX.dot(eye);
+	matView.m[3][1] = -baseY.dot(eye);
+	matView.m[3][2] = -baseZ.dot(eye);
 }
 
 void ConstBuff::PerspectiveFovLH(const int winwidth, const int winheight)
