@@ -1,6 +1,6 @@
 #include "GPipeline.h"
 
-GPipeline::GPipeline(VertShader vShade, D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT inputLayoutSize, ID3D12Device* dev)
+GPipeline::GPipeline(D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT inputLayoutSize, ID3D12Device* dev)
 {
 	//	テクスチャーサンプラーの設定
 	D3D12_STATIC_SAMPLER_DESC samplerDesc{};
@@ -15,22 +15,27 @@ GPipeline::GPipeline(VertShader vShade, D3D12_INPUT_ELEMENT_DESC* inputLayout, U
 	samplerDesc.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
 	// シェーダーの設定
-	pipelineDesc.VS.pShaderBytecode = vShade.vsBlob->GetBufferPointer();
-	pipelineDesc.VS.BytecodeLength = vShade.vsBlob->GetBufferSize();
-	pipelineDesc.PS.pShaderBytecode = vShade.psBlob->GetBufferPointer();
-	pipelineDesc.PS.BytecodeLength = vShade.psBlob->GetBufferSize();
+#pragma region VertexShader
+	pipelineDesc.VS.pShaderBytecode = shader.vsBlob->GetBufferPointer();
+	pipelineDesc.VS.BytecodeLength = shader.vsBlob->GetBufferSize();
+#pragma endregion
+#pragma region PixcelShader
+	pipelineDesc.PS.pShaderBytecode = shader.psBlob->GetBufferPointer();
+	pipelineDesc.PS.BytecodeLength = shader.psBlob->GetBufferSize();
+#pragma endregion
 
 	// サンプルマスクの設定
 	pipelineDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK; // 標準設定
 
-	// ラスタライザの設定
+#pragma region Rasterizer
+	// 設定
 	pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK; // カリングしない
 	pipelineDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID; // ポリゴン内塗りつぶし
 	pipelineDesc.RasterizerState.DepthClipEnable = true; // 深度クリッピングを有効に
+#pragma endregion
+
 
 	// ブレンドステート
-	//pipelineDesc.BlendState.RenderTarget[0].RenderTargetWriteMask
-	//	= D3D12_COLOR_WRITE_ENABLE_ALL; // RBGA全てのチャンネルを描画
 	D3D12_RENDER_TARGET_BLEND_DESC& blenddesc = pipelineDesc.BlendState.RenderTarget[0];
 	blenddesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
@@ -86,7 +91,7 @@ GPipeline::GPipeline(VertShader vShade, D3D12_INPUT_ELEMENT_DESC* inputLayout, U
 	// ルートシグネチャのシリアライズ
 	ID3DBlob* rootSigBlob = nullptr;
 	HRESULT result = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0,
-		&rootSigBlob, &vShade.errorBlob);
+		&rootSigBlob, &shader.errorBlob);
 	assert(SUCCEEDED(result));
 	result = dev->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(),
 		IID_PPV_ARGS(&rootSignature));
@@ -96,11 +101,13 @@ GPipeline::GPipeline(VertShader vShade, D3D12_INPUT_ELEMENT_DESC* inputLayout, U
 	pipelineDesc.pRootSignature = rootSignature;
 #pragma endregion
 
+#pragma region  OutputMerger
 	//	デプスステンシルステート設定
-	pipelineDesc.DepthStencilState.DepthEnable = true;		//	深度テストを行う
+	pipelineDesc.DepthStencilState.DepthEnable = true;								//	深度テストを行う
 	pipelineDesc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;		//	書き込み許可
 	pipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;			//	小さければ合格
-	pipelineDesc.DSVFormat = DXGI_FORMAT_D32_FLOAT;			//	深度フォーマット
+	pipelineDesc.DSVFormat = DXGI_FORMAT_D32_FLOAT;									//	深度フォーマット
+#pragma endregion
 
 	// パイプランステートの生成
 	result = dev->CreateGraphicsPipelineState(&pipelineDesc, IID_PPV_ARGS(&state));

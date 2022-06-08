@@ -10,7 +10,8 @@ cbuffer ConstBufferDataTransform:register(b1)
 
 struct VSOutput
 {
-	float4 svpos : SV_POSITION;
-	float3 normal :NORMAL;
+	//	セマンティック(SV_はSystem Value)
+	float4 svpos : SV_POSITION;	//	座標情報
+	float3 normal :	NORMAL;
 	float2 uv :TEXCOORD;
 };

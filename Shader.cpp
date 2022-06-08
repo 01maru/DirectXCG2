@@ -1,21 +1,24 @@
-#include "VertShader.h"
+#include "Shader.h"
 #include <string>
 
-VertShader::VertShader()
+Shader::Shader()
 {
+#pragma region VertexShader
 	//	頂点シェーダファイル読み込み＆コンパイル
 	result = D3DCompileFromFile(
-		L"BasicVS.hlsl", // シェーダファイル名
+		L"BasicVS.hlsl",									// シェーダファイル名
 		nullptr,
-		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
-		"main", "vs_5_0", // エントリーポイント名、シェーダーモデル指定
-		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
+		D3D_COMPILE_STANDARD_FILE_INCLUDE,					// インクルード可能にする
+		"main", "vs_5_0",									// エントリーポイント名、シェーダーモデル指定
+		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,	// デバッグ用設定
 		0,
 		&vsBlob, &errorBlob);
 
 	// エラーなら
 	Error();
+#pragma endregion
 
+#pragma region PixelShader
 	// ピクセルシェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
 		L"BasicPS.hlsl", // シェーダファイル名
@@ -28,9 +31,10 @@ VertShader::VertShader()
 
 	// エラーなら
 	Error();
+#pragma endregion
 }
 
-void VertShader::Error()
+void Shader::Error()
 {
 	if (FAILED(result)) {
 		// errorBlobからエラー内容をstring型にコピー

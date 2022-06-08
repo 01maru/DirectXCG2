@@ -1,4 +1,4 @@
-#include "DirectXInit.h"
+#include "DirectX.h"
 #include "Window.h"
 
 // ‘Î‰žƒŒƒxƒ‹‚Ì”z—ñ

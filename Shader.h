@@ -8,7 +8,7 @@
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 
-class VertShader
+class Shader
 {
 public:
 	HRESULT result;
@@ -17,6 +17,6 @@ public:
 	ID3DBlob* psBlob = nullptr; // ピクセルシェーダオブジェクト
 	ID3DBlob* errorBlob = nullptr; // エラーオブジェクト
 public:
-	VertShader();
+	Shader();
 	void Error();
 };

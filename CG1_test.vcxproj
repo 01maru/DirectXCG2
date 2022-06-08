@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConstBuff.cpp" />
-    <ClCompile Include="DirectXInit.cpp" />
+    <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="GPipeline.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
@@ -28,9 +28,10 @@
     <ClCompile Include="MyMath.cpp" />
     <ClCompile Include="Object3D.cpp" />
     <ClCompile Include="ScissorRect.cpp" />
+    <ClCompile Include="TextureData.cpp" />
     <ClCompile Include="Vector3D.cpp" />
     <ClCompile Include="VertBuff.cpp" />
-    <ClCompile Include="VertShader.cpp" />
+    <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ViewPort.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
@@ -50,16 +51,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConstBuff.h" />
-    <ClInclude Include="DirectXInit.h" />
+    <ClInclude Include="DirectX.h" />
     <ClInclude Include="GPipeline.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="MyMath.h" />
     <ClInclude Include="Object3D.h" />
     <ClInclude Include="ScissorRect.h" />
+    <ClInclude Include="TextureData.h" />
     <ClInclude Include="Vector3D.h" />
     <ClInclude Include="VertBuff.h" />
-    <ClInclude Include="VertShader.h" />
+    <ClInclude Include="Shader.h" />
     <ClInclude Include="ViewPort.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
