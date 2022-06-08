@@ -88,26 +88,58 @@ void ConstBuff::LookAtLH()
 
 void ConstBuff::PerspectiveFovLH(const int winwidth, const int winheight)
 {
-	float FovAngleY = XMConvertToRadians(45.0f);
-	float AspectRatio = (float)winwidth / winheight;
-	float NearZ = 0.1f;
-	float FarZ = 1000.0f;
+	//assert(NearZ > 0.f && FarZ > 0.f);
+	//assert(!XMScalarNearEqual(FovAngleY, 0.0f, 0.00001f * 2.0f));
+	//assert(!XMScalarNearEqual(AspectRatio, 0.0f, 0.00001f));
+	//assert(!XMScalarNearEqual(FarZ, NearZ, 0.00001f));
 
-	float    SinFov;
-	float    CosFov;
-	XMScalarSinCos(&SinFov, &CosFov, 0.5f * FovAngleY);
+	float aspect = (float)winwidth / winheight;
+	float fovY = XMConvertToRadians(45.0f);
+	float nearZ = 0.1f;
+	float farZ = 1000.0f;
 
-	float Height = CosFov / SinFov;
-	float Width = Height / AspectRatio;
-	float fRange = FarZ / (FarZ - NearZ);
+	//float tan = (float)sin(fovY/2.0f) / cos(fovY/2.0f) * aspect;
+	float height = 1.0f / tanf(fovY / 2.0f);
 
-	matProjection.m[0][0] = Width;
-
-	matProjection.m[1][1] = Height;
-
-	matProjection.m[2][2] = fRange;
+	matProjection.Identity();
+	matProjection.m[0][0] = height;
+	matProjection.m[1][1] = height * aspect;
+	matProjection.m[2][2] = (float)(farZ + nearZ) / (farZ - nearZ);
 	matProjection.m[2][3] = 1.0f;
-
-	matProjection.m[3][2] = -fRange * NearZ;
+	matProjection.m[3][2] = -2.0f * farZ * nearZ / (float)(farZ - nearZ);
 	matProjection.m[3][3] = 0.0f;
+
+	//float FovAngleY = XMConvertToRadians(45.0f);
+	//float AspectRatio = (float)winwidth / winheight;
+	//float NearZ = 0.1f;
+	//float FarZ = 1000.0f;
+
+
+	//float    SinFov;
+	//float    CosFov;
+	//XMScalarSinCos(&SinFov, &CosFov, 0.5f * FovAngleY);
+
+	//float Height = CosFov / SinFov;
+	//float Width = Height / AspectRatio;
+	//float fRange = FarZ / (FarZ - NearZ);
+
+	//matProjection.Identity();
+
+	//matProjection.m[0][0] = Width;
+
+	//matProjection.m[1][1] = Height;
+
+	//matProjection.m[2][2] = fRange;
+	//matProjection.m[2][3] = 1.0f;
+
+	//matProjection.m[3][2] = -fRange * NearZ;
+	//matProjection.m[3][3] = 0.0f;
+}
+
+void ConstBuff::CalcFovXSinCos(float* pSin, float* pCos, float fovY)
+{
+	assert(pSin);
+	assert(pCos);
+
+
 }

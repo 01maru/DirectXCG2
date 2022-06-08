@@ -28,5 +28,6 @@ public:
 
 	void LookAtLH();
 	void PerspectiveFovLH(const int winwidth, const int winheight);
+	void CalcFovXSinCos(float* pSin, float* pCos, float fovY);
 };
 
