@@ -116,7 +116,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	VertBuff vertBuff(sizeVB, vertices, _countof(vertices), sizeIB, indices, _countof(indices), dx.device);
 
 	TextureDeta texture(dx.device, vertBuff.resDesc);
-	
+
 	//	グラフィックスパイプライン
 	GPipeline gPipeLine(inputLayout, _countof(inputLayout), dx.device);
 
@@ -134,6 +134,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 
 	Object3D obj(dx.device);
 	Object3D obj2(dx.device);
+
+	MatView matView(Vector3D(0.0f, 0.0f, -100.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 1.0f, 0.0f));
+	Matrix matProjection = PerspectiveFovLH(window_width, window_height, ConvertToRad(45.0f), 0.1f, 1000.0f);
 #pragma endregion Initialize
 
 	//	ゲームループ
@@ -156,8 +159,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 		obj2.rotAngle.y = rot;
 
 		//	定数バッファに転送
-		obj.Update(cBuff.matView, cBuff.matProjection);
-		obj2.Update(cBuff.matView, cBuff.matProjection);
+		obj.Update(matView.mat, matProjection);
+		obj2.Update(matView.mat, matProjection);
 #pragma endregion
 
 #pragma region Draw

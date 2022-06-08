@@ -19,15 +19,8 @@ public:
 	ID3D12Resource* material = nullptr;
 	ConstBufferDataMaterial* mapMaterial = nullptr;
 
-
-	Matrix matView;
-	Matrix matProjection;
 public:
 	ConstBuff(ID3D12Device* dev, const int winwidth, const int winheight);
 	void Update(ID3D12GraphicsCommandList* cmdList);
-
-	void LookAtLH();
-	void PerspectiveFovLH(const int winwidth, const int winheight);
-	void CalcFovXSinCos(float* pSin, float* pCos, float fovY);
 };
 
