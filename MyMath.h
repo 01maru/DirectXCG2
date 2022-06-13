@@ -1,6 +1,8 @@
 #pragma once
 #include "Vector3D.h"
 #include "Matrix.h"
+
+namespace MyMath {
 const float PI = 3.14159265358979f;
 
 //	視点座標、注視点座標、上方向ベクトル
@@ -20,3 +22,5 @@ public:
 	MatView(Vector3D _eye, Vector3D _target, Vector3D _up);
 	void MatUpdate();
 };
+}
+

@@ -135,8 +135,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	Object3D obj(dx.device);
 	Object3D obj2(dx.device);
 
-	MatView matView(Vector3D(0.0f, 0.0f, -100.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 1.0f, 0.0f));
-	Matrix matProjection = PerspectiveFovLH(window_width, window_height, ConvertToRad(45.0f), 0.1f, 1000.0f);
+	MyMath::MatView matView(Vector3D(0.0f, 0.0f, -100.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 1.0f, 0.0f));
+	Matrix matProjection = MyMath::PerspectiveFovLH(window_width, window_height, MyMath::ConvertToRad(45.0f), 0.1f, 1000.0f);
 #pragma endregion Initialize
 
 	//	ÉQÅ[ÉÄÉãÅ[Év
@@ -152,7 +152,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 #pragma region Update
 		pos.z += input.GetKey(DIK_UP) - input.GetKey(DIK_DOWN);
 		pos.x += input.GetKey(DIK_RIGHT) - input.GetKey(DIK_LEFT);
-		rot += (input.GetKey(DIK_Q) - input.GetKey(DIK_E)) * PI / 4;
+		rot += (input.GetKey(DIK_Q) - input.GetKey(DIK_E)) * MyMath::PI / 4;
 
 
 		obj.trans = pos;

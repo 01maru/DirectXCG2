@@ -2,7 +2,7 @@
 #include <cassert>
 #include <cmath>
 
-Matrix LookAtLH(const Vector3D& eye, const Vector3D& target, const Vector3D& up)
+Matrix MyMath::LookAtLH(const Vector3D& eye, const Vector3D& target, const Vector3D& up)
 {
 	//Vector3D eye(0, 0, -100);	//	視点座標
 	//Vector3D target(0, 0, 0);	//	注視点座標
@@ -46,12 +46,12 @@ Matrix LookAtLH(const Vector3D& eye, const Vector3D& target, const Vector3D& up)
 	return matView;
 }
 
-float ConvertToRad(float angle)
+float MyMath::ConvertToRad(float angle)
 {
 	return angle / 180.0f * PI;
 }
 
-Matrix PerspectiveFovLH(const int winwidth, const int winheight, float fovY, float nearZ, float farZ)
+Matrix MyMath::PerspectiveFovLH(const int winwidth, const int winheight, float fovY, float nearZ, float farZ)
 {
 	assert(nearZ > 0.f && farZ > 0.f);
 	//assert(!XMScalarNearEqual(FovAngleY, 0.0f, 0.00001f * 2.0f));
@@ -75,7 +75,7 @@ Matrix PerspectiveFovLH(const int winwidth, const int winheight, float fovY, flo
 	return matProjection;
 }
 
-MatView::MatView(Vector3D _eye, Vector3D _target, Vector3D _up)
+MyMath::MatView::MatView(Vector3D _eye, Vector3D _target, Vector3D _up)
 {
 	eye = _eye;
 	target = _target;
@@ -84,7 +84,7 @@ MatView::MatView(Vector3D _eye, Vector3D _target, Vector3D _up)
 	MatUpdate();
 }
 
-void MatView::MatUpdate()
+void MyMath::MatView::MatUpdate()
 {
 	mat = LookAtLH(eye, target, up);
 }
