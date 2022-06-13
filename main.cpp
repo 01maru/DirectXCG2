@@ -20,7 +20,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 #pragma region Initialize
 	Window win;
 
-	DirectXInit dx(win.hwnd);
+	MyDirectX dx(win.hwnd);
 
 	Input input(win.hwnd, win.w);
 
@@ -164,31 +164,28 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 #pragma endregion
 
 #pragma region Draw
-		dx.DrawAble();
-
 		// 3.画面クリア			R	　G		 B	   A
 		FLOAT clearColor[] = { 0.1f, 0.25f, 0.5f, 0.0f }; // 青っぽい色
-
-		dx.ScreenClear(clearColor);
+		dx.DrawAble(clearColor);
 
 		// 4.描画コマンドここから
-		viewPort.Update(dx.commandList);
+		viewPort.Update(dx.cmdList);
 
-		scissorRect.Update(dx.commandList);
+		scissorRect.Update(dx.cmdList);
 
-		gPipeLine.Update(dx.commandList);
+		gPipeLine.Update(dx.cmdList);
 
 		// プリミティブ形状の設定コマンド
-		dx.commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角形リスト
+		dx.cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角形リスト
 
-		vertBuff.Update(dx.commandList);
+		vertBuff.Update(dx.cmdList);
 
-		cBuff.Update(dx.commandList);
+		cBuff.Update(dx.cmdList);
 
-		texture.Update(dx.commandList);
+		texture.Update(dx.cmdList);
 
-		obj.Draw(dx.commandList, _countof(indices));
-		obj2.Draw(dx.commandList, _countof(indices));
+		obj.Draw(dx.cmdList, _countof(indices));
+		obj2.Draw(dx.cmdList, _countof(indices));
 
 		// 4.描画コマンドここまで
 		

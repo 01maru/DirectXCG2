@@ -8,19 +8,18 @@
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 
-class DirectXInit
+class MyDirectX
 {
 public:
 	HRESULT result;
 
 	IDXGIFactory7* dxgiFactory = nullptr;
-
 	ID3D12Device* device = nullptr;
 
-	ID3D12CommandAllocator* commandAllocator = nullptr;
-	ID3D12GraphicsCommandList* commandList = nullptr;
+	ID3D12CommandAllocator* cmdAllocator = nullptr;
+	ID3D12GraphicsCommandList* cmdList = nullptr;
 
-	ID3D12CommandQueue* commandQueue = nullptr;
+	ID3D12CommandQueue* cmdQueue = nullptr;
 
 	IDXGISwapChain4* swapChain = nullptr;
 
@@ -41,9 +40,9 @@ public:
 	ID3D12DescriptorHeap* dsvHeap = nullptr;
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle;
 public:
-	DirectXInit(HWND hwnd);
+	MyDirectX(HWND hwnd);
 
-	void DrawAble();
+	void DrawAble(FLOAT* clearColor = nullptr);
 	void DrawEnd();
 
 	void ScreenClear(FLOAT* clearColor);

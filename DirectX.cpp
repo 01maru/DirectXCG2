@@ -9,16 +9,18 @@ D3D_FEATURE_LEVEL levels[] = {
 	D3D_FEATURE_LEVEL_11_0,
 };
 
-DirectXInit::DirectXInit(HWND hwnd)
+MyDirectX::MyDirectX(HWND hwnd)
 {
+	//	デバッグレイヤー
 #ifdef _DEBUG
-	//デバッグレイヤーをオンに
+	//	オン
 	ID3D12Debug* debugController;
 	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
 		debugController->EnableDebugLayer();
 	}
 #endif
 
+#pragma region GPU列挙
 #pragma region Adapter
 	// DXGIファクトリーの生成
 	result = CreateDXGIFactory(IID_PPV_ARGS(&dxgiFactory));
@@ -66,18 +68,19 @@ DirectXInit::DirectXInit(HWND hwnd)
 		}
 	}
 #pragma endregion Device
+#pragma endregion
 
 #pragma region CmdList
 	// コマンドアロケータを生成
 	result = device->CreateCommandAllocator(
 		D3D12_COMMAND_LIST_TYPE_DIRECT,
-		IID_PPV_ARGS(&commandAllocator));
+		IID_PPV_ARGS(&cmdAllocator));
 	assert(SUCCEEDED(result));
 	// コマンドリストを生成
 	result = device->CreateCommandList(0,
 		D3D12_COMMAND_LIST_TYPE_DIRECT,
-		commandAllocator, nullptr,
-		IID_PPV_ARGS(&commandList));
+		cmdAllocator, nullptr,
+		IID_PPV_ARGS(&cmdList));
 	assert(SUCCEEDED(result));
 #pragma endregion CmdList
 
@@ -85,7 +88,7 @@ DirectXInit::DirectXInit(HWND hwnd)
 	//コマンドキューの設定
 	D3D12_COMMAND_QUEUE_DESC commandQueueDesc{};
 	//コマンドキューを生成
-	result = device->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&commandQueue));
+	result = device->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&cmdQueue));
 	assert(SUCCEEDED(result));
 #pragma endregion CmdQueue
 
@@ -93,17 +96,17 @@ DirectXInit::DirectXInit(HWND hwnd)
 	//	スワップチェーン(ダブルバッファリング用)
 	// スワップチェーンの設定
 	DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
-	swapChainDesc.Width = 1280;
-	swapChainDesc.Height = 720;
-	swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; // 色情報の書式
-	swapChainDesc.SampleDesc.Count = 1; // マルチサンプルしない
-	swapChainDesc.BufferUsage = DXGI_USAGE_BACK_BUFFER; // バックバッファ用
-	swapChainDesc.BufferCount = 2; // バッファ数を2つに設定(表と裏)
-	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD; // フリップ後は破棄
+	swapChainDesc.Width = 1280;										//	画面幅解像度
+	swapChainDesc.Height = 720;										//	画面高さ解像度
+	swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;				// 色情報の書式
+	swapChainDesc.SampleDesc.Count = 1;								// マルチサンプルしない
+	swapChainDesc.BufferUsage = DXGI_USAGE_BACK_BUFFER;				// バックバッファ用
+	swapChainDesc.BufferCount = 2;									// バッファ数を2つに設定(表と裏)
+	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;		// フリップ後は破棄
 	swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 	// スワップチェーンの生成
 	result = dxgiFactory->CreateSwapChainForHwnd(
-		commandQueue, hwnd, &swapChainDesc, nullptr, nullptr,
+		cmdQueue, hwnd, &swapChainDesc, nullptr, nullptr,
 		(IDXGISwapChain1**)&swapChain);
 	assert(SUCCEEDED(result));
 #pragma endregion swapChain
@@ -125,7 +128,7 @@ DirectXInit::DirectXInit(HWND hwnd)
 	for (size_t i = 0; i < backBuffers.size(); i++) {
 		// スワップチェーンからバッファを取得
 		swapChain->GetBuffer((UINT)i, IID_PPV_ARGS(&backBuffers[i]));
-		// デスクリプタヒープのハンドルを取得
+		// デスクリプタヒープのハンドルを取得(先頭アドレス)
 		rtvHandle = rtvHeap->GetCPUDescriptorHandleForHeapStart();
 		// 裏か表かでアドレスがずれる
 		rtvHandle.ptr += i * device->GetDescriptorHandleIncrementSize(rtvHeapDesc.Type);
@@ -179,23 +182,22 @@ DirectXInit::DirectXInit(HWND hwnd)
 		dsvHeap->GetCPUDescriptorHandleForHeapStart());
 #pragma endregion
 
-
 #pragma region fence
 	// フェンスの生成
 	result = device->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
 #pragma endregion fence
 }
 
-void DirectXInit::DrawAble()
+void MyDirectX::DrawAble(FLOAT* clearColor)
 {
 	// 1.リソースバリアで書き込み可能に変更
 #pragma region ReleaseBarrier
 	// バックバッファの番号を取得(2つなので0番か1番)
-	UINT bbIndex = swapChain->GetCurrentBackBufferIndex();
+	UINT bbIndex = swapChain->GetCurrentBackBufferIndex();		//	現在のバックバッファ設定
 	barrierDesc.Transition.pResource = backBuffers[bbIndex]; // バックバッファを指定
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT; // 表示状態から
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態へ
-	commandList->ResourceBarrier(1, &barrierDesc);
+	cmdList->ResourceBarrier(1, &barrierDesc);
 #pragma endregion ReleaseBarrier
 	
 	// 2.描画先の変更
@@ -204,26 +206,37 @@ void DirectXInit::DrawAble()
 	rtvHandle = rtvHeap->GetCPUDescriptorHandleForHeapStart();
 	rtvHandle.ptr += bbIndex * device->GetDescriptorHandleIncrementSize(rtvHeapDesc.Type);
 	dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
-	commandList->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
+	cmdList->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
 #pragma endregion Change
+
+	// 3.画面クリア
+#pragma region ScreenClear
+	if (clearColor == nullptr) {
+		ScreenClear();
+	}
+	else {
+		ScreenClear(clearColor);
+	}
+	cmdList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+#pragma endregion
 }
 
-void DirectXInit::DrawEnd()
+void MyDirectX::DrawEnd()
 {
 	// 5.リソースバリアを戻す
 #pragma region ReleaseBarrier
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;	// 描画状態から
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;			// 表示状態へ
-	commandList->ResourceBarrier(1, &barrierDesc);
+	cmdList->ResourceBarrier(1, &barrierDesc);
 #pragma endregion ReleaseBarrier
 
 	// 命令のクローズ
 #pragma region CmdClose
-	result = commandList->Close();
+	result = cmdList->Close();
 	assert(SUCCEEDED(result));
-	// コマンドリストの実行
-	ID3D12CommandList* commandLists[] = { commandList };
-	commandQueue->ExecuteCommandLists(1, commandLists);
+	// 溜めていたコマンドリストの実行(close必須)
+	ID3D12CommandList* commandLists[] = { cmdList };
+	cmdQueue->ExecuteCommandLists(1, commandLists);
 	// 画面に表示するバッファをフリップ(裏表の入替え)
 	result = swapChain->Present(1, 0);
 	assert(SUCCEEDED(result));
@@ -231,31 +244,30 @@ void DirectXInit::DrawEnd()
 
 #pragma region ChangeScreen
 	// コマンドの実行完了を待つ
-	commandQueue->Signal(fence, ++fenceVal);
-	if (fence->GetCompletedValue() != fenceVal) {
+	cmdQueue->Signal(fence, ++fenceVal);
+	if (fence->GetCompletedValue() != fenceVal)	//	GPUの処理が完了したか判定
+	{
 		HANDLE event = CreateEvent(nullptr, false, false, nullptr);
 		fence->SetEventOnCompletion(fenceVal, event);
 		WaitForSingleObject(event, INFINITE);
 		CloseHandle(event);
 	}
 	// キューをクリア
-	result = commandAllocator->Reset();
+	result = cmdAllocator->Reset();
 	assert(SUCCEEDED(result));
 	// 再びコマンドリストを貯める準備
-	result = commandList->Reset(commandAllocator, nullptr);
+	result = cmdList->Reset(cmdAllocator, nullptr);
 	assert(SUCCEEDED(result));
 #pragma endregion ChangeScreen
 }
 
-void DirectXInit::ScreenClear(FLOAT* clearColor)
+void MyDirectX::ScreenClear(FLOAT* clearColor)
 {
-	commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
-	commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+	cmdList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
 }
 
-void DirectXInit::ScreenClear()
+void MyDirectX::ScreenClear()
 {
 	FLOAT clearColor[] = { 0.1f,0.25f, 0.5f,0.0f };
-	commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
-	commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+	cmdList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
 }
