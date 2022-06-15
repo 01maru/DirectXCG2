@@ -115,7 +115,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 
 	VertBuff vertBuff(sizeVB, vertices, _countof(vertices), sizeIB, indices, _countof(indices), dx.device);
 
-	TextureDeta texture(dx.device, vertBuff.resDesc);
+	Texture texture[2];
+	texture[0].CreateTexture(L"Resource/texture.jpg");
+	texture[1].CreateTexture(L"Resource/reimu.png");
+	TextureDeta textureDeta(dx.device, vertBuff.resDesc, texture);
 
 	//	グラフィックスパイプライン
 	GPipeline gPipeLine(inputLayout, _countof(inputLayout), dx.device);
@@ -161,6 +164,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 		//	定数バッファに転送
 		obj.Update(matView.mat, matProjection);
 		obj2.Update(matView.mat, matProjection);
+
+		if (input.GetTrigger(DIK_SPACE)) {
+			textureDeta.textureNum++;
+
+			if (textureDeta.textureNum >= 2)	textureDeta.textureNum = 0;
+		}
 #pragma endregion
 
 #pragma region Draw
@@ -182,7 +191,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 
 		cBuff.Update(dx.cmdList);
 
-		texture.Update(dx.cmdList);
+		textureDeta.Update(dx.cmdList);
 
 		obj.Draw(dx.cmdList, _countof(indices));
 		obj2.Draw(dx.cmdList, _countof(indices));
