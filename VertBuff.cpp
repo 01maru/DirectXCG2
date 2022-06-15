@@ -2,8 +2,8 @@
 
 VertBuff::VertBuff(UINT sizeVB, Vertex* vertices, UINT vertSize, UINT sizeIB, uint16_t* indices, UINT indicesSize, ID3D12Device* dev)
 {
-	// 頂点バッファの設定
-	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD; // GPUへの転送用
+	//	ヒープの設定
+	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD; // GPUへの転送用(CPUからアクセスできる)
 
 #pragma region VB
 	// リソース設定
@@ -11,10 +11,11 @@ VertBuff::VertBuff(UINT sizeVB, Vertex* vertices, UINT vertSize, UINT sizeIB, ui
 
 	// 頂点バッファの生成
 	ID3D12Resource* vertBuff = nullptr;
+	//	GPU側にメモリ確保
 	result = dev->CreateCommittedResource(
-		&heapProp, // ヒープ設定
+		&heapProp,							// ヒープ設定
 		D3D12_HEAP_FLAG_NONE,
-		&resDesc, // リソース設定
+		&resDesc,							// リソース設定
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(&vertBuff));
@@ -32,7 +33,7 @@ VertBuff::VertBuff(UINT sizeVB, Vertex* vertices, UINT vertSize, UINT sizeIB, ui
 	// 繋がりを解除
 	vertBuff->Unmap(0, nullptr);
 
-	// 頂点バッファビューの作成
+	// 頂点バッファビューの作成(GPUで利用するため)
 	// GPU仮想アドレス
 	vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
 	// 頂点バッファのサイズ
@@ -41,6 +42,7 @@ VertBuff::VertBuff(UINT sizeVB, Vertex* vertices, UINT vertSize, UINT sizeIB, ui
 	vbView.StrideInBytes = sizeof(vertices[0]);
 #pragma endregion
 
+#pragma region IB
 	SetResDesc(sizeIB);
 	ID3D12Resource* indexBuff = nullptr;
 	result = dev->CreateCommittedResource(
@@ -65,6 +67,7 @@ VertBuff::VertBuff(UINT sizeVB, Vertex* vertices, UINT vertSize, UINT sizeIB, ui
 	ibView.BufferLocation = indexBuff->GetGPUVirtualAddress();
 	ibView.Format = DXGI_FORMAT_R16_UINT;
 	ibView.SizeInBytes = sizeIB;
+#pragma endregion
 }
 
 void VertBuff::Update(ID3D12GraphicsCommandList* cmdList)
@@ -82,7 +85,7 @@ void VertBuff::SetResDesc(UINT size)
 	resDesc.Height = 1;
 	resDesc.DepthOrArraySize = 1;
 	resDesc.MipLevels = 1;
-	resDesc.SampleDesc.Count = 1;
+	resDesc.SampleDesc.Count = 1;		//	アンチエイリアシング用のパラメータ
 	resDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 }
 

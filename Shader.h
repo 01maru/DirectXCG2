@@ -1,7 +1,6 @@
 #pragma once
 #include <d3d12.h>
 #include <dxgi1_6.h>
-#include <cassert>
 #include <d3dcompiler.h>
 
 #pragma comment(lib, "d3dcompiler.lib")

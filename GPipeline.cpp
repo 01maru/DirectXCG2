@@ -29,16 +29,15 @@ GPipeline::GPipeline(D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT inputLayoutSize
 
 #pragma region Rasterizer
 	// 設定
-	pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK; // カリングしない
+	pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK; // 背面カリング
 	pipelineDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID; // ポリゴン内塗りつぶし
 	pipelineDesc.RasterizerState.DepthClipEnable = true; // 深度クリッピングを有効に
 #pragma endregion
 
-
 	// ブレンドステート
 	D3D12_RENDER_TARGET_BLEND_DESC& blenddesc = pipelineDesc.BlendState.RenderTarget[0];
 	blenddesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
-
+	
 	Blend(blenddesc);
 
 	// 頂点レイアウトの設定

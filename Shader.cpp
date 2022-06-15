@@ -1,5 +1,6 @@
 #include "Shader.h"
 #include <string>
+#include <cassert>
 
 Shader::Shader()
 {
