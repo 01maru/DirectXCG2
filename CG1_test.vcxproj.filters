@@ -64,6 +64,7 @@
   <ItemGroup>
     <FxCompile Include="BasicVS.hlsl" />
     <FxCompile Include="BasicPS.hlsl" />
+    <FxCompile Include="BasicGS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">

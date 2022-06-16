@@ -19,6 +19,10 @@ GPipeline::GPipeline(D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT inputLayoutSize
 	pipelineDesc.VS.pShaderBytecode = shader.vsBlob->GetBufferPointer();
 	pipelineDesc.VS.BytecodeLength = shader.vsBlob->GetBufferSize();
 #pragma endregion
+#pragma region GS
+	pipelineDesc.GS.pShaderBytecode = shader.gsBlob->GetBufferPointer();
+	pipelineDesc.GS.BytecodeLength = shader.gsBlob->GetBufferSize();
+#pragma endregion
 #pragma region PixcelShader
 	pipelineDesc.PS.pShaderBytecode = shader.psBlob->GetBufferPointer();
 	pipelineDesc.PS.BytecodeLength = shader.psBlob->GetBufferSize();
