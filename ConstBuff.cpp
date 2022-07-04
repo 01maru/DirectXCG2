@@ -1,5 +1,6 @@
 #include "ConstBuff.h"
 #include "Vector3D.h"
+#include <cassert>
 
 ConstBuff::ConstBuff(ID3D12Device* dev, const int winwidth, const int winheight)
 {	
@@ -31,7 +32,8 @@ ConstBuff::ConstBuff(ID3D12Device* dev, const int winwidth, const int winheight)
 
 
 	//	GPU‚Ìƒƒ‚ƒŠ‚Éƒf[ƒ^“]‘—
-	mapMaterial->color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	MyMath::float4 color(1.0f, 1.0f, 1.0f, 1.0f);
+	mapMaterial->color = color;
 }
 
 void ConstBuff::Update(ID3D12GraphicsCommandList* cmdList)

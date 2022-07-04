@@ -1,8 +1,9 @@
 #pragma once
 #include <d3d12.h>
 #include "Matrix.h"
-#include <DirectXMath.h>
-using namespace DirectX;
+#include "MyMath.h"
+//#include <DirectXMath.h>
+//using namespace DirectX;
 
 #pragma comment(lib, "d3d12.lib")
 class ConstBuff
@@ -14,7 +15,7 @@ public:
 
 
 	struct ConstBufferDataMaterial {
-		XMFLOAT4 color;	//	RGBA
+		MyMath::float4 color;	//	RGBA
 	};
 	ID3D12Resource* material = nullptr;
 	ConstBufferDataMaterial* mapMaterial = nullptr;

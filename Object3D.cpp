@@ -1,4 +1,7 @@
 #include "Object3D.h"
+#include <cmath>
+#include "MyMath.h"
+#include <cassert>
 
 Object3D::Object3D(ID3D12Device* dev)
 {
@@ -36,7 +39,7 @@ Object3D::Object3D(ID3D12Device* dev)
 
 #pragma region  WorldMatrix‰Šú’l
 	scale = Vector3D(1.0f, 1.0f, 1.0f);
-	rotAngle = Vector3D(0.0f, 0.0f, XMConvertToRadians(10.0f));
+	rotAngle = Vector3D(0.0f, 0.0f, MyMath::ConvertToRad(10.0f));
 	trans = Vector3D(0.0f, 0.0f, 0.0f);
 #pragma endregion
 
@@ -67,26 +70,6 @@ void Object3D::Update(Matrix matView, Matrix matProjection)
 	constMapTransform->mat = matWorld;
 	constMapTransform->mat *= matView;
 	constMapTransform->mat *= matProjection;
-
-	//constMapTransform->mat.m[0][0] = 1.33736396;
-	//constMapTransform->mat.m[0][1] = 0.00000000;
-	//constMapTransform->mat.m[0][2] = -0.173665538;
-	//constMapTransform->mat.m[0][3] = -0.173648164;
-
-	//constMapTransform->mat.m[1][0] = 0.00000000;
-	//constMapTransform->mat.m[1][1] = 2.41421342;
-	//constMapTransform->mat.m[1][2] = 0.00000000;
-	//constMapTransform->mat.m[1][3] = 0.00000000;
-
-	//constMapTransform->mat.m[2][0] = 0.235813349;
-	//constMapTransform->mat.m[2][1] = 0.00000000;
-	//constMapTransform->mat.m[2][2] = 0.984906256;
-	//constMapTransform->mat.m[2][3] = 0.984807730;
-
-	//constMapTransform->mat.m[3][0] = 0.00000000;
-	//constMapTransform->mat.m[3][1] = 0.00000000;
-	//constMapTransform->mat.m[3][2] = 99.9099884;
-	//constMapTransform->mat.m[3][3] = 100.000000;
 }
 
 void Object3D::SetMatScaling()

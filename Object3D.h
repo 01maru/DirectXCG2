@@ -2,8 +2,8 @@
 #include "Vector3D.h"
 #include "Matrix.h"
 #include <d3d12.h>
-#include <DirectXMath.h>
-using namespace DirectX;
+//#include <DirectXMath.h>
+//using namespace DirectX;
 
 #pragma comment(lib, "d3d12.lib")
 

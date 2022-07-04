@@ -3,6 +3,17 @@
 #include "Matrix.h"
 
 namespace MyMath {
+	struct float4
+	{
+		float x;
+		float y;
+		float z;
+		float w;
+
+		float4();
+		float4(float x, float y, float z, float w);
+	};
+
 const float PI = 3.14159265358979f;
 
 //	視点座標、注視点座標、上方向ベクトル

@@ -88,3 +88,13 @@ void MyMath::MatView::MatUpdate()
 {
 	mat = LookAtLH(eye, target, up);
 }
+
+MyMath::float4::float4() :
+	x(0.0f), y(0.0f), z(0.0f), w(0.0f)
+{
+}
+
+MyMath::float4::float4(float x, float y, float z, float w) :
+	x(x), y(y), z(z), w(w)
+{
+}

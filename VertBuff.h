@@ -1,18 +1,21 @@
 #pragma once
-#include <DirectXMath.h>
-using namespace DirectX;
+//#include <DirectXMath.h>
+//using namespace DirectX;
 #include <d3d12.h>
 #include <dxgi1_6.h>
 #include <cassert>
+#include <stdint.h>
+#include "Vector3D.h"
+#include "Vector2D.h"
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 
 struct Vertex
 {
-	XMFLOAT3 pos;
-	XMFLOAT3 normal;
-	XMFLOAT2 uv;
+	Vector3D pos;
+	Vector3D normal;
+	Vector2D uv;
 };
 
 class VertBuff
