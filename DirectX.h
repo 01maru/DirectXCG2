@@ -44,14 +44,14 @@ private:
 
 private:
 	void DebugLayer();
+
+	void ScreenClear(FLOAT* clearColor);
+	void ScreenClear();
 public:
 	MyDirectX(HWND hwnd);
 
 	void DrawAble(FLOAT* clearColor = nullptr);
 	void DrawEnd();
-
-	void ScreenClear(FLOAT* clearColor);
-	void ScreenClear();
 
 	//	Getter
 	ID3D12Device* Dev() { return device.Get(); }
