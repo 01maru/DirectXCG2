@@ -4,30 +4,33 @@
 #include <cassert>
 #include <vector>
 #include <string>
+#include <wrl.h>
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 
 class MyDirectX
 {
-public:
+private:
 	HRESULT result;
 
-	IDXGIFactory7* dxgiFactory = nullptr;
-	ID3D12Device* device = nullptr;
+	Microsoft::WRL::ComPtr<ID3D12Device> device;
+public:
+
 
 	ID3D12CommandAllocator* cmdAllocator = nullptr;
 	ID3D12GraphicsCommandList* cmdList = nullptr;
 
 	ID3D12CommandQueue* cmdQueue = nullptr;
 
-	IDXGISwapChain4* swapChain = nullptr;
+	Microsoft::WRL::ComPtr<IDXGISwapChain4> swapChain;
+	Microsoft::WRL::ComPtr<IDXGISwapChain1> swapChain1;
 
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
 	ID3D12DescriptorHeap* rtvHeap = nullptr;
 
 	// バックバッファ
-	std::vector<ID3D12Resource*> backBuffers;
+	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> backBuffers;
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 
 	ID3D12Fence* fence = nullptr;
@@ -39,6 +42,9 @@ public:
 
 	ID3D12DescriptorHeap* dsvHeap = nullptr;
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle;
+
+private:
+	void DebugLayer();
 public:
 	MyDirectX(HWND hwnd);
 
@@ -47,5 +53,8 @@ public:
 
 	void ScreenClear(FLOAT* clearColor);
 	void ScreenClear();
+
+	//	Getter
+	ID3D12Device* Dev() { return device.Get(); }
 };
 

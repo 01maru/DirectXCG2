@@ -11,10 +11,6 @@
 #include "ConstBuff.h"
 #include "TextureData.h"
 
-//#include <DirectXMath.h>
-//using namespace DirectX;
-
-
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 {
 #pragma region Initialize
@@ -113,15 +109,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 		{"TEXCOORD",0,DXGI_FORMAT_R32G32_FLOAT,0,D3D12_APPEND_ALIGNED_ELEMENT,D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,0},				//	uv座標
 	};
 
-	VertBuff vertBuff(sizeVB, vertices, _countof(vertices), sizeIB, indices, _countof(indices), dx.device);
+	VertBuff vertBuff(sizeVB, vertices, _countof(vertices), sizeIB, indices, _countof(indices), dx.Dev());
 
 	Texture texture[2];
 	texture[0].CreateTexture(L"Resource/texture.jpg");
 	texture[1].CreateTexture(L"Resource/reimu.png");
-	TextureDeta textureDeta(dx.device, vertBuff.resDesc, texture);
+	TextureDeta textureDeta(dx.Dev(), vertBuff.resDesc, texture);
 
 	//	グラフィックスパイプライン
-	GPipeline gPipeLine(inputLayout, _countof(inputLayout), dx.device);
+	GPipeline gPipeLine(inputLayout, _countof(inputLayout), dx.Dev());
 
 	//	ビューポート
 	ViewPort viewPort(window_width, window_height, 0, 0);
@@ -129,14 +125,14 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	ScissorRect scissorRect(0, window_width, 0, window_height);
 
 	//	定数バッファ
-	ConstBuff cBuff(dx.device, window_width, window_height);
+	ConstBuff cBuff(dx.Dev(), window_width, window_height);
 
 	//	objの動きに用
 	Vector3D pos;
 	float rot = 0.0f;
 
-	Object3D obj(dx.device);
-	Object3D obj2(dx.device);
+	Object3D obj(dx.Dev());
+	Object3D obj2(dx.Dev());
 
 	MyMath::MatView matView(Vector3D(0.0f, 0.0f, -100.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 1.0f, 0.0f));
 	Matrix matProjection = MyMath::PerspectiveFovLH(window_width, window_height, MyMath::ConvertToRad(45.0f), 0.1f, 1000.0f);

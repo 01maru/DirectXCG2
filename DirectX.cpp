@@ -11,24 +11,18 @@ D3D_FEATURE_LEVEL levels[] = {
 
 MyDirectX::MyDirectX(HWND hwnd)
 {
-	//	デバッグレイヤー
-#ifdef _DEBUG
-	//	オン
-	ID3D12Debug* debugController;
-	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
-		debugController->EnableDebugLayer();
-	}
-#endif
+	DebugLayer();
 
 #pragma region GPU列挙
 #pragma region Adapter
+	Microsoft::WRL::ComPtr<IDXGIFactory7> dxgiFactory;
 	// DXGIファクトリーの生成
 	result = CreateDXGIFactory(IID_PPV_ARGS(&dxgiFactory));
 	assert(SUCCEEDED(result));
 	// アダプターの列挙用
-	std::vector<IDXGIAdapter4*> adapters;
+	std::vector<Microsoft::WRL::ComPtr<IDXGIAdapter4>> adapters;
 	// ここに特定の名前を持つアダプターオブジェクトが入る
-	IDXGIAdapter4* tmpAdapter = nullptr;
+	Microsoft::WRL::ComPtr<IDXGIAdapter4> tmpAdapter;
 	// パフォーマンスが高いものから順に、全てのアダプターを列挙する
 	for (UINT i = 0;
 		dxgiFactory->EnumAdapterByGpuPreference(i,
@@ -48,7 +42,7 @@ MyDirectX::MyDirectX(HWND hwnd)
 		// ソフトウェアデバイスを回避
 		if (!(adapterDesc.Flags & DXGI_ADAPTER_FLAG3_SOFTWARE)) {
 			// デバイスを採用してループを抜ける
-			tmpAdapter = adapters[i];
+			tmpAdapter = adapters[i].Get();
 			break;
 		}
 	}
@@ -59,7 +53,7 @@ MyDirectX::MyDirectX(HWND hwnd)
 	D3D_FEATURE_LEVEL featureLevel;
 	for (size_t i = 0; i < _countof(levels); i++) {
 		// 採用したアダプターでデバイスを生成
-		result = D3D12CreateDevice(tmpAdapter, levels[i],
+		result = D3D12CreateDevice(tmpAdapter.Get(), levels[i],
 			IID_PPV_ARGS(&device));
 		if (result == S_OK) {
 			// デバイスを生成できた時点でループを抜ける
@@ -107,7 +101,9 @@ MyDirectX::MyDirectX(HWND hwnd)
 	// スワップチェーンの生成
 	result = dxgiFactory->CreateSwapChainForHwnd(
 		cmdQueue, hwnd, &swapChainDesc, nullptr, nullptr,
-		(IDXGISwapChain1**)&swapChain);
+		&swapChain1);
+
+	swapChain1.As(&swapChain);		//	1→4に変換
 	assert(SUCCEEDED(result));
 #pragma endregion swapChain
 
@@ -138,7 +134,7 @@ MyDirectX::MyDirectX(HWND hwnd)
 		rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 		rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
 		// レンダーターゲットビューの生成
-		device->CreateRenderTargetView(backBuffers[i], &rtvDesc, rtvHandle);
+		device->CreateRenderTargetView(backBuffers[i].Get(), &rtvDesc, rtvHandle);
 	}
 #pragma endregion RTV
 
@@ -194,7 +190,7 @@ void MyDirectX::DrawAble(FLOAT* clearColor)
 #pragma region ReleaseBarrier
 	// バックバッファの番号を取得(2つなので0番か1番)
 	UINT bbIndex = swapChain->GetCurrentBackBufferIndex();		//	現在のバックバッファ設定
-	barrierDesc.Transition.pResource = backBuffers[bbIndex]; // バックバッファを指定
+	barrierDesc.Transition.pResource = backBuffers[bbIndex].Get(); // バックバッファを指定
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT; // 表示状態から
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態へ
 	cmdList->ResourceBarrier(1, &barrierDesc);
@@ -219,6 +215,17 @@ void MyDirectX::DrawAble(FLOAT* clearColor)
 	}
 	cmdList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 #pragma endregion
+}
+
+void MyDirectX::DebugLayer()
+{
+#ifdef _DEBUG
+	//	オン
+	ID3D12Debug* debugController;
+	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
+		debugController->EnableDebugLayer();
+	}
+#endif
 }
 
 void MyDirectX::DrawEnd()
