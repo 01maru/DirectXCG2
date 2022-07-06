@@ -2,6 +2,7 @@
 #include <d3d12.h>
 #include <dxgi1_6.h>
 #include <d3dcompiler.h>
+#include <wrl.h>
 
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "d3d12.lib")
@@ -9,13 +10,27 @@
 
 class Shader
 {
-public:
+private:
 	HRESULT result;
 
-	ID3DBlob* vsBlob = nullptr; // 頂点シェーダオブジェクト
-	ID3DBlob* psBlob = nullptr; // ピクセルシェーダオブジェクト
-	ID3DBlob* errorBlob = nullptr; // エラーオブジェクト
-public:
-	Shader();
+	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
+
+	ComPtr<ID3DBlob> vsBlob;		// 頂点シェーダオブジェクト
+	ComPtr<ID3DBlob> hsBlob;		// ハルシェーダオブジェクト
+	ComPtr<ID3DBlob> dsBlob;		// ドメインシェーダオブジェクト
+	ComPtr<ID3DBlob> gsBlob;		// ジオメトリシェーダオブジェクト
+	ComPtr<ID3DBlob> psBlob;		// ピクセルシェーダオブジェクト
+	ComPtr<ID3DBlob> errorBlob;		// エラーオブジェクト
+
+private:
 	void Error();
+public:
+	Shader(LPCWSTR VSFileName, LPCWSTR PSFileName, LPCWSTR GSFileName = nullptr, LPCWSTR DSFileName = nullptr, LPCWSTR HSFileName = nullptr);
+
+	//	Getter
+	ID3DBlob* VSBlob() { return vsBlob.Get(); }
+	ID3DBlob* HSBlob() { return hsBlob.Get(); }
+	ID3DBlob* DSBlob() { return dsBlob.Get(); }
+	ID3DBlob* GSBlob() { return gsBlob.Get(); }
+	ID3DBlob* PSBlob() { return psBlob.Get(); }
 };

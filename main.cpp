@@ -10,16 +10,17 @@
 #include "VertBuff.h"
 #include "ConstBuff.h"
 #include "TextureData.h"
+#include "Shader.h"
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 {
 #pragma region Initialize
 	Window win;
-
 	MyDirectX dx(win.hwnd);
 
 	Input input(win.hwnd, win.w);
 
+	Shader shader(L"BasicVS.hlsl", L"BasicPS.hlsl");
 	//	描画初期化
 #pragma region InputAssembler
 	// 頂点データ
@@ -117,7 +118,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	TextureDeta textureDeta(dx.Dev(), vertBuff.resDesc, texture);
 
 	//	グラフィックスパイプライン
-	GPipeline gPipeLine(inputLayout, _countof(inputLayout), dx.Dev());
+	GPipeline gPipeLine(inputLayout, _countof(inputLayout), dx.Dev(), shader);
 
 	//	ビューポート
 	ViewPort viewPort(window_width, window_height, 0, 0);

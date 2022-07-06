@@ -1,6 +1,6 @@
 #include "GPipeline.h"
 
-GPipeline::GPipeline(D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT inputLayoutSize, ID3D12Device* dev)
+GPipeline::GPipeline(D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT inputLayoutSize, ID3D12Device* dev, Shader shader)
 {
 	//	テクスチャーサンプラーの設定
 	D3D12_STATIC_SAMPLER_DESC samplerDesc{};
@@ -16,12 +16,12 @@ GPipeline::GPipeline(D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT inputLayoutSize
 
 	// シェーダーの設定
 #pragma region VertexShader
-	pipelineDesc.VS.pShaderBytecode = shader.vsBlob->GetBufferPointer();
-	pipelineDesc.VS.BytecodeLength = shader.vsBlob->GetBufferSize();
+	pipelineDesc.VS.pShaderBytecode = shader.VSBlob()->GetBufferPointer();
+	pipelineDesc.VS.BytecodeLength = shader.VSBlob()->GetBufferSize();
 #pragma endregion
 #pragma region PixcelShader
-	pipelineDesc.PS.pShaderBytecode = shader.psBlob->GetBufferPointer();
-	pipelineDesc.PS.BytecodeLength = shader.psBlob->GetBufferSize();
+	pipelineDesc.PS.pShaderBytecode = shader.PSBlob()->GetBufferPointer();
+	pipelineDesc.PS.BytecodeLength = shader.PSBlob()->GetBufferSize();
 #pragma endregion
 
 	// サンプルマスクの設定
@@ -82,6 +82,7 @@ GPipeline::GPipeline(D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT inputLayoutSize
 #pragma region ルートシグネチャ
 	// ルートシグネチャの設定
 	D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{};
+	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob;
 	rootSignatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 	rootSignatureDesc.pParameters = rootParams;		//	先頭アドレス
 	rootSignatureDesc.NumParameters = _countof(rootParams);			//	ルートパラメータ数
@@ -90,7 +91,7 @@ GPipeline::GPipeline(D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT inputLayoutSize
 	// ルートシグネチャのシリアライズ
 	ID3DBlob* rootSigBlob = nullptr;
 	HRESULT result = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1_0,
-		&rootSigBlob, &shader.errorBlob);
+		&rootSigBlob, &errorBlob);
 	assert(SUCCEEDED(result));
 	result = dev->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(),
 		IID_PPV_ARGS(&rootSignature));
