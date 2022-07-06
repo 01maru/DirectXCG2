@@ -24,9 +24,13 @@ public:
 	ID3D12RootSignature* rootSignature;
 	ID3D12PipelineState* state = nullptr;
 	
+private:
+	void SetShader(Shader shader);
 public:
 	GPipeline(D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT inputLayoutSize, ID3D12Device* dev, Shader shader);
 	void Update(ID3D12GraphicsCommandList* cmdList);
 	void Blend(D3D12_RENDER_TARGET_BLEND_DESC& blenddesc, const int mord = NONE_BLEND);
+
+	void SetBlend(ID3D12Device* dev, int mord);
 };
 

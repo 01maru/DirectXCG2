@@ -3,6 +3,29 @@
 
 VertBuff::VertBuff(ID3D12Device* dev, UINT sizeVB, Vertex* vertices, UINT vertSize, UINT sizeIB, uint16_t* indices, UINT indicesSize)
 {
+#pragma region  lighting
+	//for (int i = 0; i < indicesSize / 3; i++)
+	//{
+	//	unsigned short index0 = indices[i * 3];
+	//	unsigned short index1 = indices[i * 3 + 1];
+	//	unsigned short index2 = indices[i * 3 + 2];
+
+	//	Vector3D p0 = XMLoadFloat3(&vertices[index0].pos);
+	//	Vector3D p1 = XMLoadFloat3(&vertices[index1].pos);
+	//	Vector3D p2 = XMLoadFloat3(&vertices[index2].pos);
+
+	//	XMVECTOR v1 = XMVectorSubtract(p1, p0);
+	//	XMVECTOR v2 = XMVectorSubtract(p2, p0);
+	//	XMVECTOR normal = XMVectorSubtract(v1, v2);
+
+	//	normal = XMVector3Normalize(normal);
+
+	//	XMStoreFloat3(&vertices[index0].normal, normal);
+	//	XMStoreFloat3(&vertices[index1].normal, normal);
+	//	XMStoreFloat3(&vertices[index2].normal, normal);
+	//}
+#pragma endregion
+
 	//	ヒープの設定
 	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD; // GPUへの転送用(CPUからアクセスできる)
 

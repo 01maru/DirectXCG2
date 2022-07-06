@@ -15,14 +15,7 @@ GPipeline::GPipeline(D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT inputLayoutSize
 	samplerDesc.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
 	// シェーダーの設定
-#pragma region VertexShader
-	pipelineDesc.VS.pShaderBytecode = shader.VSBlob()->GetBufferPointer();
-	pipelineDesc.VS.BytecodeLength = shader.VSBlob()->GetBufferSize();
-#pragma endregion
-#pragma region PixcelShader
-	pipelineDesc.PS.pShaderBytecode = shader.PSBlob()->GetBufferPointer();
-	pipelineDesc.PS.BytecodeLength = shader.PSBlob()->GetBufferSize();
-#pragma endregion
+	SetShader(shader);
 
 	// サンプルマスクの設定
 	pipelineDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK; // 標準設定
@@ -119,6 +112,7 @@ void GPipeline::Update(ID3D12GraphicsCommandList* cmdList)
 	// パイプラインステートとルートシグネチャの設定コマンド
 	cmdList->SetPipelineState(state);
 	cmdList->SetGraphicsRootSignature(rootSignature);
+	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角形リスト
 }
 
 void GPipeline::Blend(D3D12_RENDER_TARGET_BLEND_DESC& blenddesc, const int mord)
@@ -156,4 +150,43 @@ void GPipeline::Blend(D3D12_RENDER_TARGET_BLEND_DESC& blenddesc, const int mord)
 	default:
 		break;
 	}
+}
+
+void GPipeline::SetBlend(ID3D12Device* dev, int mord)
+{
+	D3D12_RENDER_TARGET_BLEND_DESC& blenddesc = pipelineDesc.BlendState.RenderTarget[0];
+	blenddesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+	Blend(blenddesc, mord);
+	HRESULT result = dev->CreateGraphicsPipelineState(&pipelineDesc, IID_PPV_ARGS(&state));
+	assert(SUCCEEDED(result));
+}
+
+void GPipeline::SetShader(Shader shader)
+{
+#pragma region VertexShader
+	pipelineDesc.VS.pShaderBytecode = shader.VSBlob()->GetBufferPointer();
+	pipelineDesc.VS.BytecodeLength = shader.VSBlob()->GetBufferSize();
+#pragma endregion
+#pragma region HShader
+	if (shader.HSBlob() != nullptr) {
+		pipelineDesc.HS.pShaderBytecode = shader.HSBlob()->GetBufferPointer();
+		pipelineDesc.HS.BytecodeLength = shader.HSBlob()->GetBufferSize();
+	}
+#pragma endregion
+#pragma region DShader
+	if (shader.DSBlob() != nullptr) {
+		pipelineDesc.DS.pShaderBytecode = shader.DSBlob()->GetBufferPointer();
+		pipelineDesc.DS.BytecodeLength = shader.DSBlob()->GetBufferSize();
+	}
+#pragma endregion
+#pragma region GShader
+	if (shader.GSBlob() != nullptr) {
+		pipelineDesc.GS.pShaderBytecode = shader.GSBlob()->GetBufferPointer();
+		pipelineDesc.GS.BytecodeLength = shader.GSBlob()->GetBufferSize();
+	}
+#pragma endregion
+#pragma region PixcelShader
+	pipelineDesc.PS.pShaderBytecode = shader.PSBlob()->GetBufferPointer();
+	pipelineDesc.PS.BytecodeLength = shader.PSBlob()->GetBufferSize();
+#pragma endregion
 }
