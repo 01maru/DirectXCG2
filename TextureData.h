@@ -17,7 +17,7 @@ public:
 
 public:
 	void Initialize(ID3D12Device* dev, D3D12_RESOURCE_DESC& tectureResourceDesc, D3D12_HEAP_PROPERTIES textureHeapProp);
-	void SetSRV(ID3D12Device* dev, D3D12_RESOURCE_DESC resDesc, D3D12_CPU_DESCRIPTOR_HANDLE& srvHandle, int index = NULL);
+	void SetSRV(ID3D12Device* dev, D3D12_RESOURCE_DESC resDesc, D3D12_CPU_DESCRIPTOR_HANDLE& srvHandle, size_t index = NULL);
 	void LoadTexture(const wchar_t* textureName);
 };
 
@@ -33,6 +33,7 @@ public:
 	
 public:
 	TextureDeta(ID3D12Device* dev, D3D12_RESOURCE_DESC resDesc, Texture* texture);
+	~TextureDeta();
 	void Update(ID3D12GraphicsCommandList* cmdList);
 };
 

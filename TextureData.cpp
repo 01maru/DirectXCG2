@@ -34,11 +34,11 @@ void Texture::Initialize(ID3D12Device* dev, D3D12_RESOURCE_DESC& tectureResource
 	}
 }
 
-void Texture::SetSRV(ID3D12Device* dev, D3D12_RESOURCE_DESC resDesc, D3D12_CPU_DESCRIPTOR_HANDLE& srvHandle, int index)
+void Texture::SetSRV(ID3D12Device* dev, D3D12_RESOURCE_DESC resDesc, D3D12_CPU_DESCRIPTOR_HANDLE& srvHandle, size_t index)
 {
-	if (index != NULL || index != 0) {
+	if (index != NULL) {
 		UINT incrementSize = dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-		srvHandle.ptr += incrementSize;
+		srvHandle.ptr += incrementSize * index;
 	}
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
@@ -114,4 +114,9 @@ void TextureDeta::Update(ID3D12GraphicsCommandList* cmdList)
 		srvGpuHandle.ptr += incrementSize;
 	}
 	cmdList->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+}
+
+TextureDeta::~TextureDeta()
+{
+	srvHeap->Release();
 }
