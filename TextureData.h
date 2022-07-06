@@ -14,7 +14,7 @@ public:
 public:
 	void Initialize(ID3D12Device* dev, D3D12_RESOURCE_DESC& tectureResourceDesc, D3D12_HEAP_PROPERTIES textureHeapProp);
 	void SetSRV(ID3D12Device* dev, D3D12_RESOURCE_DESC resDesc, D3D12_CPU_DESCRIPTOR_HANDLE& srvHandle, int index = NULL);
-	void CreateTexture(const wchar_t* textureName);
+	void LoadTexture(const wchar_t* textureName);
 };
 
 

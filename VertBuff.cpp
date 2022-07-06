@@ -1,6 +1,7 @@
 #include "VertBuff.h"
+#include <wrl.h>
 
-VertBuff::VertBuff(UINT sizeVB, Vertex* vertices, UINT vertSize, UINT sizeIB, uint16_t* indices, UINT indicesSize, ID3D12Device* dev)
+VertBuff::VertBuff(ID3D12Device* dev, UINT sizeVB, Vertex* vertices, UINT vertSize, UINT sizeIB, uint16_t* indices, UINT indicesSize)
 {
 	//	ヒープの設定
 	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD; // GPUへの転送用(CPUからアクセスできる)
@@ -32,7 +33,7 @@ VertBuff::VertBuff(UINT sizeVB, Vertex* vertices, UINT vertSize, UINT sizeIB, ui
 	}
 	// 繋がりを解除
 	vertBuff->Unmap(0, nullptr);
-
+	
 	// 頂点バッファビューの作成(GPUで利用するため)
 	// GPU仮想アドレス
 	vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
@@ -43,31 +44,37 @@ VertBuff::VertBuff(UINT sizeVB, Vertex* vertices, UINT vertSize, UINT sizeIB, ui
 #pragma endregion
 
 #pragma region IB
-	SetResDesc(sizeIB);
-	ID3D12Resource* indexBuff = nullptr;
-	result = dev->CreateCommittedResource(
-		&heapProp, // ヒープ設定
-		D3D12_HEAP_FLAG_NONE,
-		&resDesc, // リソース設定
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&indexBuff));
-	assert(SUCCEEDED(result));
-	//	インデックスバッファマッピング
-	uint16_t* indexMap = nullptr;
-	result = indexBuff->Map(0, nullptr, (void**)&indexMap);
-	assert(SUCCEEDED(result));
-	// 全頂点に対して
-	for (int i = 0; i < indicesSize; i++) {
-		indexMap[i] = indices[i]; // 座標をコピー
+	if (indices != nullptr) {
+		SetResDesc(sizeIB);
+		ID3D12Resource* indexBuff = nullptr;
+		result = dev->CreateCommittedResource(
+			&heapProp, // ヒープ設定
+			D3D12_HEAP_FLAG_NONE,
+			&resDesc, // リソース設定
+			D3D12_RESOURCE_STATE_GENERIC_READ,
+			nullptr,
+			IID_PPV_ARGS(&indexBuff));
+		assert(SUCCEEDED(result));
+		//	インデックスバッファマッピング
+		uint16_t* indexMap = nullptr;
+		result = indexBuff->Map(0, nullptr, (void**)&indexMap);
+		assert(SUCCEEDED(result));
+		// 全頂点に対して
+		for (int i = 0; i < indicesSize; i++) {
+			indexMap[i] = indices[i]; // 座標をコピー
+		}
+		// 繋がりを解除
+		indexBuff->Unmap(0, nullptr);
+		//	インデックスバッファビュー作成
+		ibView.BufferLocation = indexBuff->GetGPUVirtualAddress();
+		ibView.Format = DXGI_FORMAT_R16_UINT;
+		ibView.SizeInBytes = sizeIB;
 	}
-	// 繋がりを解除
-	indexBuff->Unmap(0, nullptr);
-	//	インデックスバッファビュー作成
-	ibView.BufferLocation = indexBuff->GetGPUVirtualAddress();
-	ibView.Format = DXGI_FORMAT_R16_UINT;
-	ibView.SizeInBytes = sizeIB;
 #pragma endregion
+}
+
+VertBuff::~VertBuff()
+{
 }
 
 void VertBuff::Update(ID3D12GraphicsCommandList* cmdList)

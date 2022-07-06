@@ -17,16 +17,20 @@ struct Vertex
 
 class VertBuff
 {
-public:
+private:
 	HRESULT result;
+
+public:
 	D3D12_VERTEX_BUFFER_VIEW vbView{};
 	D3D12_INDEX_BUFFER_VIEW ibView{};
 	D3D12_RESOURCE_DESC resDesc{};
 	D3D12_HEAP_PROPERTIES heapProp{}; // ÉqÅ[Évê›íË
-public:
-	VertBuff(UINT sizeVB, Vertex* vertices, UINT vertSize, UINT sizeIB, uint16_t* indices, UINT indicesSize, ID3D12Device* dev);
-	void Update(ID3D12GraphicsCommandList* cmdList);
 private:
 	void SetResDesc(UINT size);
 	void BuffTransferGPU(ID3D12Resource* buff, ID3D12Device* dev);
+public:
+	VertBuff(ID3D12Device* dev, UINT sizeVB, Vertex* vertices, UINT vertSize, UINT sizeIB = NULL, uint16_t* indices = nullptr, UINT indicesSize = NULL);
+	~VertBuff();
+	void Update(ID3D12GraphicsCommandList* cmdList);
 };
+

@@ -50,7 +50,7 @@ void Texture::SetSRV(ID3D12Device* dev, D3D12_RESOURCE_DESC resDesc, D3D12_CPU_D
 	dev->CreateShaderResourceView(texBuff, &srvDesc, srvHandle);
 }
 
-void Texture::CreateTexture(const wchar_t* textureName)
+void Texture::LoadTexture(const wchar_t* textureName)
 {
 	HRESULT result = LoadFromWICFile(
 		textureName,

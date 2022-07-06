@@ -110,11 +110,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 		{"TEXCOORD",0,DXGI_FORMAT_R32G32_FLOAT,0,D3D12_APPEND_ALIGNED_ELEMENT,D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,0},				//	uv座標
 	};
 
-	VertBuff vertBuff(sizeVB, vertices, _countof(vertices), sizeIB, indices, _countof(indices), dx.Dev());
+	VertBuff vertBuff(dx.Dev(), sizeVB, vertices, _countof(vertices), sizeIB, indices, _countof(indices));
 
 	Texture texture[2];
-	texture[0].CreateTexture(L"Resource/texture.jpg");
-	texture[1].CreateTexture(L"Resource/reimu.png");
+	texture[0].LoadTexture(L"Resource/texture.jpg");
+	texture[1].LoadTexture(L"Resource/reimu.png");
 	TextureDeta textureDeta(dx.Dev(), vertBuff.resDesc, texture);
 
 	//	グラフィックスパイプライン
