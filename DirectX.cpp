@@ -9,6 +9,17 @@ D3D_FEATURE_LEVEL levels[] = {
 	D3D_FEATURE_LEVEL_11_0,
 };
 
+void MyDirectX::DebugLayer()
+{
+#ifdef _DEBUG
+	//	オン
+	ID3D12Debug* debugController;
+	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
+		debugController->EnableDebugLayer();
+	}
+#endif
+}
+
 MyDirectX::MyDirectX(HWND hwnd)
 {
 	DebugLayer();
@@ -86,6 +97,7 @@ MyDirectX::MyDirectX(HWND hwnd)
 	assert(SUCCEEDED(result));
 #pragma endregion CmdQueue
 
+#pragma region DoubleBuffering
 #pragma region swapChain
 	Microsoft::WRL::ComPtr<IDXGISwapChain1> swapChain1;
 	// 設定
@@ -137,6 +149,7 @@ MyDirectX::MyDirectX(HWND hwnd)
 		device->CreateRenderTargetView(backBuffers[i].Get(), &rtvDesc, rtvHandle);
 	}
 #pragma endregion RTV
+#pragma endregion
 
 #pragma region 深度バッファ
 	D3D12_RESOURCE_DESC depthResourceDesc{};
@@ -217,17 +230,6 @@ void MyDirectX::DrawAble(FLOAT* clearColor)
 #pragma endregion
 }
 
-void MyDirectX::DebugLayer()
-{
-#ifdef _DEBUG
-	//	オン
-	ID3D12Debug* debugController;
-	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
-		debugController->EnableDebugLayer();
-	}
-#endif
-}
-
 void MyDirectX::DrawEnd()
 {
 	// 5.リソースバリアを戻す
@@ -272,7 +274,6 @@ void MyDirectX::ScreenClear(FLOAT* clearColor)
 {
 	cmdList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
 }
-
 void MyDirectX::ScreenClear()
 {
 	FLOAT clearColor[] = { 0.1f,0.25f, 0.5f,0.0f };

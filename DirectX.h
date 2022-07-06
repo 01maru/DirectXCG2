@@ -23,7 +23,7 @@ private:
 
 	ComPtr<ID3D12CommandQueue> cmdQueue;
 
-	Microsoft::WRL::ComPtr<IDXGISwapChain4> swapChain;
+	ComPtr<IDXGISwapChain4> swapChain;
 
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
 	ComPtr<ID3D12DescriptorHeap> rtvHeap;
@@ -34,13 +34,12 @@ private:
 
 	ComPtr<ID3D12Fence> fence;
 	UINT64 fenceVal = 0;
-public:
 
 	D3D12_RESOURCE_BARRIER barrierDesc{};
 
 	FLOAT clearColor[4] = {};
 
-	ID3D12DescriptorHeap* dsvHeap = nullptr;
+	ComPtr<ID3D12DescriptorHeap> dsvHeap;
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle;
 
 private:
