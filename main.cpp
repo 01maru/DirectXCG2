@@ -115,7 +115,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	Texture texture[2];
 	texture[0].LoadTexture(L"Resource/texture.jpg");
 	texture[1].LoadTexture(L"Resource/reimu.png");
-	TextureDeta textureDeta(dx.Dev(), vertBuff.resDesc, texture);
+	TextureDeta textureDeta(dx.Dev(), vertBuff.ResDesc(), texture);
 
 	//	グラフィックスパイプライン
 	GPipeline gPipeLine(inputLayout, _countof(inputLayout), dx.Dev(), shader);

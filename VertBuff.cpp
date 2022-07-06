@@ -45,6 +45,8 @@ VertBuff::VertBuff(ID3D12Device* dev, UINT sizeVB, Vertex* vertices, UINT vertSi
 
 #pragma region IB
 	if (indices != nullptr) {
+		ibExist = true;
+
 		SetResDesc(sizeIB);
 		ID3D12Resource* indexBuff = nullptr;
 		result = dev->CreateCommittedResource(
@@ -82,7 +84,9 @@ void VertBuff::Update(ID3D12GraphicsCommandList* cmdList)
 	// 頂点バッファビューの設定コマンド
 	cmdList->IASetVertexBuffers(0, 1, &vbView);
 	//	インデックスバッファビュー設定コマンド
-	cmdList->IASetIndexBuffer(&ibView);
+	if (ibExist) {
+		cmdList->IASetIndexBuffer(&ibView);
+	}
 }
 
 void VertBuff::SetResDesc(UINT size)
