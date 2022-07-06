@@ -1,9 +1,6 @@
 #pragma once
 #include <d3d12.h>
-#include "Matrix.h"
 #include "MyMath.h"
-//#include <DirectXMath.h>
-//using namespace DirectX;
 
 #pragma comment(lib, "d3d12.lib")
 class ConstBuff

@@ -1,6 +1,5 @@
 #pragma once
-#include "Vector3D.h"
-#include "Matrix.h"
+#include "MyMath.h"
 #include <d3d12.h>
 
 #pragma comment(lib, "d3d12.lib")
