@@ -21,8 +21,6 @@ class GPipeline
 {
 private:
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
-
-public:
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc{};
 	ComPtr<ID3D12RootSignature> rootSignature;
 	ComPtr<ID3D12PipelineState> state;
