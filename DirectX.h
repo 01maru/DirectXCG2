@@ -14,9 +14,11 @@ class MyDirectX
 private:
 	HRESULT result;
 
-	Microsoft::WRL::ComPtr<ID3D12Device> device;
+	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
-	Microsoft::WRL::ComPtr<ID3D12CommandQueue> cmdQueue;
+	ComPtr<ID3D12Device> device;
+
+	ComPtr<ID3D12CommandQueue> cmdQueue;
 public:
 
 
