@@ -251,7 +251,7 @@ void MyDirectX::DrawEnd()
 
 #pragma region ChangeScreen
 	// コマンドの実行完了を待つ
-	cmdQueue->Signal(fence, ++fenceVal);
+	cmdQueue->Signal(fence.Get(), ++fenceVal);
 	if (fence->GetCompletedValue() != fenceVal)	//	GPUの処理が完了したか判定
 	{
 		HANDLE event = CreateEvent(nullptr, false, false, nullptr);

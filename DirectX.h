@@ -27,14 +27,14 @@ private:
 
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
 	ComPtr<ID3D12DescriptorHeap> rtvHeap;
-public:
 
 	// バックバッファ
-	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> backBuffers;
+	std::vector<ComPtr<ID3D12Resource>> backBuffers;
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
 
-	ID3D12Fence* fence = nullptr;
+	ComPtr<ID3D12Fence> fence;
 	UINT64 fenceVal = 0;
+public:
 
 	D3D12_RESOURCE_BARRIER barrierDesc{};
 
