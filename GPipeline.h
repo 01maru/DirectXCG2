@@ -24,8 +24,8 @@ private:
 
 public:
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc{};
-	ID3D12RootSignature* rootSignature;
-	ID3D12PipelineState* state = nullptr;
+	ComPtr<ID3D12RootSignature> rootSignature;
+	ComPtr<ID3D12PipelineState> state;
 	
 private:
 	void SetShader(Shader shader);

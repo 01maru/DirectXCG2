@@ -71,7 +71,6 @@ GPipeline::GPipeline(D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT inputLayoutSize
 	rootParams[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 #pragma endregion
 
-
 #pragma region ルートシグネチャ
 	// ルートシグネチャの設定
 	D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{};
@@ -90,7 +89,7 @@ GPipeline::GPipeline(D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT inputLayoutSize
 		IID_PPV_ARGS(&rootSignature));
 	assert(SUCCEEDED(result));
 	// パイプラインにルートシグネチャをセット
-	pipelineDesc.pRootSignature = rootSignature;
+	pipelineDesc.pRootSignature = rootSignature.Get();
 #pragma endregion
 
 #pragma region  OutputMerger
@@ -109,8 +108,8 @@ GPipeline::GPipeline(D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT inputLayoutSize
 void GPipeline::Update(ID3D12GraphicsCommandList* cmdList)
 {
 	// パイプラインステートとルートシグネチャの設定コマンド
-	cmdList->SetPipelineState(state);
-	cmdList->SetGraphicsRootSignature(rootSignature);
+	cmdList->SetPipelineState(state.Get());
+	cmdList->SetGraphicsRootSignature(rootSignature.Get());
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角形リスト
 }
 
