@@ -24,11 +24,10 @@ private:
 	ComPtr<ID3D12CommandQueue> cmdQueue;
 
 	Microsoft::WRL::ComPtr<IDXGISwapChain4> swapChain;
-public:
-
 
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
-	ID3D12DescriptorHeap* rtvHeap = nullptr;
+	ComPtr<ID3D12DescriptorHeap> rtvHeap;
+public:
 
 	// バックバッファ
 	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> backBuffers;
