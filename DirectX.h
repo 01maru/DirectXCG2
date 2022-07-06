@@ -18,14 +18,14 @@ private:
 
 	ComPtr<ID3D12Device> device;
 
+	ComPtr<ID3D12CommandAllocator> cmdAllocator;
+	ComPtr<ID3D12GraphicsCommandList> cmdList;
+
 	ComPtr<ID3D12CommandQueue> cmdQueue;
-public:
-
-
-	ID3D12CommandAllocator* cmdAllocator = nullptr;
-	ID3D12GraphicsCommandList* cmdList = nullptr;
 
 	Microsoft::WRL::ComPtr<IDXGISwapChain4> swapChain;
+public:
+
 
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
 	ID3D12DescriptorHeap* rtvHeap = nullptr;
@@ -57,5 +57,6 @@ public:
 
 	//	Getter
 	ID3D12Device* Dev() { return device.Get(); }
+	ID3D12GraphicsCommandList* CmdList() { return cmdList.Get(); }
 };
 

@@ -174,23 +174,23 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 		dx.DrawAble(clearColor);
 
 		// 4.描画コマンドここから
-		viewPort.Update(dx.cmdList);
+		viewPort.Update(dx.CmdList());
 
-		scissorRect.Update(dx.cmdList);
+		scissorRect.Update(dx.CmdList());
 
-		gPipeLine.Update(dx.cmdList);
+		gPipeLine.Update(dx.CmdList());
 
 		// プリミティブ形状の設定コマンド
-		dx.cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角形リスト
+		dx.CmdList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 三角形リスト
 
-		vertBuff.Update(dx.cmdList);
+		vertBuff.Update(dx.CmdList());
 
-		cBuff.Update(dx.cmdList);
+		cBuff.Update(dx.CmdList());
 
-		textureDeta.Update(dx.cmdList);
+		textureDeta.Update(dx.CmdList());
 
-		obj.Draw(dx.cmdList, _countof(indices));
-		obj2.Draw(dx.cmdList, _countof(indices));
+		obj.Draw(dx.CmdList(), _countof(indices));
+		obj2.Draw(dx.CmdList(), _countof(indices));
 
 		// 4.描画コマンドここまで
 		

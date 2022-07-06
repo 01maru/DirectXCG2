@@ -73,7 +73,7 @@ MyDirectX::MyDirectX(HWND hwnd)
 	// コマンドリストを生成
 	result = device->CreateCommandList(0,
 		D3D12_COMMAND_LIST_TYPE_DIRECT,
-		cmdAllocator, nullptr,
+		cmdAllocator.Get(), nullptr,
 		IID_PPV_ARGS(&cmdList));
 	assert(SUCCEEDED(result));
 #pragma endregion CmdList
@@ -242,7 +242,7 @@ void MyDirectX::DrawEnd()
 	result = cmdList->Close();
 	assert(SUCCEEDED(result));
 	// 溜めていたコマンドリストの実行(close必須)
-	ID3D12CommandList* commandLists[] = { cmdList };
+	ID3D12CommandList* commandLists[] = { cmdList.Get()};
 	cmdQueue->ExecuteCommandLists(1, commandLists);
 	// 画面に表示するバッファをフリップ(裏表の入替え)
 	result = swapChain->Present(1, 0);
@@ -263,7 +263,7 @@ void MyDirectX::DrawEnd()
 	result = cmdAllocator->Reset();
 	assert(SUCCEEDED(result));
 	// 再びコマンドリストを貯める準備
-	result = cmdList->Reset(cmdAllocator, nullptr);
+	result = cmdList->Reset(cmdAllocator.Get(), nullptr);
 	assert(SUCCEEDED(result));
 #pragma endregion ChangeScreen
 }
