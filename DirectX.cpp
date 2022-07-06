@@ -87,8 +87,8 @@ MyDirectX::MyDirectX(HWND hwnd)
 #pragma endregion CmdQueue
 
 #pragma region swapChain
-	//	スワップチェーン(ダブルバッファリング用)
-	// スワップチェーンの設定
+	Microsoft::WRL::ComPtr<IDXGISwapChain1> swapChain1;
+	// 設定
 	DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
 	swapChainDesc.Width = 1280;										//	画面幅解像度
 	swapChainDesc.Height = 720;										//	画面高さ解像度
@@ -100,7 +100,7 @@ MyDirectX::MyDirectX(HWND hwnd)
 	swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 	// スワップチェーンの生成
 	result = dxgiFactory->CreateSwapChainForHwnd(
-		cmdQueue, hwnd, &swapChainDesc, nullptr, nullptr,
+		cmdQueue.Get(), hwnd, &swapChainDesc, nullptr, nullptr,
 		&swapChain1);
 
 	swapChain1.As(&swapChain);		//	1→4に変換
