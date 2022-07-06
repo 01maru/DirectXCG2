@@ -36,7 +36,7 @@ void Texture::Initialize(ID3D12Device* dev, D3D12_RESOURCE_DESC& tectureResource
 
 void Texture::SetSRV(ID3D12Device* dev, D3D12_RESOURCE_DESC resDesc, D3D12_CPU_DESCRIPTOR_HANDLE& srvHandle, int index)
 {
-	if (index != NULL && index != 0) {
+	if (index != NULL || index != 0) {
 		UINT incrementSize = dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 		srvHandle.ptr += incrementSize;
 	}
@@ -47,7 +47,7 @@ void Texture::SetSRV(ID3D12Device* dev, D3D12_RESOURCE_DESC resDesc, D3D12_CPU_D
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MipLevels = resDesc.MipLevels;
 
-	dev->CreateShaderResourceView(texBuff, &srvDesc, srvHandle);
+	dev->CreateShaderResourceView(texBuff.Get(), &srvDesc, srvHandle);
 }
 
 void Texture::LoadTexture(const wchar_t* textureName)

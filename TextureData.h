@@ -3,13 +3,17 @@
 using namespace DirectX;
 #include <d3d12.h>
 #pragma comment(lib, "d3d12.lib")
+#include <wrl.h>
 
 class Texture
 {
+private:
+	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
+
 public:
 	TexMetadata metadata{};
 	ScratchImage scratchImg{};
-	ID3D12Resource* texBuff = nullptr;
+	ComPtr<ID3D12Resource> texBuff;
 
 public:
 	void Initialize(ID3D12Device* dev, D3D12_RESOURCE_DESC& tectureResourceDesc, D3D12_HEAP_PROPERTIES textureHeapProp);
