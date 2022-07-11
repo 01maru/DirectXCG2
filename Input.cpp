@@ -3,7 +3,6 @@
 Input::Input(const HWND& hwnd, const WNDCLASSEX& w)
 {
 	//	DirectInput‰Šú‰»
-	IDirectInput8* directInput = nullptr;
 	HRESULT result = DirectInput8Create(
 		w.hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&directInput, nullptr);
 	assert(SUCCEEDED(result));
@@ -17,6 +16,13 @@ Input::Input(const HWND& hwnd, const WNDCLASSEX& w)
 	result = keyboard->SetCooperativeLevel(
 		hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 	assert(SUCCEEDED(result));
+}
+
+Input::~Input()
+{
+	keyboard->Unacquire();
+	keyboard->Release();
+	directInput->Release();
 }
 
 void Input::Update()

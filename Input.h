@@ -12,8 +12,10 @@ private:
 	BYTE key[256] = {};
 	BYTE prev[256] = {};
 	IDirectInputDevice8* keyboard = nullptr;
+	IDirectInput8* directInput = nullptr;
 public:
 	Input(const HWND& hwnd, const WNDCLASSEX& w);
+	~Input();
 	void Update();
 
 	bool GetKey(int _key);

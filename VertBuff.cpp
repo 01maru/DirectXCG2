@@ -33,8 +33,6 @@ VertBuff::VertBuff(ID3D12Device* dev, UINT sizeVB, Vertex* vertices, UINT vertSi
 	// リソース設定
 	SetResDesc(sizeVB);
 
-	// 頂点バッファの生成
-	ID3D12Resource* vertBuff = nullptr;
 	//	GPU側にメモリ確保
 	result = dev->CreateCommittedResource(
 		&heapProp,							// ヒープ設定
@@ -71,7 +69,6 @@ VertBuff::VertBuff(ID3D12Device* dev, UINT sizeVB, Vertex* vertices, UINT vertSi
 		ibExist = true;
 
 		SetResDesc(sizeIB);
-		ID3D12Resource* indexBuff = nullptr;
 		result = dev->CreateCommittedResource(
 			&heapProp, // ヒープ設定
 			D3D12_HEAP_FLAG_NONE,

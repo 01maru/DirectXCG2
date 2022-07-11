@@ -1,11 +1,14 @@
 #pragma once
 #include "MyMath.h"
 #include <d3d12.h>
+#include <wrl.h>
 
 #pragma comment(lib, "d3d12.lib")
 
 class Object3D
 {
+private:
+	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 public:
 	Matrix matWorld;
 
@@ -21,7 +24,7 @@ public:
 	struct ConstBufferDataTransform {
 		Matrix mat;
 	};
-	ID3D12Resource* transform = nullptr;
+	ComPtr<ID3D12Resource> transform;
 	ConstBufferDataTransform* constMapTransform = nullptr;
 	D3D12_HEAP_PROPERTIES cbHeapProp{};
 	D3D12_RESOURCE_DESC cbResourceDesc{};

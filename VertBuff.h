@@ -4,6 +4,7 @@
 #include <cassert>
 #include <stdint.h>
 #include "MyMath.h"
+#include <wrl.h>
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -18,6 +19,8 @@ struct Vertex
 class VertBuff
 {
 private:
+	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
+
 	HRESULT result;
 
 	bool ibExist = false;
@@ -26,6 +29,9 @@ private:
 	D3D12_RESOURCE_DESC resDesc{};
 	D3D12_HEAP_PROPERTIES heapProp{}; // ヒープ設定
 
+	// 頂点バッファの生成
+	ComPtr<ID3D12Resource> vertBuff;
+	ComPtr<ID3D12Resource> indexBuff;
 private:
 	void SetResDesc(UINT size);
 	void BuffTransferGPU(ID3D12Resource* buff, ID3D12Device* dev);

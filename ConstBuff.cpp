@@ -36,6 +36,11 @@ ConstBuff::ConstBuff(ID3D12Device* dev, const int winwidth, const int winheight)
 	mapMaterial->color = color;
 }
 
+ConstBuff::~ConstBuff()
+{
+	material->Unmap(0, nullptr);
+}
+
 void ConstBuff::Update(ID3D12GraphicsCommandList* cmdList)
 {
 	//	定数バッファビュー(CBV)の設定コマンド

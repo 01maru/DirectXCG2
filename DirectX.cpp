@@ -13,7 +13,7 @@ void MyDirectX::DebugLayer()
 {
 #ifdef _DEBUG
 	//	オン
-	ID3D12Debug* debugController;
+	ComPtr<ID3D12Debug> debugController;
 	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
 		debugController->EnableDebugLayer();
 	}
@@ -26,14 +26,14 @@ MyDirectX::MyDirectX(HWND hwnd)
 
 #pragma region GPU列挙
 #pragma region Adapter
-	Microsoft::WRL::ComPtr<IDXGIFactory7> dxgiFactory;
+	ComPtr<IDXGIFactory7> dxgiFactory;
 	// DXGIファクトリーの生成
 	result = CreateDXGIFactory(IID_PPV_ARGS(&dxgiFactory));
 	assert(SUCCEEDED(result));
 	// アダプターの列挙用
-	std::vector<Microsoft::WRL::ComPtr<IDXGIAdapter4>> adapters;
+	std::vector<ComPtr<IDXGIAdapter4>> adapters;
 	// ここに特定の名前を持つアダプターオブジェクトが入る
-	Microsoft::WRL::ComPtr<IDXGIAdapter4> tmpAdapter;
+	ComPtr<IDXGIAdapter4> tmpAdapter;
 	// パフォーマンスが高いものから順に、全てのアダプターを列挙する
 	for (UINT i = 0;
 		dxgiFactory->EnumAdapterByGpuPreference(i,
@@ -99,7 +99,7 @@ MyDirectX::MyDirectX(HWND hwnd)
 
 #pragma region DoubleBuffering
 #pragma region swapChain
-	Microsoft::WRL::ComPtr<IDXGISwapChain1> swapChain1;
+	ComPtr<IDXGISwapChain1> swapChain1;
 	// 設定
 	DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
 	swapChainDesc.Width = 1280;										//	画面幅解像度
@@ -168,7 +168,6 @@ MyDirectX::MyDirectX(HWND hwnd)
 	depthClearValue.DepthStencil.Depth = 1.0f;
 	depthClearValue.Format = DXGI_FORMAT_D32_FLOAT;
 	//	Resource生成
-	ID3D12Resource* depthBuff = nullptr;
 	result = device->CreateCommittedResource(
 		&depthHeapProp,
 		D3D12_HEAP_FLAG_NONE,
@@ -186,7 +185,7 @@ MyDirectX::MyDirectX(HWND hwnd)
 	dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
 	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
 	device->CreateDepthStencilView(
-		depthBuff,
+		depthBuff.Get(),
 		&dsvDesc,
 		dsvHeap->GetCPUDescriptorHandleForHeapStart());
 #pragma endregion
@@ -281,3 +280,4 @@ void MyDirectX::ScreenClear()
 	FLOAT clearColor[] = { 0.1f,0.25f, 0.5f,0.0f };
 	cmdList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
 }
+

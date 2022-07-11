@@ -42,6 +42,7 @@ private:
 	ComPtr<ID3D12DescriptorHeap> dsvHeap;
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle;
 
+	ComPtr<ID3D12Resource> depthBuff;
 private:
 	void DebugLayer();
 
@@ -49,7 +50,6 @@ private:
 	void ScreenClear();
 public:
 	MyDirectX(HWND hwnd);
-
 	void DrawAble(FLOAT* clearColor = nullptr);
 	void DrawEnd();
 
