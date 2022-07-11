@@ -151,6 +151,76 @@ MyDirectX::MyDirectX(HWND hwnd)
 #pragma endregion RTV
 #pragma endregion
 
+#pragma region マルチパスレンダリング
+	auto& bbuff = backBuffers[0];
+	auto resDesc = bbuff->GetDesc();
+
+	D3D12_HEAP_PROPERTIES heapProp{};
+	heapProp.Type = D3D12_HEAP_TYPE_DEFAULT;
+	heapProp.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+	heapProp.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
+	heapProp.CreationNodeMask = 1;
+	heapProp.VisibleNodeMask = 1;
+
+	float clsClr[4] = { 0.5f,0.5f,0.5f,1.0f };
+	D3D12_CLEAR_VALUE clearValue{};
+	clearValue.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	clearValue.DepthStencil.Depth = 0.5f;
+	for (size_t i = 0; i < 4; i++)
+	{
+		clearValue.Color[i] = clsClr[i];
+	}
+
+	result = device->CreateCommittedResource(
+		&heapProp,
+		D3D12_HEAP_FLAG_NONE,
+		&resDesc,
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+		&clearValue,
+		IID_PPV_ARGS(screenResource.ReleaseAndGetAddressOf()));
+
+#pragma region RTV
+	D3D12_DESCRIPTOR_HEAP_DESC heapDesc = rtvHeap->GetDesc();
+	//	heap
+	heapDesc.NumDescriptors = 1;
+	result = device->CreateDescriptorHeap(
+		&heapDesc,
+		IID_PPV_ARGS(screenRTVHeap.ReleaseAndGetAddressOf()));
+
+	D3D12_RENDER_TARGET_VIEW_DESC _rtvDesc = {};
+	_rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
+	_rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+
+	//	RTV
+	device->CreateRenderTargetView(
+		screenResource.Get(),
+		&_rtvDesc,
+		screenRTVHeap.Get()->GetCPUDescriptorHandleForHeapStart());
+#pragma endregion
+#pragma region SRV
+	//	heap
+	heapDesc.NumDescriptors = 1;
+	heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+
+	result = device->CreateDescriptorHeap(
+		&heapDesc,
+		IID_PPV_ARGS(screenSRVHeap.ReleaseAndGetAddressOf()));
+
+	D3D12_SHADER_RESOURCE_VIEW_DESC _srvDesc = {};
+	_srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	_srvDesc.Format = _rtvDesc.Format;
+	_srvDesc.Texture2D.MipLevels = 1;
+	_srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+
+	//	SRV
+	device->CreateShaderResourceView(
+		screenResource.Get(),
+		&_srvDesc,
+		screenSRVHeap.Get()->GetCPUDescriptorHandleForHeapStart());
+#pragma endregion
+#pragma endregion
+
 #pragma region 深度バッファ
 	D3D12_RESOURCE_DESC depthResourceDesc{};
 	depthResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
@@ -286,6 +356,20 @@ void MyDirectX::DrawEnd()
 	result = cmdList->Reset(cmdAllocator.Get(), nullptr);
 	assert(SUCCEEDED(result));
 #pragma endregion ChangeScreen
+}
+
+void MyDirectX::DrawAbleScreenTexture(FLOAT* clearColor)
+{
+	rtvHandle = screenRTVHeap->GetCPUDescriptorHandleForHeapStart();
+	dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
+	CmdListDrawAble(screenBarrierDesc, screenResource.Get(),
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET,
+		rtvHandle, dsvHandle);
+}
+
+void MyDirectX::DrawEndScreenTexture()
+{
+	SetResourceBarrier(screenBarrierDesc, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 }
 
 void MyDirectX::ScreenClear(FLOAT* clearColor, D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle)

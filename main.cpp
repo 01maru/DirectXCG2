@@ -146,6 +146,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 #pragma endregion
 
 #pragma region Draw
+		dx.DrawAbleScreenTexture();
+		dx.DrawEndScreenTexture();
 		// 3.画面クリア			R	　G		 B	   A
 		FLOAT clearColor[] = { 0.1f, 0.25f, 0.5f, 0.0f }; // 青っぽい色
 		dx.DrawAble(clearColor);

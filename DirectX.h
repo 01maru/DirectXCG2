@@ -43,6 +43,12 @@ private:
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle;
 
 	ComPtr<ID3D12Resource> depthBuff;
+
+	// screenTexture
+	ComPtr<ID3D12Resource> screenResource;
+	D3D12_RESOURCE_BARRIER screenBarrierDesc;
+	ComPtr<ID3D12DescriptorHeap> screenRTVHeap;
+	ComPtr<ID3D12DescriptorHeap> screenSRVHeap;
 private:
 	void DebugLayer();
 
@@ -54,6 +60,8 @@ private:
 		D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle, D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle, FLOAT* clearColor = nullptr);
 public:
 	MyDirectX(HWND hwnd);
+	void DrawAbleScreenTexture(FLOAT* clearColor = nullptr);
+	void DrawEndScreenTexture();
 	void DrawAble(FLOAT* clearColor = nullptr);
 	void DrawEnd();
 
