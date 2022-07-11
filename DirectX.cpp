@@ -196,16 +196,22 @@ MyDirectX::MyDirectX(HWND hwnd)
 #pragma endregion fence
 }
 
+void MyDirectX::SetResourceBarrier(D3D12_RESOURCE_BARRIER& desc, D3D12_RESOURCE_STATES StateBefore, D3D12_RESOURCE_STATES StateAfter, ID3D12Resource* pResource)
+{
+	if (pResource != nullptr) {
+		desc.Transition.pResource = pResource;
+	}
+	desc.Transition.StateBefore = StateBefore;
+	desc.Transition.StateAfter = StateAfter;
+	cmdList->ResourceBarrier(1, &desc);
+}
+
 void MyDirectX::DrawAble(FLOAT* clearColor)
 {
 	// 1.リソースバリアで書き込み可能に変更
 #pragma region ReleaseBarrier
 	// バックバッファの番号を取得(2つなので0番か1番)
 	UINT64 bbIndex = swapChain->GetCurrentBackBufferIndex();		//	現在のバックバッファ設定
-	barrierDesc.Transition.pResource = backBuffers[bbIndex].Get(); // バックバッファを指定
-	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT; // 表示状態から
-	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET; // 描画状態へ
-	cmdList->ResourceBarrier(1, &barrierDesc);
 #pragma endregion ReleaseBarrier
 	
 	// 2.描画先の変更
@@ -214,16 +220,29 @@ void MyDirectX::DrawAble(FLOAT* clearColor)
 	rtvHandle = rtvHeap->GetCPUDescriptorHandleForHeapStart();
 	rtvHandle.ptr += bbIndex * device->GetDescriptorHandleIncrementSize(rtvHeapDesc.Type);
 	dsvHandle = dsvHeap->GetCPUDescriptorHandleForHeapStart();
-	cmdList->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
 #pragma endregion Change
 
+	CmdListDrawAble(barrierDesc, backBuffers[bbIndex].Get(),
+		D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET, rtvHandle, dsvHandle);
+}
+
+void MyDirectX::CmdListDrawAble(D3D12_RESOURCE_BARRIER& desc, ID3D12Resource* pResource, D3D12_RESOURCE_STATES StateBefore, D3D12_RESOURCE_STATES StateAfter, D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle, D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle, FLOAT* clearColor)
+{
+	// 1.リソースバリアで書き込み可能に変更
+#pragma region ReleaseBarrier
+	SetResourceBarrier(desc, StateBefore, StateAfter, pResource);
+#pragma endregion ReleaseBarrier
+	// 2.描画先の変更
+#pragma region Change
+	cmdList->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
+#pragma endregion Change
 	// 3.画面クリア
 #pragma region ScreenClear
 	if (clearColor == nullptr) {
-		ScreenClear();
+		ScreenClear(rtvHandle);
 	}
 	else {
-		ScreenClear(clearColor);
+		ScreenClear(clearColor, rtvHandle);
 	}
 	cmdList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 #pragma endregion
@@ -233,9 +252,7 @@ void MyDirectX::DrawEnd()
 {
 	// 5.リソースバリアを戻す
 #pragma region ReleaseBarrier
-	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;	// 描画状態から
-	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;			// 表示状態へ
-	cmdList->ResourceBarrier(1, &barrierDesc);
+	SetResourceBarrier(barrierDesc, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 #pragma endregion ReleaseBarrier
 
 	// 命令のクローズ
@@ -271,11 +288,11 @@ void MyDirectX::DrawEnd()
 #pragma endregion ChangeScreen
 }
 
-void MyDirectX::ScreenClear(FLOAT* clearColor)
+void MyDirectX::ScreenClear(FLOAT* clearColor, D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle)
 {
 	cmdList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
 }
-void MyDirectX::ScreenClear()
+void MyDirectX::ScreenClear(D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle)
 {
 	FLOAT clearColor[] = { 0.1f,0.25f, 0.5f,0.0f };
 	cmdList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);

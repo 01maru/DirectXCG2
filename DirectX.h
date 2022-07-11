@@ -46,8 +46,12 @@ private:
 private:
 	void DebugLayer();
 
-	void ScreenClear(FLOAT* clearColor);
-	void ScreenClear();
+	void ScreenClear(FLOAT* clearColor, D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle);
+	void ScreenClear(D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle);
+	
+	void SetResourceBarrier(D3D12_RESOURCE_BARRIER& desc, D3D12_RESOURCE_STATES StateBefore, D3D12_RESOURCE_STATES StateAfter, ID3D12Resource* pResource = nullptr);
+	void CmdListDrawAble(D3D12_RESOURCE_BARRIER& barrierDesc, ID3D12Resource* pResource, D3D12_RESOURCE_STATES StateBefore, D3D12_RESOURCE_STATES StateAfter,
+		D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle, D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle, FLOAT* clearColor = nullptr);
 public:
 	MyDirectX(HWND hwnd);
 	void DrawAble(FLOAT* clearColor = nullptr);
