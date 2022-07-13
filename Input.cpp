@@ -2,6 +2,7 @@
 
 Input::Input(const HWND& hwnd, const WNDCLASSEX& w)
 {
+	inputHwnd = hwnd;
 	//	DirectInputèâä˙âª
 	HRESULT result = DirectInput8Create(
 		w.hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&directInput, nullptr);
@@ -87,8 +88,8 @@ bool Input::ClickTrriger(int type)
 	return (click.rgbButtons[type] & (0x80)) && !(prevclick.rgbButtons[type] & (0x80));
 }
 
-POINT Input::CursorPos(HWND hwnd)
+POINT Input::CursorPos()
 {
-	ScreenToClient(hwnd, &cursor);
+	ScreenToClient(inputHwnd, &cursor);
 	return cursor;
 }

@@ -16,6 +16,8 @@ static enum MouseButton {
 class Input
 {
 private:
+	HWND inputHwnd;
+
 	BYTE key[256] = {};
 	BYTE prev[256] = {};
 	IDirectInputDevice8* keyboard = nullptr;
@@ -37,6 +39,6 @@ public:
 	bool Click(int type);
 	bool ClickTrriger(int type);
 
-	POINT CursorPos(HWND hwnd);
+	POINT CursorPos();
 };
 
