@@ -23,6 +23,7 @@
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="GPipeline.cpp" />
     <ClCompile Include="Input.cpp" />
+    <ClCompile Include="InputJoypad.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="MyMath.cpp" />
@@ -68,6 +69,7 @@
     <ClInclude Include="DirectX.h" />
     <ClInclude Include="GPipeline.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="InputJoypad.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="MyMath.h" />
     <ClInclude Include="Object3D.h" />

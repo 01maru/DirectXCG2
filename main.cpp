@@ -144,7 +144,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 
 #pragma region Update
 		pos.z += input.GetKey(DIK_UP) - input.GetKey(DIK_DOWN);
-		pos.x += input.GetKey(DIK_RIGHT) - input.GetKey(DIK_LEFT);
+		pos.x += input.Click(LeftClick) - input.Click(RightClick);
 		rot += (input.GetKey(DIK_Q) - input.GetKey(DIK_E)) * MyMath::PI / 4;
 
 
