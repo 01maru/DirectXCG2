@@ -16,6 +16,12 @@ struct Vertex
 	Vector2D uv;
 };
 
+struct ScreenVertex
+{
+	Vector3D pos;
+	Vector2D uv;
+};
+
 class VertBuff
 {
 private:
@@ -37,7 +43,7 @@ private:
 	void BuffTransferGPU(ID3D12Resource* buff, ID3D12Device* dev);
 public:
 	VertBuff(ID3D12Device* dev, UINT sizeVB, Vertex* vertices, UINT vertSize, UINT sizeIB = NULL, uint16_t* indices = nullptr, UINT indicesSize = NULL);
-	~VertBuff();
+	VertBuff(ID3D12Device* dev, UINT sizeVB, ScreenVertex* vertices, UINT vertSize);
 	void Update(ID3D12GraphicsCommandList* cmdList);
 
 	//	Getter

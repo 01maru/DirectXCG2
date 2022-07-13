@@ -13,9 +13,10 @@ void MyDirectX::DebugLayer()
 {
 #ifdef _DEBUG
 	//	ƒIƒ“
-	ComPtr<ID3D12Debug> debugController;
+	ComPtr<ID3D12Debug1> debugController;
 	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
 		debugController->EnableDebugLayer();
+		debugController->SetEnableGPUBasedValidation(TRUE);
 	}
 #endif
 }
@@ -293,7 +294,7 @@ void MyDirectX::DrawAble(FLOAT* clearColor)
 #pragma endregion Change
 
 	CmdListDrawAble(barrierDesc, backBuffers[bbIndex].Get(),
-		D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET, rtvHandle, dsvHandle);
+		D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET, rtvHandle, dsvHandle, clearColor);
 }
 
 void MyDirectX::CmdListDrawAble(D3D12_RESOURCE_BARRIER& desc, ID3D12Resource* pResource, D3D12_RESOURCE_STATES StateBefore, D3D12_RESOURCE_STATES StateAfter, D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle, D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle, FLOAT* clearColor)
@@ -370,6 +371,13 @@ void MyDirectX::DrawAbleScreenTexture(FLOAT* clearColor)
 void MyDirectX::DrawEndScreenTexture()
 {
 	SetResourceBarrier(screenBarrierDesc, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+}
+
+void MyDirectX::Setting()
+{
+	cmdList->SetDescriptorHeaps(1, screenSRVHeap.GetAddressOf());
+	auto handle = screenSRVHeap->GetGPUDescriptorHandleForHeapStart();
+	cmdList->SetGraphicsRootDescriptorTable(0, handle);
 }
 
 void MyDirectX::ScreenClear(FLOAT* clearColor, D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle)

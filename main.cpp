@@ -21,6 +21,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	Input input(win.hwnd, win.w);
 
 	Shader shader(L"BasicVS.hlsl", L"BasicPS.hlsl");
+	Shader screenShader(L"VShader.hlsl", L"PShader.hlsl");
 	//	描画初期化
 #pragma region InputAssembler
 	// 頂点データ
@@ -77,6 +78,14 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	};
 	//	全体のサイズ
 	UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * _countof(indices));
+
+#pragma region Screen
+	ScreenVertex pv[4] = {
+							{ {-1.0f,-1.0f,0.1f},{0,1}},
+							{ {-1.0f,1.0f,0.1f},{0,0}},
+							{ {1.0f,-1.0f,0.1f},{1,1}},
+							{ {1.0f,1.0f,0.1f},{1,0}}, };
+#pragma endregion
 #pragma endregion
 
 	// 頂点レイアウト(頂点一つ分のデータに何を持たせるか)
@@ -86,7 +95,14 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 		{"TEXCOORD",0,DXGI_FORMAT_R32G32_FLOAT,0,D3D12_APPEND_ALIGNED_ELEMENT,D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,0},				//	uv座標
 	};
 
+	D3D12_INPUT_ELEMENT_DESC layout[] = {
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,	D3D12_APPEND_ALIGNED_ELEMENT,	D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},		//	xyz座標
+		{"TEXCOORD",0,DXGI_FORMAT_R32G32_FLOAT,0,D3D12_APPEND_ALIGNED_ELEMENT,D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,0},				//	uv座標
+	};
+
 	VertBuff vertBuff(dx.Dev(), sizeVB, vertices, _countof(vertices), sizeIB, indices, _countof(indices));
+	UINT sizePV = static_cast<UINT>(sizeof(pv[0]) * _countof(pv));
+	VertBuff screenVBuff(dx.Dev(), sizePV, pv, _countof(pv));
 
 	Texture texture[2];
 	texture[0].LoadTexture(L"Resource/texture.jpg");
@@ -94,7 +110,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	TextureDeta textureDeta(dx.Dev(), vertBuff.ResDesc(), texture);
 
 	//	グラフィックスパイプライン
-	GPipeline gPipeLine(inputLayout, _countof(inputLayout), dx.Dev(), shader);
+	GPipeline gPipeLine(dx.Dev(), shader, inputLayout, _countof(inputLayout));
+	GPipeline screenPipeline(layout, _countof(layout), dx.Dev(), screenShader);
 
 	//	ビューポート
 	ViewPort viewPort(window_width, window_height, 0, 0);
@@ -147,16 +164,14 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 
 #pragma region Draw
 		dx.DrawAbleScreenTexture();
-		dx.DrawEndScreenTexture();
-		// 3.画面クリア			R	　G		 B	   A
-		FLOAT clearColor[] = { 0.1f, 0.25f, 0.5f, 0.0f }; // 青っぽい色
-		dx.DrawAble(clearColor);
 
-		// 4.描画コマンドここから
+		// 描画コマンド
 		viewPort.Update(dx.CmdList());
 
 		scissorRect.Update(dx.CmdList());
-		
+
+		gPipeLine.Setting(dx.CmdList());
+
 		gPipeLine.Update(dx.CmdList());
 
 		vertBuff.Update(dx.CmdList());
@@ -168,8 +183,27 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 		obj.Draw(dx.CmdList(), _countof(indices));
 		obj2.Draw(dx.CmdList(), _countof(indices));
 
-		// 4.描画コマンドここまで
+		// 描画コマンド
+		dx.DrawEndScreenTexture();
+
+		// 3.画面クリア			R	　G		 B	   A
+		FLOAT clearColor[] = { 0.1f, 0.25f, 0.5f, 0.0f }; // 青っぽい色
+		dx.DrawAble(clearColor);
+
+		viewPort.Update(dx.CmdList());
+
+		scissorRect.Update(dx.CmdList());
+
+		screenVBuff.Update(dx.CmdList());
+
+		screenPipeline.Setting(dx.CmdList());
+
+		dx.Setting();
 		
+		screenPipeline.Update(dx.CmdList(), D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+		dx.CmdList()->DrawInstanced(4, 1, 0, 0);
+
 		dx.DrawEnd();
 #pragma endregion Draw
 	}

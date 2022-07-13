@@ -70,6 +70,8 @@
   <ItemGroup>
     <FxCompile Include="BasicVS.hlsl" />
     <FxCompile Include="BasicPS.hlsl" />
+    <FxCompile Include="VShader.hlsl" />
+    <FxCompile Include="PShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">

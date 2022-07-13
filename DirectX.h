@@ -64,6 +64,7 @@ public:
 	void DrawEndScreenTexture();
 	void DrawAble(FLOAT* clearColor = nullptr);
 	void DrawEnd();
+	void Setting();
 
 	//	Getter
 	ID3D12Device* Dev() { return device.Get(); }
