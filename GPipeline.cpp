@@ -130,6 +130,9 @@ GPipeline::GPipeline(ID3D12Device* dev, Shader shader, D3D12_INPUT_ELEMENT_DESC*
 
 	SetRootSignature(dev, 3);
 
+	// パイプラインにルートシグネチャをセット
+	pipelineDesc.pRootSignature = rootSignature.Get();
+
 	// パイプランステートの生成
 	result = dev->CreateGraphicsPipelineState(&pipelineDesc, IID_PPV_ARGS(&state));
 	assert(SUCCEEDED(result));
@@ -250,8 +253,6 @@ void GPipeline::SetRootSignature(ID3D12Device* dev, UINT rootParamNum)
 	result = dev->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(),
 		IID_PPV_ARGS(rootSignature.ReleaseAndGetAddressOf()));
 	assert(SUCCEEDED(result));
-	// パイプラインにルートシグネチャをセット
-	pipelineDesc.pRootSignature = rootSignature.Get();
 #pragma endregion
 }
 

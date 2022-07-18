@@ -40,5 +40,6 @@ public:
 	bool ClickTrriger(int type);
 
 	POINT CursorPos();
+	LONG Wheel();
 };
 

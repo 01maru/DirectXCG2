@@ -1,6 +1,7 @@
 #include "Window.h"
 #include "DirectX.h"
 #include "Input.h"
+#include "InputJoypad.h"
 #include "GPipeline.h"
 #include "ViewPort.h"
 #include "ScissorRect.h"
@@ -19,6 +20,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	MyDirectX dx(win.hwnd);
 
 	Input input(win.hwnd, win.w);
+	InputJoypad joypad;
 
 	Shader shader(L"BasicVS.hlsl", L"BasicPS.hlsl");
 	Shader screenShader(L"VShader.hlsl", L"PShader.hlsl");
@@ -141,13 +143,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 #pragma endregion
 
 		input.Update();
+		joypad.Update();
 
 #pragma region Update
-		pos.z += input.GetKey(DIK_UP) - input.GetKey(DIK_DOWN);
-		pos.x += input.Click(LeftClick) - input.Click(RightClick);
+		pos.z += joypad.GetButton(XINPUT_GAMEPAD_LEFT_THUMB) - joypad.GetButton(XINPUT_GAMEPAD_RIGHT_THUMB);
+		pos.x += joypad.GetLTrigger() - joypad.GetRTrigger();
 		rot += (input.GetKey(DIK_Q) - input.GetKey(DIK_E)) * MyMath::PI / 4;
-
-
 		obj.trans = pos;
 		obj2.rotAngle.y = rot;
 

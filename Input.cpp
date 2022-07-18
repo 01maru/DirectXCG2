@@ -81,6 +81,7 @@ bool Input::ReleaseKey(int _key)
 bool Input::Click(int type)
 {
 	return (click.rgbButtons[type] & (0x80));
+	
 }
 
 bool Input::ClickTrriger(int type)
@@ -92,4 +93,9 @@ POINT Input::CursorPos()
 {
 	ScreenToClient(inputHwnd, &cursor);
 	return cursor;
+}
+
+LONG Input::Wheel()
+{
+	return click.lZ;
 }
