@@ -7,6 +7,7 @@
 #include "ScissorRect.h"
 #include "MyMath.h"
 #include "Object3D.h"
+#include "MyDxSound.h"
 
 #include "VertBuff.h"
 #include "ConstBuff.h"
@@ -18,6 +19,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 #pragma region Initialize
 	Window win;
 	MyDirectX dx(win.hwnd);
+
+	DxSound sound(win);
+	sound.CreateSoundBuff("Resource\\fanfare.wav");
 
 	Input input(win.hwnd, win.w);
 	InputJoypad joypad;

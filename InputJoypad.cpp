@@ -9,7 +9,7 @@ void InputJoypad::SetDeadZone(short& sThumb, const short& deaadzone)
 
 InputJoypad::~InputJoypad()
 {
-    XInputEnable(false);
+    //XInputEnable(false);
 }
 
 void InputJoypad::Update()
