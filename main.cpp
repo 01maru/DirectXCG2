@@ -13,12 +13,15 @@
 #include "ConstBuff.h"
 #include "TextureData.h"
 #include "Shader.h"
+#include "MyDebugCamera.h"
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 {
 #pragma region Initialize
 	Window win;
 	MyDirectX dx(win.hwnd);
+
+	MyDebugCamera debugcamera(Vector3D(0.0f, 0.0f, -100.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 1.0f, 0.0f));
 
 	DxSound sound(win);
 	sound.CreateSoundBuff("Resource\\fanfare.wav");
@@ -134,7 +137,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	Object3D obj(dx.Dev());
 	Object3D obj2(dx.Dev());
 
-	MyMath::MatView matView(Vector3D(0.0f, 0.0f, -100.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 1.0f, 0.0f));
+	//MyMath::MatView matView(Vector3D(0.0f, 0.0f, -100.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 1.0f, 0.0f));
 	Matrix matProjection = MyMath::PerspectiveFovLH(window_width, window_height, MyMath::ConvertToRad(45.0f), 0.1f, 1000.0f);
 #pragma endregion Initialize
 
@@ -146,19 +149,21 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 		if (win.EndLoop()) { break; }
 #pragma endregion
 
-		input.Update();
+		input.Update(win.hwnd);
 		joypad.Update();
 
+
 #pragma region Update
-		pos.z += joypad.GetButton(XINPUT_GAMEPAD_LEFT_THUMB) - joypad.GetButton(XINPUT_GAMEPAD_RIGHT_THUMB);
-		pos.x += joypad.GetLTrigger() - joypad.GetRTrigger();
+		pos.z += input.GetKey(DIK_A) - input.GetKey(DIK_D);
+		pos.x += input.GetKey(DIK_W) - input.GetKey(DIK_S);
 		rot += (input.GetKey(DIK_Q) - input.GetKey(DIK_E)) * MyMath::PI / 4;
 		obj.trans = pos;
 		obj2.rotAngle.y = rot;
 
+		debugcamera.Update(input);
 		//	定数バッファに転送
-		obj.Update(matView.mat, matProjection);
-		obj2.Update(matView.mat, matProjection);
+		obj.Update(debugcamera.mat, matProjection);
+		obj2.Update(debugcamera.mat, matProjection);
 
 		if (input.GetTrigger(DIK_SPACE)) {
 			textureDeta.textureNum++;

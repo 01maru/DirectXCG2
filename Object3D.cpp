@@ -39,7 +39,7 @@ Object3D::Object3D(ID3D12Device* dev)
 
 #pragma region  WorldMatrixèâä˙íl
 	scale = Vector3D(1.0f, 1.0f, 1.0f);
-	rotAngle = Vector3D(0.0f, 0.0f, MyMath::ConvertToRad(10.0f));
+	rotAngle = Vector3D(0.0f, 0.0f, 0.0f);
 	trans = Vector3D(0.0f, 0.0f, 0.0f);
 #pragma endregion
 

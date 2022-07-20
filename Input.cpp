@@ -29,7 +29,7 @@ Input::Input(const HWND& hwnd, const WNDCLASSEX& w)
 	result = mouse->SetDataFormat(&c_dfDIMouse);
 	assert(SUCCEEDED(result));
 	//	排他制御のレベルセット
-	result = keyboard->SetCooperativeLevel(
+	result = mouse->SetCooperativeLevel(
 		hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 	assert(SUCCEEDED(result));
 }
@@ -43,7 +43,7 @@ Input::~Input()
 	directInput->Release();
 }
 
-void Input::Update()
+void Input::Update(HWND hwnd)
 {
 	//	前フレームの情報取得
 	for (size_t i = 0; i < sizeof(key); i++)
@@ -59,8 +59,10 @@ void Input::Update()
 	keyboard->GetDeviceState(sizeof(key), key);
 
 	mouse->Acquire();
+	mouse->Poll();
 	mouse->GetDeviceState(sizeof(DIMOUSESTATE), &click);
 	GetCursorPos(&cursor);
+	ScreenToClient(hwnd, &cursor);
 }
 
 bool Input::GetKey(int _key)
@@ -93,6 +95,12 @@ POINT Input::CursorPos()
 {
 	ScreenToClient(inputHwnd, &cursor);
 	return cursor;
+}
+
+void Input::CursorPos(Vector2D& pos)
+{
+	pos.x = cursor.x;
+	pos.y = cursor.y;
 }
 
 LONG Input::Wheel()

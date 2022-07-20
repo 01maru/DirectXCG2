@@ -1,6 +1,5 @@
 #include "MyMath.h"
 #include <cassert>
-#include <cmath>
 
 Matrix MyMath::LookAtLH(const Vector3D& eye, const Vector3D& target, const Vector3D& up)
 {
@@ -75,7 +74,17 @@ Matrix MyMath::PerspectiveFovLH(const int winwidth, const int winheight, float f
 	return matProjection;
 }
 
-MyMath::MatView::MatView(Vector3D _eye, Vector3D _target, Vector3D _up)
+//MyMath::MatView::MatView(Vector3D _eye, Vector3D _target, Vector3D _up)
+//{
+//	Init(_eye, _target, _up);
+//}
+
+MyMath::MatView::MatView()
+{
+	Init(Vector3D(0.0f, 0.0f, -100.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 1.0f, 0.0f));
+}
+
+void MyMath::MatView::Init(Vector3D _eye, Vector3D _target, Vector3D _up)
 {
 	eye = _eye;
 	target = _target;

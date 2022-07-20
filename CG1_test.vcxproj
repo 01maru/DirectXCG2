@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="ConstBuff.cpp" />
     <ClCompile Include="DirectX.cpp" />
+    <ClCompile Include="MyDebugCamera.cpp" />
     <ClCompile Include="MyDxSound.cpp" />
     <ClCompile Include="GPipeline.cpp" />
     <ClCompile Include="Input.cpp" />
@@ -68,6 +69,7 @@
   <ItemGroup>
     <ClInclude Include="ConstBuff.h" />
     <ClInclude Include="DirectX.h" />
+    <ClInclude Include="MyDebugCamera.h" />
     <ClInclude Include="MyDxSound.h" />
     <ClInclude Include="GPipeline.h" />
     <ClInclude Include="Input.h" />

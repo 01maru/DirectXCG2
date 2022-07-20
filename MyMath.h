@@ -3,6 +3,7 @@
 #include "Vector3D.h"
 #include "Vector4D.h"
 #include "Matrix.h"
+#include <cmath>
 
 namespace MyMath {
 	struct float4
@@ -32,7 +33,8 @@ public:
 	Vector3D target;	//	注視点座標
 	Vector3D up;		//	上方向ベクトル
 public:
-	MatView(Vector3D _eye, Vector3D _target, Vector3D _up);
+	MatView();
+	void Init(Vector3D _eye, Vector3D _target, Vector3D _up);
 	void MatUpdate();
 };
 }

@@ -3,6 +3,7 @@
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 #include <cassert>
+#include "Vector2D.h"
 
 #pragma comment(lib,"dinput8.lib")
 #pragma comment(lib,"dxguid.lib")
@@ -30,7 +31,7 @@ private:
 public:
 	Input(const HWND& hwnd, const WNDCLASSEX& w);
 	~Input();
-	void Update();
+	void Update(HWND hwnd);
 
 	bool GetKey(int _key);
 	bool GetTrigger(int _key);
@@ -40,6 +41,7 @@ public:
 	bool ClickTrriger(int type);
 
 	POINT CursorPos();
+	void CursorPos(Vector2D& pos);
 	LONG Wheel();
 };
 
