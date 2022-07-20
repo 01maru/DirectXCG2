@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include "MyMath.h"
 #include <wrl.h>
+#include <vector>
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -42,8 +43,12 @@ private:
 	void SetResDesc(UINT size);
 	void BuffTransferGPU(ID3D12Resource* buff, ID3D12Device* dev);
 public:
+	VertBuff();
 	VertBuff(ID3D12Device* dev, UINT sizeVB, Vertex* vertices, UINT vertSize, UINT sizeIB = NULL, uint16_t* indices = nullptr, UINT indicesSize = NULL);
 	VertBuff(ID3D12Device* dev, UINT sizeVB, ScreenVertex* vertices, UINT vertSize);
+	void Init(ID3D12Device* dev, UINT sizeVB, std::vector<Vertex> vertices, UINT vertSize, UINT sizeIB = NULL, uint16_t* indices = nullptr, UINT indicesSize = NULL);
+	void Init(ID3D12Device* dev, UINT sizeVB, ScreenVertex* vertices, UINT vertSize);
+	void Init(ID3D12Device* dev, UINT sizeVB, std::vector<ScreenVertex> vertices, UINT vertSize);
 	void Update(ID3D12GraphicsCommandList* cmdList);
 
 	//	Getter

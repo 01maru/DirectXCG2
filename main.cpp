@@ -14,6 +14,7 @@
 #include "TextureData.h"
 #include "Shader.h"
 #include "MyDebugCamera.h"
+#include "DrawGrid.h"
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 {
@@ -21,7 +22,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	Window win;
 	MyDirectX dx(win.hwnd);
 
-	MyDebugCamera debugcamera(Vector3D(0.0f, 0.0f, -100.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 1.0f, 0.0f));
+	MyDebugCamera debugcamera(Vector3D(0.0f, 50.0f, -100.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 1.0f, 0.0f));
 
 	DxSound sound(win);
 	sound.CreateSoundBuff("Resource\\fanfare.wav");
@@ -120,6 +121,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 
 	//	グラフィックスパイプライン
 	GPipeline gPipeLine(dx.Dev(), shader, inputLayout, _countof(inputLayout));
+	GPipeline gridPipeLine(dx.Dev(), shader, inputLayout, _countof(inputLayout), D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE, D3D12_FILL_MODE_WIREFRAME);
+	
 	GPipeline screenPipeline(layout, _countof(layout), dx.Dev(), screenShader);
 
 	//	ビューポート
@@ -136,6 +139,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 
 	Object3D obj(dx.Dev());
 	Object3D obj2(dx.Dev());
+
+	DrawGrid grid(dx.Dev(), shader, 25, 50, 50);
 
 	//MyMath::MatView matView(Vector3D(0.0f, 0.0f, -100.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 1.0f, 0.0f));
 	Matrix matProjection = MyMath::PerspectiveFovLH(window_width, window_height, MyMath::ConvertToRad(45.0f), 0.1f, 1000.0f);
@@ -191,8 +196,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 		textureDeta.Update(dx.CmdList());
 
 		obj.Draw(dx.CmdList(), _countof(indices));
+		gridPipeLine.Setting(dx.CmdList());
+		gridPipeLine.Update(dx.CmdList(), D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 		obj2.Draw(dx.CmdList(), _countof(indices));
-
+		grid.Draw(dx.CmdList());
 		// 描画コマンド
 		dx.DrawEndScreenTexture();
 

@@ -9,17 +9,17 @@
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 
-enum BlendMord
-{
-	NONE_BLEND,
-	ADD_BLEND,
-	SUB_BLEND,
-	INV_BLEND,
-	ALPHA_BLEND,
-};
-
 class GPipeline
 {
+public:
+	static enum BlendMord
+	{
+		NONE_BLEND = 0,
+		ADD_BLEND,
+		SUB_BLEND,
+		INV_BLEND,
+		ALPHA_BLEND,
+	};
 private:
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineDesc{};
@@ -34,8 +34,10 @@ private:
 	void SetRootSignature(ID3D12Device* dev, UINT rootParamNum = 1);
 	void SetScreenRootSignature(ID3D12Device* dev);
 public:
+	GPipeline();
 	GPipeline(D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT inputLayoutSize, ID3D12Device* dev, Shader shader);
-	GPipeline(ID3D12Device* dev, Shader shader, D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT inputLayoutSize, D3D12_PRIMITIVE_TOPOLOGY_TYPE topologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
+	GPipeline(ID3D12Device* dev, Shader shader, D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT inputLayoutSize, D3D12_PRIMITIVE_TOPOLOGY_TYPE topologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, D3D12_FILL_MODE fillmord = D3D12_FILL_MODE_SOLID);
+	void Init(ID3D12Device* dev, Shader shader, D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT inputLayoutSize, D3D12_PRIMITIVE_TOPOLOGY_TYPE topologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, D3D12_FILL_MODE fillmord = D3D12_FILL_MODE_SOLID);
 	void Update(ID3D12GraphicsCommandList* cmdList, D3D_PRIMITIVE_TOPOLOGY primitive = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	void Setting(ID3D12GraphicsCommandList* cmdList);
 	void SetBlend(ID3D12Device* dev, int mord);

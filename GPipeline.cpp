@@ -88,7 +88,24 @@ GPipeline::GPipeline(D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT inputLayoutSize
 }
 
 GPipeline::GPipeline(ID3D12Device* dev, Shader shader, D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT inputLayoutSize,
-	D3D12_PRIMITIVE_TOPOLOGY_TYPE topologyType)
+	D3D12_PRIMITIVE_TOPOLOGY_TYPE topologyType, D3D12_FILL_MODE fillmord)
+{
+	Init(dev, shader, inputLayout, inputLayoutSize, topologyType, fillmord);
+}
+
+void GPipeline::Update(ID3D12GraphicsCommandList* cmdList, D3D_PRIMITIVE_TOPOLOGY primitive)
+{
+	// パイプラインステートとルートシグネチャの設定コマンド
+	cmdList->SetPipelineState(state.Get());
+	cmdList->IASetPrimitiveTopology(primitive);
+}
+
+void GPipeline::Setting(ID3D12GraphicsCommandList* cmdList)
+{
+	cmdList->SetGraphicsRootSignature(rootSignature.Get());
+}
+
+void GPipeline::Init(ID3D12Device* dev, Shader shader, D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT inputLayoutSize, D3D12_PRIMITIVE_TOPOLOGY_TYPE topologyType, D3D12_FILL_MODE fillmord)
 {
 	HRESULT result;
 	// シェーダーの設定
@@ -100,7 +117,7 @@ GPipeline::GPipeline(ID3D12Device* dev, Shader shader, D3D12_INPUT_ELEMENT_DESC*
 #pragma region Rasterizer
 	// 設定
 	pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK; // 背面カリング
-	pipelineDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID; // ポリゴン内塗りつぶし
+	pipelineDesc.RasterizerState.FillMode = fillmord; // ポリゴン内塗りつぶし
 	pipelineDesc.RasterizerState.DepthClipEnable = true; // 深度クリッピングを有効に
 #pragma endregion
 
@@ -136,18 +153,6 @@ GPipeline::GPipeline(ID3D12Device* dev, Shader shader, D3D12_INPUT_ELEMENT_DESC*
 	// パイプランステートの生成
 	result = dev->CreateGraphicsPipelineState(&pipelineDesc, IID_PPV_ARGS(&state));
 	assert(SUCCEEDED(result));
-}
-
-void GPipeline::Update(ID3D12GraphicsCommandList* cmdList, D3D_PRIMITIVE_TOPOLOGY primitive)
-{
-	// パイプラインステートとルートシグネチャの設定コマンド
-	cmdList->SetPipelineState(state.Get());
-	cmdList->IASetPrimitiveTopology(primitive);
-}
-
-void GPipeline::Setting(ID3D12GraphicsCommandList* cmdList)
-{
-	cmdList->SetGraphicsRootSignature(rootSignature.Get());
 }
 
 void GPipeline::Blend(D3D12_RENDER_TARGET_BLEND_DESC& blenddesc, const int mord)
@@ -307,6 +312,10 @@ void GPipeline::SetScreenRootSignature(ID3D12Device* dev)
 	// パイプラインにルートシグネチャをセット
 	pipelineDesc.pRootSignature = rootSignature.Get();
 #pragma endregion
+}
+
+GPipeline::GPipeline()
+{
 }
 
 void GPipeline::SetBlend(ID3D12Device* dev, int mord)

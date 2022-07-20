@@ -12,7 +12,7 @@ void MyDebugCamera::Update(Input& input)
 	moveCursor = cursor - prevCursor;
 	moveCursor.normalize();
 
-	if (input.Click(LeftClick)) {
+	if (input.Click(Input::LeftClick)) {
 		moveCursor /= 50;
 		cursorSpd -= moveCursor;
 	}

@@ -8,14 +8,14 @@
 #pragma comment(lib,"dinput8.lib")
 #pragma comment(lib,"dxguid.lib")
 
-static enum MouseButton {
-	LeftClick = 0,
-	RightClick,
-	WheelClick,
-};
-
 class Input
 {
+public:
+	static enum MouseButton {
+		LeftClick = 0,
+		RightClick,
+		WheelClick,
+	};
 private:
 	HWND inputHwnd;
 
