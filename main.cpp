@@ -144,7 +144,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 
 	Object2D obj2d(dx.Dev(), shader, 100, 10);
 
-	DrawGrid grid(dx.Dev(), shader, 25, 50, 50);
+	DrawGrid grid(dx.Dev(), objShader, 25, 50, 50);
 	
 	SphereObj sphere(dx.Dev(), objShader, 24, 12);
 
@@ -175,6 +175,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 		//	定数バッファに転送
 		obj.Update(debugcamera.mat, matProjection);
 		obj2.Update(debugcamera.mat, matProjection);
+		obj2d.MatUpdate(debugcamera.mat, matProjection);
+		grid.MatUpdate(debugcamera.mat, matProjection);
+		sphere.MatUpdate(debugcamera.mat, matProjection);
 
 		if (input.GetTrigger(DIK_SPACE)) {
 			textureDeta.textureNum++;
@@ -199,12 +202,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 
 		cBuff.Update(dx.CmdList());
 
-		//textureDeta.Update(dx.CmdList());
+		textureDeta.Update(dx.CmdList());
 
 		obj.Draw(dx.CmdList(), _countof(indices));
 		//obj2.Draw(dx.CmdList(), _countof(indices));
-		//grid.Draw(dx.CmdList());
-		//obj2d.Draw(dx.CmdList());
+		grid.Draw(dx.CmdList());
+		obj2d.Draw(dx.CmdList());
 
 		sphere.Draw(dx.CmdList());
 		// 描画コマンド

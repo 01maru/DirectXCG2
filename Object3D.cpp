@@ -116,5 +116,5 @@ void Object3D::Draw(ID3D12GraphicsCommandList* cmdList, UINT indeicesNum)
 {
 	cmdList->SetGraphicsRootConstantBufferView(2, transform->GetGPUVirtualAddress());
 
-	//cmdList->DrawIndexedInstanced(indeicesNum, 1, 0, 0, 0); 
+	cmdList->DrawIndexedInstanced(indeicesNum, 1, 0, 0, 0); 
 }
