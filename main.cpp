@@ -143,6 +143,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	Object3D obj2(dx.Dev());
 
 	Object2D obj2d(dx.Dev(), objShader, 100, 10);
+	Object2D triangle(dx.Dev(), objShader, 3, 10);
 
 	DrawGrid grid(dx.Dev(), objShader, 25, 50, 50);
 	
@@ -176,6 +177,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 		obj.Update(debugcamera.mat, matProjection);
 		obj2.Update(debugcamera.mat, matProjection);
 		obj2d.MatUpdate(debugcamera.mat, matProjection);
+		triangle.MatUpdate(debugcamera.mat, matProjection);
 		grid.MatUpdate(debugcamera.mat, matProjection);
 		sphere.MatUpdate(debugcamera.mat, matProjection);
 
@@ -204,12 +206,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 
 		textureDeta.Update(dx.CmdList());
 
-		obj.Draw(dx.CmdList(), _countof(indices));
+		//obj.Draw(dx.CmdList(), _countof(indices));
 		//obj2.Draw(dx.CmdList(), _countof(indices));
 		grid.Draw(dx.CmdList());
-		obj2d.Draw(dx.CmdList());
+		//obj2d.Draw(dx.CmdList());
+		triangle.Draw(dx.CmdList());
 
-		sphere.Draw(dx.CmdList());
+		//sphere.Draw(dx.CmdList());
 		// •`‰æƒRƒ}ƒ“ƒh
 		dx.DrawEndScreenTexture();
 
