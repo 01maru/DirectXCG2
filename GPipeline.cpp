@@ -105,7 +105,7 @@ void GPipeline::Setting(ID3D12GraphicsCommandList* cmdList)
 	cmdList->SetGraphicsRootSignature(rootSignature.Get());
 }
 
-void GPipeline::Init(ID3D12Device* dev, Shader shader, D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT inputLayoutSize, D3D12_PRIMITIVE_TOPOLOGY_TYPE topologyType, D3D12_FILL_MODE fillmord)
+void GPipeline::Init(ID3D12Device* dev, Shader shader, D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT inputLayoutSize, D3D12_PRIMITIVE_TOPOLOGY_TYPE topologyType, D3D12_FILL_MODE fillmord, D3D12_CULL_MODE cullmord)
 {
 	HRESULT result;
 	// シェーダーの設定
@@ -116,7 +116,7 @@ void GPipeline::Init(ID3D12Device* dev, Shader shader, D3D12_INPUT_ELEMENT_DESC*
 
 #pragma region Rasterizer
 	// 設定
-	pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK; // 背面カリング
+	pipelineDesc.RasterizerState.CullMode = cullmord; // 背面カリング
 	pipelineDesc.RasterizerState.FillMode = fillmord; // ポリゴン内塗りつぶし
 	pipelineDesc.RasterizerState.DepthClipEnable = true; // 深度クリッピングを有効に
 #pragma endregion

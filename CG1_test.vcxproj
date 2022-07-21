@@ -30,6 +30,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="MyMath.cpp" />
+    <ClCompile Include="Object2D.cpp" />
     <ClCompile Include="Object3D.cpp" />
     <ClCompile Include="ScissorRect.cpp" />
     <ClCompile Include="TextureData.cpp" />
@@ -78,6 +79,7 @@
     <ClInclude Include="InputJoypad.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="MyMath.h" />
+    <ClInclude Include="Object2D.h" />
     <ClInclude Include="Object3D.h" />
     <ClInclude Include="ScissorRect.h" />
     <ClInclude Include="TextureData.h" />

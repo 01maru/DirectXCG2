@@ -15,6 +15,7 @@
 #include "Shader.h"
 #include "MyDebugCamera.h"
 #include "DrawGrid.h"
+#include "Object2D.h"
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 {
@@ -140,6 +141,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	Object3D obj(dx.Dev());
 	Object3D obj2(dx.Dev());
 
+	Object2D obj2d(dx.Dev(), shader, 100, 10);
+
 	DrawGrid grid(dx.Dev(), shader, 25, 50, 50);
 
 	//MyMath::MatView matView(Vector3D(0.0f, 0.0f, -100.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 1.0f, 0.0f));
@@ -200,6 +203,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 		gridPipeLine.Update(dx.CmdList(), D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 		obj2.Draw(dx.CmdList(), _countof(indices));
 		grid.Draw(dx.CmdList());
+		obj2d.Draw(dx.CmdList());
 		// •`‰æƒRƒ}ƒ“ƒh
 		dx.DrawEndScreenTexture();
 
