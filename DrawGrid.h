@@ -16,6 +16,6 @@ public:
 	DrawGrid(ID3D12Device* dev, Shader shader, UINT g_size, UINT gridX, UINT gridZ);
 	void Draw(ID3D12GraphicsCommandList* cmdList);
 
-	void SetVertices();
+	void SetVertices() override;
 };
 

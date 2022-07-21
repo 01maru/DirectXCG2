@@ -10,7 +10,7 @@ private:
 	UINT indexSize;
 	std::vector<unsigned short> indices;
 private:
-	void SetVertices();
+	void SetVertices() override;
 public:
 	Object2D(ID3D12Device* dev, Shader shader, UINT vertexNum, float rad = 0.5f);
 	void Draw(ID3D12GraphicsCommandList* cmdList);

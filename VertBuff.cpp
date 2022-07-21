@@ -56,6 +56,10 @@ void VertBuff::Update(ID3D12GraphicsCommandList* cmdList)
 	}
 }
 
+void VertBuff::SetVertices()
+{
+}
+
 VertBuff::VertBuff(ID3D12Device* dev, UINT sizeVB, ScreenVertex* vertices, UINT vertSize)
 {
 	Init(dev, sizeVB, vertSize);
@@ -100,7 +104,7 @@ void VertBuff::Init(ID3D12Device* dev, UINT sizeVB, UINT vertSize, UINT sizeIB, 
 	// 頂点バッファのサイズ
 	vbView.SizeInBytes = sizeVB;
 
-	//SetVertices();
+	SetVertices();
 #pragma endregion
 
 #pragma region IB

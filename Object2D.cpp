@@ -60,7 +60,7 @@ Object2D::Object2D(ID3D12Device* dev, Shader shader, UINT vertexNum, float rad)
 	// 頂点データ全体のサイズ = 頂点データ一つ分のサイズ * 頂点データの要素数
 	UINT sizeVB = static_cast<UINT>(sizeof(vertices[0]) * vertexSize);
 	Init(dev, sizeVB, vertexSize, sizeIB, &indices.front(), indexSize);
-	SetVertices();
+	//SetVertices();
 
 	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,	D3D12_APPEND_ALIGNED_ELEMENT,	D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},		//	xyz座標
@@ -77,5 +77,4 @@ void Object2D::Draw(ID3D12GraphicsCommandList* cmdList)
 	pipeline.Update(cmdList, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	Update(cmdList);
 	cmdList->DrawIndexedInstanced(indexSize, 1, 0, 0, 0);
-	cmdList->DrawInstanced(vertexSize, 1, 0, 0);
 }

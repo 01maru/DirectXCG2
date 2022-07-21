@@ -49,7 +49,7 @@ public:
 	void Init(ID3D12Device* dev, UINT sizeVB, UINT vertSize, UINT sizeIB = NULL, uint16_t* indices = nullptr, UINT indicesSize = NULL);
 	void Update(ID3D12GraphicsCommandList* cmdList);
 
-	//virtual void SetVertices();
+	virtual void SetVertices();
 
 	//	Getter
 	D3D12_RESOURCE_DESC ResDesc() { return resDesc; }

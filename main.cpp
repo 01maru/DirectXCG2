@@ -122,7 +122,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 
 	//	グラフィックスパイプライン
 	GPipeline gPipeLine(dx.Dev(), shader, inputLayout, _countof(inputLayout));
-	GPipeline gridPipeLine(dx.Dev(), shader, inputLayout, _countof(inputLayout), D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE, D3D12_FILL_MODE_WIREFRAME);
 	
 	GPipeline screenPipeline(layout, _countof(layout), dx.Dev(), screenShader);
 
@@ -199,8 +198,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 		textureDeta.Update(dx.CmdList());
 
 		obj.Draw(dx.CmdList(), _countof(indices));
-		gridPipeLine.Setting(dx.CmdList());
-		gridPipeLine.Update(dx.CmdList(), D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 		obj2.Draw(dx.CmdList(), _countof(indices));
 		grid.Draw(dx.CmdList());
 		obj2d.Draw(dx.CmdList());
