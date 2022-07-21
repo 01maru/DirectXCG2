@@ -178,7 +178,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 		pos.x += input.GetKey(DIK_D) - input.GetKey(DIK_A);
 		pos.y += input.GetKey(DIK_Q) - input.GetKey(DIK_E);
 		pos.z += input.GetKey(DIK_W) - input.GetKey(DIK_S);
-		rot += Vector3D(MyMath::PI / 24, MyMath::PI / 24, 0);
+		rot.x += MyMath::PI / 24 * input.GetKey(DIK_R);
+		rot.y += MyMath::PI / 24 * input.GetKey(DIK_F);
+		rot.z += MyMath::PI / 24 * input.GetKey(DIK_V);
 		obj.trans = pos;
 		obj.rotAngle = rot;
 
