@@ -143,7 +143,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	Object3D obj(dx.Dev());
 	Object3D obj2(dx.Dev());
 
-	Object2D obj2d(dx.Dev(), colorShader, 100, 5);
+	Object2D obj2d(dx.Dev(), objShader, 5, 5);
 	obj2d.SetTransform({ 10.0f,0.0f,0.0f });
 	Object2D triangle(dx.Dev(), colorShader, 3, 5);
 
@@ -170,7 +170,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 
 
 #pragma region Update
-		cBuff.ChangeColor(Vector4D((time - timer) / time, timer / time, 0.0f, 1.0f));
+		cBuff.ChangeColor(Vector4D((time - timer) / time, timer / time, 0.0f, 0.5f));
 
 		timer++;
 		if (timer > time) { timer = 0; }

@@ -141,7 +141,7 @@ Object2D::Object2D(ID3D12Device* dev, Shader shader, UINT vertexNum, float rad)
 	};
 
 	pipeline.Init(dev, shader, inputLayout, _countof(inputLayout), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, D3D12_FILL_MODE_SOLID, D3D12_CULL_MODE_NONE);
-
+	pipeline.SetBlend(dev, GPipeline::ALPHA_BLEND);
 #pragma region  WorldMatrixèâä˙íl
 	scale = Vector3D(1.0f, 1.0f, 1.0f);
 	rotAngle = Vector3D(0.0f, 0.0f, 0.0f);
