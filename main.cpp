@@ -16,6 +16,7 @@
 #include "MyDebugCamera.h"
 #include "DrawGrid.h"
 #include "Object2D.h"
+#include "DrawSphere.h"
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 {
@@ -32,6 +33,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	InputJoypad joypad;
 
 	Shader shader(L"BasicVS.hlsl", L"BasicPS.hlsl");
+	Shader objShader(L"BasicVS.hlsl", L"ObjPS.hlsl");
 	Shader screenShader(L"VShader.hlsl", L"PShader.hlsl");
 	//	ï`âÊèâä˙âª
 #pragma region InputAssembler
@@ -143,6 +145,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	Object2D obj2d(dx.Dev(), shader, 100, 10);
 
 	DrawGrid grid(dx.Dev(), shader, 25, 50, 50);
+	
+	SphereObj sphere(dx.Dev(), objShader, 24, 12);
 
 	//MyMath::MatView matView(Vector3D(0.0f, 0.0f, -100.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 1.0f, 0.0f));
 	Matrix matProjection = MyMath::PerspectiveFovLH(window_width, window_height, MyMath::ConvertToRad(45.0f), 0.1f, 1000.0f);
@@ -195,12 +199,14 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 
 		cBuff.Update(dx.CmdList());
 
-		textureDeta.Update(dx.CmdList());
+		//textureDeta.Update(dx.CmdList());
 
 		obj.Draw(dx.CmdList(), _countof(indices));
-		obj2.Draw(dx.CmdList(), _countof(indices));
-		grid.Draw(dx.CmdList());
-		obj2d.Draw(dx.CmdList());
+		//obj2.Draw(dx.CmdList(), _countof(indices));
+		//grid.Draw(dx.CmdList());
+		//obj2d.Draw(dx.CmdList());
+
+		sphere.Draw(dx.CmdList());
 		// ï`âÊÉRÉ}ÉìÉh
 		dx.DrawEndScreenTexture();
 
