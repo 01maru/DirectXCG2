@@ -27,7 +27,7 @@ private:
 
 	GPipeline pipeline;
 	UINT vertexSize;
-	std::vector<Vertex> vertices;
+	std::vector<VertexObj> vertices;
 	UINT indexSize;
 	std::vector<unsigned short> indices;
 private:

@@ -33,7 +33,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	InputJoypad joypad;
 
 	Shader shader(L"BasicVS.hlsl", L"BasicPS.hlsl");
-	Shader objShader(L"BasicVS.hlsl", L"ObjPS.hlsl");
+	Shader gridShader(L"BasicVS.hlsl", L"ObjPS.hlsl");
+	Shader objShader(L"BasicVS.hlsl", L"ObjPS.hlsl", "obj_main");
 	Shader colorShader(L"BasicVS.hlsl", L"ObjPS.hlsl", "color_main");
 	Shader screenShader(L"VShader.hlsl", L"PShader.hlsl");
 	//	ï`âÊèâä˙âª
@@ -147,9 +148,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	obj2d.SetTransform({ 10.0f,0.0f,0.0f });
 	Object2D triangle(dx.Dev(), colorShader, 3, 5);
 
-	DrawGrid grid(dx.Dev(), objShader, 25, 50, 50);
+	DrawGrid grid(dx.Dev(), gridShader, 25, 50, 50);
 	
-	SphereObj sphere(dx.Dev(), objShader, 24, 12);
+	SphereObj sphere(dx.Dev(), gridShader, 24, 12);
 
 	//MyMath::MatView matView(Vector3D(0.0f, 0.0f, -100.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 1.0f, 0.0f));
 	Matrix matProjection = MyMath::PerspectiveFovLH(window_width, window_height, MyMath::ConvertToRad(45.0f), 0.1f, 1000.0f);

@@ -5,7 +5,7 @@ void Object2D::SetVertices()
 {
 	//	GPUメモリの値書き換えよう
 	// GPU上のバッファに対応した仮想メモリ(メインメモリ上)を取得
-	Vertex* vertMap = nullptr;
+	VertexObj* vertMap = nullptr;
 	HRESULT result = vertBuff->Map(0, nullptr, (void**)&vertMap);
 	assert(SUCCEEDED(result));
 	// 全頂点に対して
@@ -129,15 +129,39 @@ Object2D::Object2D(ID3D12Device* dev, Shader shader, UINT vertexNum, float rad)
 	vertices[vertexNum].pos.y = 0;
 	vertices[vertexNum].pos.z = 0;
 
+	for (size_t i = 0; i < vertexNum; i++)
+	{
+		if (i % 3 == 0) {
+			vertices[i].color.x = 1.0f;
+			vertices[i].color.y = 0.0f;
+			vertices[i].color.z = 0.0f;
+		}
+		else if (i % 3 == 1) {
+			vertices[i].color.x = 0.0f;
+			vertices[i].color.y = 1.0f;
+			vertices[i].color.z = 0.0f;
+		}
+		else {
+			vertices[i].color.x = 0.0f;
+			vertices[i].color.y = 0.0f;
+			vertices[i].color.z = 1.0f;
+		}
+		vertices[i].color.w = 1.0f;
+	}
+	vertices[vertexNum].color.x = 1.0f;
+	vertices[vertexNum].color.y = 1.0f;
+	vertices[vertexNum].color.z = 1.0f;
+	vertices[vertexNum].color.w = 1.0f;
+
 	// 頂点データ全体のサイズ = 頂点データ一つ分のサイズ * 頂点データの要素数
 	UINT sizeVB = static_cast<UINT>(sizeof(vertices[0]) * vertexSize);
 	Init(dev, sizeVB, vertexSize, sizeIB, &indices.front(), indexSize);
-	//SetVertices();
 
 	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,	D3D12_APPEND_ALIGNED_ELEMENT,	D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},		//	xyz座標
 		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,	D3D12_APPEND_ALIGNED_ELEMENT,	D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},		//	法線ベクトル
 		{"TEXCOORD",0,DXGI_FORMAT_R32G32_FLOAT,0,D3D12_APPEND_ALIGNED_ELEMENT,D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,0},				//	uv座標
+		{"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0,	D3D12_APPEND_ALIGNED_ELEMENT,	D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},		//	色
 	};
 
 	pipeline.Init(dev, shader, inputLayout, _countof(inputLayout), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, D3D12_FILL_MODE_SOLID, D3D12_CULL_MODE_NONE);

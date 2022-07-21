@@ -16,6 +16,15 @@ struct VSOutput
 	float2 uv :TEXCOORD;
 };
 
+struct VSObjOutput
+{
+	//	セマンティック(SV_はSystem Value)
+	float4 svpos : SV_POSITION;	//	座標情報
+	float3 normal :	NORMAL;
+	float2 uv :TEXCOORD;
+	float4 color :COLOR;
+};
+
 struct Output
 {
 	float4 svpos : SV_POSITION;
