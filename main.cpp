@@ -142,7 +142,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	Object3D obj(dx.Dev());
 	Object3D obj2(dx.Dev());
 
-	Object2D obj2d(dx.Dev(), shader, 100, 10);
+	Object2D obj2d(dx.Dev(), objShader, 100, 10);
 
 	DrawGrid grid(dx.Dev(), objShader, 25, 50, 50);
 	
