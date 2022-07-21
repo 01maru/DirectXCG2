@@ -29,7 +29,7 @@ private:
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 	HRESULT result;
-
+public:
 	bool ibExist = false;
 	D3D12_VERTEX_BUFFER_VIEW vbView{};
 	D3D12_INDEX_BUFFER_VIEW ibView{};
@@ -46,10 +46,10 @@ public:
 	VertBuff();
 	VertBuff(ID3D12Device* dev, UINT sizeVB, Vertex* vertices, UINT vertSize, UINT sizeIB = NULL, uint16_t* indices = nullptr, UINT indicesSize = NULL);
 	VertBuff(ID3D12Device* dev, UINT sizeVB, ScreenVertex* vertices, UINT vertSize);
-	void Init(ID3D12Device* dev, UINT sizeVB, std::vector<Vertex> vertices, UINT vertSize, UINT sizeIB = NULL, uint16_t* indices = nullptr, UINT indicesSize = NULL);
-	void Init(ID3D12Device* dev, UINT sizeVB, ScreenVertex* vertices, UINT vertSize);
-	void Init(ID3D12Device* dev, UINT sizeVB, std::vector<ScreenVertex> vertices, UINT vertSize);
+	void Init(ID3D12Device* dev, UINT sizeVB, UINT vertSize, UINT sizeIB = NULL, uint16_t* indices = nullptr, UINT indicesSize = NULL);
 	void Update(ID3D12GraphicsCommandList* cmdList);
+
+	//virtual void SetVertices();
 
 	//	Getter
 	D3D12_RESOURCE_DESC ResDesc() { return resDesc; }

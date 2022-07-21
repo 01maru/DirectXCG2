@@ -22,7 +22,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	Window win;
 	MyDirectX dx(win.hwnd);
 
-	MyDebugCamera debugcamera(Vector3D(0.0f, 50.0f, -100.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 1.0f, 0.0f));
+	MyDebugCamera debugcamera(Vector3D(0.0f, 50.0f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 1.0f, 0.0f));
 
 	DxSound sound(win);
 	sound.CreateSoundBuff("Resource\\fanfare.wav");
