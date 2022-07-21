@@ -15,6 +15,9 @@ private:
 	Vector2D prevCursor;
 	Vector2D moveCursor;
 	Vector2D cursorSpd;
+
+	Vector3D rightVec;
+	Vector3D downVec;
 public:
 	MyDebugCamera(Vector3D _eye, Vector3D _target, Vector3D _up);
 	void Update(Input& input);
