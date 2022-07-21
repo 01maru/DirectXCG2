@@ -139,5 +139,6 @@ void DxSound::CreateSoundBuff(const char* filename)
 
 void DxSound::PlaySoundWav()
 {
+    lpSound->SetCurrentPosition(0);
     lpSound->Play(0, 0, 0);
 }

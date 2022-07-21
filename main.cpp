@@ -28,7 +28,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 
 	DxSound sound(win);
 	sound.CreateSoundBuff("Resource\\fanfare.wav");
-
+	
 	Input input(win.hwnd, win.w);
 	InputJoypad joypad;
 
@@ -195,9 +195,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 		sphere.MatUpdate(debugcamera.mat, matProjection);
 
 		if (input.GetTrigger(DIK_SPACE)) {
-			textureDeta.textureNum++;
-
-			if (textureDeta.textureNum >= 2)	textureDeta.textureNum = 0;
+			sound.PlaySoundWav();
 		}
 #pragma endregion
 
