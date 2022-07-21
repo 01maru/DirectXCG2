@@ -34,6 +34,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 
 	Shader shader(L"BasicVS.hlsl", L"BasicPS.hlsl");
 	Shader objShader(L"BasicVS.hlsl", L"ObjPS.hlsl");
+	Shader colorShader(L"BasicVS.hlsl", L"ObjPS.hlsl", "color_main");
 	Shader screenShader(L"VShader.hlsl", L"PShader.hlsl");
 	//	描画初期化
 #pragma region InputAssembler
@@ -137,13 +138,14 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 
 	//	objの動きに用
 	Vector3D pos;
-	float rot = 0.0f;
+	Vector3D rot;
 
 	Object3D obj(dx.Dev());
 	Object3D obj2(dx.Dev());
 
-	Object2D obj2d(dx.Dev(), objShader, 100, 10);
-	Object2D triangle(dx.Dev(), objShader, 3, 10);
+	Object2D obj2d(dx.Dev(), colorShader, 100, 5);
+	obj2d.SetTransform({ 10.0f,0.0f,0.0f });
+	Object2D triangle(dx.Dev(), colorShader, 3, 5);
 
 	DrawGrid grid(dx.Dev(), objShader, 25, 50, 50);
 	
@@ -153,6 +155,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	Matrix matProjection = MyMath::PerspectiveFovLH(window_width, window_height, MyMath::ConvertToRad(45.0f), 0.1f, 1000.0f);
 #pragma endregion Initialize
 
+	int timer = 0;
+	float time = 60.0f;
 	//	ゲームループ
 	while (true)
 	{
@@ -166,11 +170,17 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 
 
 #pragma region Update
-		pos.z += input.GetKey(DIK_A) - input.GetKey(DIK_D);
-		pos.x += input.GetKey(DIK_W) - input.GetKey(DIK_S);
-		rot += (input.GetKey(DIK_Q) - input.GetKey(DIK_E)) * MyMath::PI / 4;
+		cBuff.ChangeColor(Vector4D((time - timer) / time, timer / time, 0.0f, 1.0f));
+
+		timer++;
+		if (timer > time) { timer = 0; }
+
+		pos.x += input.GetKey(DIK_D) - input.GetKey(DIK_A);
+		pos.y += input.GetKey(DIK_Q) - input.GetKey(DIK_E);
+		pos.z += input.GetKey(DIK_W) - input.GetKey(DIK_S);
+		rot += Vector3D(MyMath::PI / 24, MyMath::PI / 24, 0);
 		obj.trans = pos;
-		obj2.rotAngle.y = rot;
+		obj.rotAngle = rot;
 
 		debugcamera.Update(input);
 		//	定数バッファに転送
@@ -202,14 +212,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 
 		vertBuff.Update(dx.CmdList());
 
-		cBuff.Update(dx.CmdList());
-
 		textureDeta.Update(dx.CmdList());
 
-		//obj.Draw(dx.CmdList(), _countof(indices));
+		cBuff.Update(dx.CmdList());
+
+		obj.Draw(dx.CmdList(), _countof(indices));
 		//obj2.Draw(dx.CmdList(), _countof(indices));
 		grid.Draw(dx.CmdList());
-		//obj2d.Draw(dx.CmdList());
+		obj2d.Draw(dx.CmdList());
+
 		triangle.Draw(dx.CmdList());
 
 		//sphere.Draw(dx.CmdList());

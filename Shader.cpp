@@ -2,7 +2,7 @@
 #include <string>
 #include <cassert>
 
-Shader::Shader(LPCWSTR VSFileName, LPCWSTR PSFileName, LPCWSTR GSFileName, LPCWSTR DSFileName, LPCWSTR HSFileName)
+Shader::Shader(LPCWSTR VSFileName, LPCWSTR PSFileName, LPCSTR pEntryPoint,LPCWSTR GSFileName, LPCWSTR DSFileName, LPCWSTR HSFileName)
 {
 #pragma region VertexShader
 	//	頂点シェーダファイル読み込み＆コンパイル
@@ -10,7 +10,7 @@ Shader::Shader(LPCWSTR VSFileName, LPCWSTR PSFileName, LPCWSTR GSFileName, LPCWS
 		VSFileName,									// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE,					// インクルード可能にする
-		"main", "vs_5_0",									// エントリーポイント名、シェーダーモデル指定
+		pEntryPoint, "vs_5_0",									// エントリーポイント名、シェーダーモデル指定
 		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,	// デバッグ用設定
 		0,
 		&vsBlob, &errorBlob);
@@ -26,7 +26,7 @@ Shader::Shader(LPCWSTR VSFileName, LPCWSTR PSFileName, LPCWSTR GSFileName, LPCWS
 			HSFileName,									// シェーダファイル名
 			nullptr,
 			D3D_COMPILE_STANDARD_FILE_INCLUDE,					// インクルード可能にする
-			"main", "hs_5_0",									// エントリーポイント名、シェーダーモデル指定
+			pEntryPoint, "hs_5_0",									// エントリーポイント名、シェーダーモデル指定
 			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,	// デバッグ用設定
 			0,
 			&hsBlob, &errorBlob);
@@ -43,7 +43,7 @@ Shader::Shader(LPCWSTR VSFileName, LPCWSTR PSFileName, LPCWSTR GSFileName, LPCWS
 			DSFileName,									// シェーダファイル名
 			nullptr,
 			D3D_COMPILE_STANDARD_FILE_INCLUDE,					// インクルード可能にする
-			"main", "ds_5_0",									// エントリーポイント名、シェーダーモデル指定
+			pEntryPoint, "ds_5_0",									// エントリーポイント名、シェーダーモデル指定
 			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,	// デバッグ用設定
 			0,
 			&dsBlob, &errorBlob);
@@ -60,7 +60,7 @@ Shader::Shader(LPCWSTR VSFileName, LPCWSTR PSFileName, LPCWSTR GSFileName, LPCWS
 			GSFileName,									// シェーダファイル名
 			nullptr,
 			D3D_COMPILE_STANDARD_FILE_INCLUDE,					// インクルード可能にする
-			"main", "gs_5_0",									// エントリーポイント名、シェーダーモデル指定
+			pEntryPoint, "gs_5_0",									// エントリーポイント名、シェーダーモデル指定
 			D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,	// デバッグ用設定
 			0,
 			&gsBlob, &errorBlob);
@@ -76,7 +76,7 @@ Shader::Shader(LPCWSTR VSFileName, LPCWSTR PSFileName, LPCWSTR GSFileName, LPCWS
 		PSFileName, // シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
-		"main", "ps_5_0", // エントリーポイント名、シェーダーモデル指定
+		pEntryPoint, "ps_5_0", // エントリーポイント名、シェーダーモデル指定
 		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
 		0,
 		&psBlob, &errorBlob);

@@ -16,7 +16,7 @@ public:
 
 
 	struct ConstBufferDataMaterial {
-		MyMath::float4 color;	//	RGBA
+		Vector4D color;	//	RGBA
 	};
 	ComPtr<ID3D12Resource> material;
 	ConstBufferDataMaterial* mapMaterial = nullptr;
@@ -24,6 +24,7 @@ public:
 public:
 	ConstBuff(ID3D12Device* dev, const int winwidth, const int winheight);
 	~ConstBuff();
+	void ChangeColor(const Vector4D& color);
 	void Update(ID3D12GraphicsCommandList* cmdList);
 };
 

@@ -32,13 +32,18 @@ ConstBuff::ConstBuff(ID3D12Device* dev, const int winwidth, const int winheight)
 
 
 	//	GPUのメモリにデータ転送
-	MyMath::float4 color(1.0f, 1.0f, 1.0f, 1.0f);
-	mapMaterial->color = color;
+	ChangeColor(Vector4D(1.0f, 1.0f, 1.0f, 1.0f));
 }
 
 ConstBuff::~ConstBuff()
 {
 	material->Unmap(0, nullptr);
+}
+
+void ConstBuff::ChangeColor(const Vector4D& color)
+{
+	//	GPUのメモリにデータ転送
+	mapMaterial->color = color;
 }
 
 void ConstBuff::Update(ID3D12GraphicsCommandList* cmdList)

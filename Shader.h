@@ -25,7 +25,7 @@ private:
 private:
 	void Error();
 public:
-	Shader(LPCWSTR VSFileName, LPCWSTR PSFileName, LPCWSTR GSFileName = nullptr, LPCWSTR DSFileName = nullptr, LPCWSTR HSFileName = nullptr);
+	Shader(LPCWSTR VSFileName, LPCWSTR PSFileName, LPCSTR pEntryPoint = "main", LPCWSTR GSFileName = nullptr, LPCWSTR DSFileName = nullptr, LPCWSTR HSFileName = nullptr);
 
 	//	Getter
 	ID3DBlob* VSBlob() { return vsBlob.Get(); }

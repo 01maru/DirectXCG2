@@ -39,5 +39,7 @@ public:
 	Object2D(ID3D12Device* dev, Shader shader, UINT vertexNum, float rad = 0.5f);
 	void MatUpdate(Matrix matView, Matrix matProjection);
 	void Draw(ID3D12GraphicsCommandList* cmdList);
+
+	void SetTransform(Vector3D pos) { trans = pos; }
 };
 

@@ -19,6 +19,7 @@ public:
 
 	Vector3D operator-() const;
 
+	Vector3D& operator+=(const Vector3D& v);
 	Vector3D& operator-=(const Vector3D& v);
 
 	Vector3D& operator/=(float s);
