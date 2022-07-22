@@ -17,7 +17,7 @@ void MyDebugCamera::Update(Input& input)
 	if (input.Click(Input::LeftClick)) {
 		moveCursor /= 50;
 		if (up.y < 0) {
-			//moveCursor.x = -moveCursor.x;
+			moveCursor.x = -moveCursor.x;
 		}
 		cursorSpd += moveCursor;
 	}
@@ -31,9 +31,9 @@ void MyDebugCamera::Update(Input& input)
 	downVec = rightVec.cross(frontVec);
 
 	up.y = cosf(cursorSpd.y);
-	eye.x = -disEyeTarget * cosf(cursorSpd.y) * sinf(cursorSpd.x);
-	eye.y =  disEyeTarget * sinf(cursorSpd.y);
-	eye.z = -disEyeTarget * cosf(cursorSpd.y) * cosf(cursorSpd.x);
+	eye.x = target.x - disEyeTarget * cosf(cursorSpd.y) * sinf(cursorSpd.x);
+	eye.y = target.y + disEyeTarget * sinf(cursorSpd.y);
+	eye.z = target.z - disEyeTarget * cosf(cursorSpd.y) * cosf(cursorSpd.x);
 	MatUpdate();
 }
 

@@ -228,7 +228,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 
 		triangle.Draw(dx.CmdList());
 
-		sphere.Draw(dx.CmdList());
+		//sphere.Draw(dx.CmdList());
 		// •`‰æƒRƒ}ƒ“ƒh
 		dx.DrawEndScreenTexture();
 

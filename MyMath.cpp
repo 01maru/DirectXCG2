@@ -27,15 +27,15 @@ Matrix MyMath::LookAtLH(const Vector3D& eye, const Vector3D& target, const Vecto
 	Matrix matView;
 
 	matView.m[0][0] = baseX.x;
-	matView.m[0][1] = baseX.y;
-	matView.m[0][2] = baseX.z;
+	matView.m[1][0] = baseX.y;
+	matView.m[2][0] = baseX.z;
 
-	matView.m[1][0] = baseY.x;
+	matView.m[0][1] = baseY.x;
 	matView.m[1][1] = baseY.y;
-	matView.m[1][2] = baseY.z;
+	matView.m[2][1] = baseY.z;
 
-	matView.m[2][0] = baseZ.x;
-	matView.m[2][1] = baseZ.y;
+	matView.m[0][2] = baseZ.x;
+	matView.m[1][2] = baseZ.y;
 	matView.m[2][2] = baseZ.z;
 
 	matView.m[3][0] = -baseX.dot(eye);
