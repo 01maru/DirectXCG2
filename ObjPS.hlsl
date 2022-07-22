@@ -2,9 +2,9 @@
 
 float4 sphere_main(VSOutput input) : SV_TARGET
 {
-	float3 light = normalize(float3(1,-1,1));
+	float3 light = normalize(float3(-1,-1,1));
 	float diffuse = saturate(dot(-light, input.normal));
-	float brightness = diffuse + 0.3;
+	float brightness = diffuse + 0.2;
 	return float4(float3(1, 1, 1) * brightness, 1);
 }
 

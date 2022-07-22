@@ -92,12 +92,12 @@ SphereObj::SphereObj(ID3D12Device* dev, Shader shader, const int u_size, const i
 #pragma endregion
 
 	// 頂点データサイズ
-	vertexSize = u_size * (v_size + 1);
+	vertexSize = (u_size + 1) * (v_size + 1);
 	vertices.resize(vertexSize);
 
 	for (int v = 0; v <= v_size; v++)
 	{
-		for (int u = 0; u < u_size; u++)
+		for (int u = 0; u <= u_size; u++)
 		{
 			float theta = MyMath::PI * v / v_size;
 			float phi = MyMath::PI * 2 * u / u_size;
@@ -106,10 +106,6 @@ SphereObj::SphereObj(ID3D12Device* dev, Shader shader, const int u_size, const i
 				sinf(theta) * sinf(phi));
 			vertices[u_size * v + u].pos = pos;
 		}
-	}
-
-	for (int i = 0; i < vertexSize; i++)
-	{
 	}
 
 	//	インデックスサイズ
@@ -123,52 +119,27 @@ SphereObj::SphereObj(ID3D12Device* dev, Shader shader, const int u_size, const i
 	{
 		for (int u = 0; u < u_size; u++)
 		{
-			if (u == u_size - 1) {
-				indices[idx] = u + v * u_size;
-				idx++;
-				indices[idx] = v * u_size;
-				idx++;
-				indices[idx] = u + (v + 1) * u_size;
-				idx++;
-				normal = CreatePolygonNormal(vertices[indices[idx - 3]].pos, vertices[indices[idx - 2]].pos, vertices[indices[idx - 1]].pos);
-				vertices[indices[idx - 3]].normal = normal;
-				vertices[indices[idx - 2]].normal = normal;
-				vertices[indices[idx - 1]].normal = normal;
+			indices[idx] = u + v * u_size;
+			idx++;
+			indices[idx] = u + 1 + v * u_size;
+			idx++;
+			indices[idx] = u + (v + 1) * u_size;
+			idx++;
+			normal = CreatePolygonNormal(vertices[indices[idx - 3]].pos, vertices[indices[idx - 2]].pos, vertices[indices[idx - 1]].pos);
+			vertices[indices[idx - 3]].normal = normal;
+			vertices[indices[idx - 2]].normal = normal;
+			vertices[indices[idx - 1]].normal = normal;
 
-				indices[idx] = v * u_size;
-				idx++;
-				indices[idx] = (v + 1) * u_size;
-				idx++;
-				indices[idx] = u + (v + 1) * u_size;
-				idx++;
-				normal = CreatePolygonNormal(vertices[indices[idx - 3]].pos, vertices[indices[idx - 2]].pos, vertices[indices[idx - 1]].pos);
-				vertices[indices[idx - 3]].normal = normal;
-				vertices[indices[idx - 2]].normal = normal;
-				vertices[indices[idx - 1]].normal = normal;
-			}
-			else {
-				indices[idx] = u + v * u_size;
-				idx++;
-				indices[idx] = u + 1 + v * u_size;
-				idx++;
-				indices[idx] = u + (v + 1) * u_size;
-				idx++;
-				normal = CreatePolygonNormal(vertices[indices[idx - 3]].pos, vertices[indices[idx - 2]].pos, vertices[indices[idx - 1]].pos);
-				vertices[indices[idx - 3]].normal = normal;
-				vertices[indices[idx - 2]].normal = normal;
-				vertices[indices[idx - 1]].normal = normal;
-
-				indices[idx] = u + 1 + v * u_size;
-				idx++;
-				indices[idx] = u + 1 + (v + 1) * u_size;
-				idx++;
-				indices[idx] = u + (v + 1) * u_size;
-				idx++;
-				normal = CreatePolygonNormal(vertices[indices[idx - 3]].pos, vertices[indices[idx - 2]].pos, vertices[indices[idx - 1]].pos);
-				vertices[indices[idx - 3]].normal = normal;
-				vertices[indices[idx - 2]].normal = normal;
-				vertices[indices[idx - 1]].normal = normal;
-			}
+			indices[idx] = u + 1 + v * u_size;
+			idx++;
+			indices[idx] = u + 1 + (v + 1) * u_size;
+			idx++;
+			indices[idx] = u + (v + 1) * u_size;
+			idx++;
+			normal = CreatePolygonNormal(vertices[indices[idx - 3]].pos, vertices[indices[idx - 2]].pos, vertices[indices[idx - 1]].pos);
+			vertices[indices[idx - 3]].normal = normal;
+			vertices[indices[idx - 2]].normal = normal;
+			vertices[indices[idx - 1]].normal = normal;
 		}
 	}
 
