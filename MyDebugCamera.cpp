@@ -12,14 +12,20 @@ void MyDebugCamera::Update(Input& input)
 	prevCursor = cursor;
 	input.CursorPos(cursor);
 	moveCursor = cursor - prevCursor;
+	float cursorDisPrev = moveCursor.length();
 	moveCursor.normalize();
 
 	if (input.Click(Input::LeftClick)) {
-		moveCursor /= 50;
+		moveCursor /= 1000;
+		moveCursor *= cursorDisPrev;
 		if (up.y < 0) {
 			moveCursor.x = -moveCursor.x;
 		}
 		cursorSpd += moveCursor;
+	}
+	disEyeTarget += -input.Wheel() * (disEyeTarget * 0.001f);
+	if (disEyeTarget < 10) {
+		disEyeTarget = 10;
 	}
 	target += rightVec * (input.GetKey(DIK_RIGHT) - input.GetKey(DIK_LEFT));
 	target += downVec * (input.GetKey(DIK_DOWN) - input.GetKey(DIK_UP));

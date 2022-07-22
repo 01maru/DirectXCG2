@@ -3,15 +3,6 @@
 
 Matrix MyMath::LookAtLH(const Vector3D& eye, const Vector3D& target, const Vector3D& up)
 {
-	//Vector3D eye(0, 0, -100);	//	視点座標
-	//Vector3D target(0, 0, 0);	//	注視点座標
-	//Vector3D up(0, 1, 0);		//	上方向ベクトル
-
-	Matrix mat2;
-	mat2.m[0][3] = -eye.x;
-	mat2.m[1][3] = -eye.y;
-	mat2.m[2][3] = -eye.z;
-
 	Vector3D baseX = up;
 	Vector3D baseY;
 	Vector3D baseZ = target - eye;
