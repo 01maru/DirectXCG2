@@ -8,14 +8,16 @@ GPipeline::GPipeline(D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT inputLayoutSize
 	range.BaseShaderRegister = 0;
 	range.NumDescriptors = 1;
 
-	D3D12_ROOT_PARAMETER rp = {};
-	rp.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rp.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-	rp.DescriptorTable.pDescriptorRanges = &range;
-	rp.DescriptorTable.NumDescriptorRanges = 1;
+	D3D12_ROOT_PARAMETER rp[2] = {};
+	rp[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rp[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	rp[0].DescriptorTable.pDescriptorRanges = &range;
+	rp[0].DescriptorTable.NumDescriptorRanges = 1;
+
+	SetRootParam(rp[1], D3D12_ROOT_PARAMETER_TYPE_CBV, 2, 0);
 
 	D3D12_ROOT_SIGNATURE_DESC rsDesc = {};
-	rsDesc.NumParameters = 1;
+	rsDesc.NumParameters = _countof(rp);
 	rsDesc.NumStaticSamplers = 1;
 
 #pragma region sampler
@@ -33,7 +35,7 @@ GPipeline::GPipeline(D3D12_INPUT_ELEMENT_DESC* inputLayout, UINT inputLayoutSize
 #pragma endregion
 
 	rsDesc.pStaticSamplers = &sampler;
-	rsDesc.pParameters = &rp;
+	rsDesc.pParameters = rp;
 	rsDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
 	ComPtr<ID3DBlob> rsBlob;

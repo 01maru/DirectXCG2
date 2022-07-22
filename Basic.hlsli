@@ -8,6 +8,11 @@ cbuffer ConstBufferDataTransform:register(b1)
 	matrix mat;
 };
 
+cbuffer ConstBufferDataMaterial:register(b2)
+{
+	float time;
+};
+
 struct VSOutput
 {
 	//	セマンティック(SV_はSystem Value)

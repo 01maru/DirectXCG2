@@ -172,10 +172,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 
 
 #pragma region Update
-		cBuff.ChangeColor(Vector4D((time - timer) / time, timer / time, 0.0f, 0.5f));
+		cBuff.ChangeColor(Vector4D((time - timer) / time, timer / time, 0.0f, 1.0f));
 
 		timer++;
 		if (timer > time) { timer = 0; }
+		cBuff.TimeUpdate();
 
 		pos.x += input.GetKey(DIK_D) - input.GetKey(DIK_A);
 		pos.y += input.GetKey(DIK_Q) - input.GetKey(DIK_E);
@@ -247,6 +248,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 		dx.Setting();
 		
 		screenPipeline.Update(dx.CmdList(), D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+		cBuff.SetBufferView(dx.CmdList());
 
 		dx.CmdList()->DrawInstanced(4, 1, 0, 0);
 
