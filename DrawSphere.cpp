@@ -101,9 +101,9 @@ SphereObj::SphereObj(ID3D12Device* dev, Shader shader, const int u_size, const i
 		{
 			float theta = MyMath::PI * v / v_size;
 			float phi = MyMath::PI * 2 * u / u_size;
-			Vector3D pos(sinf(theta) * cosf(phi) * 10,
-				cosf(theta) * 10,
-				sinf(theta) * sinf(phi) * 10);
+			Vector3D pos(sinf(theta) * cosf(phi),
+				cosf(theta),
+				sinf(theta) * sinf(phi));
 			vertices[u_size * v + u].pos = pos;
 		}
 	}
@@ -187,7 +187,7 @@ SphereObj::SphereObj(ID3D12Device* dev, Shader shader, const int u_size, const i
 #pragma region  WorldMatrixèâä˙íl
 	scale = Vector3D(1.0f, 1.0f, 1.0f);
 	rotAngle = Vector3D(0.0f, 0.0f, 0.0f);
-	trans = Vector3D(0.0f, 0.0f, 0.0f);
+	trans = Vector3D(0.0f, 10.0f, 0.0f);
 #pragma endregion
 }
 

@@ -139,11 +139,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	ConstBuff cBuff(dx.Dev(), window_width, window_height);
 
 	//	objの動きに用
-	Vector3D pos;
+	Vector3D pos(-10.0f, 0.0f, 0.0f);
 	Vector3D rot;
 
 	Object3D obj(dx.Dev());
 	Object3D obj2(dx.Dev());
+	obj2.scale = { 0.1f,0.1f,0.1f };
 
 	Object2D obj2d(dx.Dev(), objShader, 5, 5);
 	obj2d.SetTransform({ 10.0f,0.0f,0.0f });
@@ -190,7 +191,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 		debugcamera.Update(input);
 
 		obj2.trans = debugcamera.target;
-		obj2.scale = { 0.2f,0.2f,0.2f };
 		//	定数バッファに転送
 		obj.Update(debugcamera.mat, matProjection);
 		obj2.Update(debugcamera.mat, matProjection);
@@ -229,7 +229,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 
 		triangle.Draw(dx.CmdList());
 
-		//sphere.Draw(dx.CmdList());
+		sphere.Draw(dx.CmdList());
 		// 描画コマンド
 		dx.DrawEndScreenTexture();
 
