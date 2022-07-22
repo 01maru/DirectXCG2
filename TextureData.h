@@ -34,6 +34,7 @@ public:
 public:
 	TextureDeta(ID3D12Device* dev, D3D12_RESOURCE_DESC resDesc, Texture* texture);
 	~TextureDeta();
+	void SetDescriptorTable(ID3D12GraphicsCommandList* cmdList);
 	void Update(ID3D12GraphicsCommandList* cmdList);
 };
 

@@ -218,11 +218,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 
 		vertBuff.Update(dx.CmdList());
 
+		textureDeta.textureNum = 0;
 		textureDeta.Update(dx.CmdList());
+		textureDeta.SetDescriptorTable(dx.CmdList());
 
 		cBuff.Update(dx.CmdList());
 
 		obj.Draw(dx.CmdList(), _countof(indices));
+		textureDeta.textureNum = 1;
+		textureDeta.SetDescriptorTable(dx.CmdList());
 		obj2.Draw(dx.CmdList(), _countof(indices));
 		grid.Draw(dx.CmdList());
 		obj2d.Draw(dx.CmdList());

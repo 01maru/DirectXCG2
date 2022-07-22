@@ -109,14 +109,18 @@ TextureDeta::TextureDeta(ID3D12Device* dev, D3D12_RESOURCE_DESC resDesc, Texture
 void TextureDeta::Update(ID3D12GraphicsCommandList* cmdList)
 {
 	cmdList->SetDescriptorHeaps(1, &srvHeap);
-	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
-	if (textureNum == 1) {
-		srvGpuHandle.ptr += incrementSize;
-	}
-	cmdList->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
 }
 
 TextureDeta::~TextureDeta()
 {
 	srvHeap->Release();
+}
+
+void TextureDeta::SetDescriptorTable(ID3D12GraphicsCommandList* cmdList)
+{
+	D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
+	if (textureNum == 1) {
+		srvGpuHandle.ptr += incrementSize;
+	}
+	cmdList->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
 }
