@@ -24,7 +24,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 	Window win;
 	MyDirectX dx(win.hwnd);
 
-	MyDebugCamera debugcamera(Vector3D(0.0f, 50.0f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 1.0f, 0.0f));
+	MyDebugCamera debugcamera(Vector3D(50.0f, 0.0f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 1.0f, 0.0f));
 
 	DxSound sound(win);
 	sound.CreateSoundBuff("Resource\\fanfare.wav");
@@ -34,6 +34,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 
 	Shader shader(L"BasicVS.hlsl", L"BasicPS.hlsl");
 	Shader gridShader(L"BasicVS.hlsl", L"ObjPS.hlsl");
+	Shader sphereShader(L"BasicVS.hlsl", L"ObjPS.hlsl", "sphere_main");
 	Shader objShader(L"BasicVS.hlsl", L"ObjPS.hlsl", "obj_main");
 	Shader colorShader(L"BasicVS.hlsl", L"ObjPS.hlsl", "color_main");
 	Shader screenShader(L"VShader.hlsl", L"PShader.hlsl");
@@ -150,7 +151,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 
 	DrawGrid grid(dx.Dev(), gridShader, 25, 50, 50);
 	
-	SphereObj sphere(dx.Dev(), gridShader, 24, 12);
+	SphereObj sphere(dx.Dev(), sphereShader, 24, 12);
 
 	//MyMath::MatView matView(Vector3D(0.0f, 0.0f, -100.0f), Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 1.0f, 0.0f));
 	Matrix matProjection = MyMath::PerspectiveFovLH(window_width, window_height, MyMath::ConvertToRad(45.0f), 0.1f, 1000.0f);
@@ -186,6 +187,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 		obj.rotAngle = rot;
 
 		debugcamera.Update(input);
+
+		obj2.trans = debugcamera.target;
+		obj2.scale = { 0.2f,0.2f,0.2f };
 		//	定数バッファに転送
 		obj.Update(debugcamera.mat, matProjection);
 		obj2.Update(debugcamera.mat, matProjection);
@@ -218,13 +222,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 		cBuff.Update(dx.CmdList());
 
 		obj.Draw(dx.CmdList(), _countof(indices));
-		//obj2.Draw(dx.CmdList(), _countof(indices));
+		obj2.Draw(dx.CmdList(), _countof(indices));
 		grid.Draw(dx.CmdList());
 		obj2d.Draw(dx.CmdList());
 
 		triangle.Draw(dx.CmdList());
 
-		//sphere.Draw(dx.CmdList());
+		sphere.Draw(dx.CmdList());
 		// 描画コマンド
 		dx.DrawEndScreenTexture();
 

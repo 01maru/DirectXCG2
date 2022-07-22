@@ -52,8 +52,26 @@ Vector2D& Vector2D::operator/=(float s)
 	return *this;
 }
 
+Vector2D& Vector2D::operator*=(float s)
+{
+	x *= s;
+	y *= s;
+	return *this;
+}
+
 const Vector2D operator-(const Vector2D& v1, const Vector2D& v2)
 {
 	Vector2D temp(v1);
 	return temp -= v2;
+}
+
+const Vector2D operator*(const Vector2D& v, float s)
+{
+	Vector2D temp(v);
+	return temp *= s;
+}
+
+const Vector2D operator*(float s, const Vector2D& v)
+{
+	return v * s;
 }

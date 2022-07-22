@@ -3,6 +3,8 @@
 MyDebugCamera::MyDebugCamera(Vector3D _eye, Vector3D _target, Vector3D _up)
 {
 	Init(_eye, _target, _up);
+	frontVec = target - eye;
+	disEyeTarget = frontVec.length();
 }
 
 void MyDebugCamera::Update(Input& input)
@@ -19,21 +21,19 @@ void MyDebugCamera::Update(Input& input)
 		}
 		cursorSpd += moveCursor;
 	}
-	
+	target += rightVec * (input.GetKey(DIK_RIGHT) - input.GetKey(DIK_LEFT));
+	target += downVec * (input.GetKey(DIK_DOWN) - input.GetKey(DIK_UP));
+	target += -frontVec * (input.GetKey(DIK_Z) - input.GetKey(DIK_X));
+
 	frontVec = target - eye;
-	disEyeTarget = frontVec.length();
 	frontVec.normalize();
 	rightVec = Vector3D(0, 1, 0).cross(frontVec);
 	downVec = rightVec.cross(frontVec);
 
-	target += -rightVec * (input.GetKey(DIK_RIGHT) - input.GetKey(DIK_LEFT));
-	target += -downVec * (input.GetKey(DIK_DOWN) - input.GetKey(DIK_UP));
-	target += -frontVec * (input.GetKey(DIK_Z) - input.GetKey(DIK_X));
-
 	up.y = cosf(cursorSpd.y);
-	eye.x = target.x -50 * sinf(cursorSpd.x) * cosf(cursorSpd.y);
-	eye.y = target.y+ 50 * sinf(cursorSpd.y);
-	eye.z = target.z -50 * cosf(cursorSpd.x) * cosf(cursorSpd.y);
+	eye.x = -disEyeTarget * cosf(cursorSpd.y) * sinf(cursorSpd.x);
+	eye.y =  disEyeTarget * sinf(cursorSpd.y);
+	eye.z = -disEyeTarget * cosf(cursorSpd.y) * cosf(cursorSpd.x);
 	MatUpdate();
 }
 

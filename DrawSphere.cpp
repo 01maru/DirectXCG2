@@ -108,11 +108,16 @@ SphereObj::SphereObj(ID3D12Device* dev, Shader shader, const int u_size, const i
 		}
 	}
 
+	for (int i = 0; i < vertexSize; i++)
+	{
+	}
+
 	//	インデックスサイズ
 	indexSize = 6 * v_size * u_size;
 	indices.resize(indexSize);
 	UINT sizeIB = static_cast<UINT>(sizeof(uint16_t) * indexSize);
 
+	Vector3D normal;
 	int idx = 0;
 	for (int v = 0; v < v_size; v++)
 	{
@@ -125,13 +130,21 @@ SphereObj::SphereObj(ID3D12Device* dev, Shader shader, const int u_size, const i
 				idx++;
 				indices[idx] = u + (v + 1) * u_size;
 				idx++;
+				normal = CreatePolygonNormal(vertices[indices[idx - 3]].pos, vertices[indices[idx - 2]].pos, vertices[indices[idx - 1]].pos);
+				vertices[indices[idx - 3]].normal = normal;
+				vertices[indices[idx - 2]].normal = normal;
+				vertices[indices[idx - 1]].normal = normal;
 
-				indices[idx] = u + 1 + v * u_size;
+				indices[idx] = v * u_size;
 				idx++;
 				indices[idx] = (v + 1) * u_size;
 				idx++;
 				indices[idx] = u + (v + 1) * u_size;
 				idx++;
+				normal = CreatePolygonNormal(vertices[indices[idx - 3]].pos, vertices[indices[idx - 2]].pos, vertices[indices[idx - 1]].pos);
+				vertices[indices[idx - 3]].normal = normal;
+				vertices[indices[idx - 2]].normal = normal;
+				vertices[indices[idx - 1]].normal = normal;
 			}
 			else {
 				indices[idx] = u + v * u_size;
@@ -140,6 +153,10 @@ SphereObj::SphereObj(ID3D12Device* dev, Shader shader, const int u_size, const i
 				idx++;
 				indices[idx] = u + (v + 1) * u_size;
 				idx++;
+				normal = CreatePolygonNormal(vertices[indices[idx - 3]].pos, vertices[indices[idx - 2]].pos, vertices[indices[idx - 1]].pos);
+				vertices[indices[idx - 3]].normal = normal;
+				vertices[indices[idx - 2]].normal = normal;
+				vertices[indices[idx - 1]].normal = normal;
 
 				indices[idx] = u + 1 + v * u_size;
 				idx++;
@@ -147,6 +164,10 @@ SphereObj::SphereObj(ID3D12Device* dev, Shader shader, const int u_size, const i
 				idx++;
 				indices[idx] = u + (v + 1) * u_size;
 				idx++;
+				normal = CreatePolygonNormal(vertices[indices[idx - 3]].pos, vertices[indices[idx - 2]].pos, vertices[indices[idx - 1]].pos);
+				vertices[indices[idx - 3]].normal = normal;
+				vertices[indices[idx - 2]].normal = normal;
+				vertices[indices[idx - 1]].normal = normal;
 			}
 		}
 	}
@@ -161,7 +182,7 @@ SphereObj::SphereObj(ID3D12Device* dev, Shader shader, const int u_size, const i
 		{"TEXCOORD",0,DXGI_FORMAT_R32G32_FLOAT,0,D3D12_APPEND_ALIGNED_ELEMENT,D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,0},				//	uv座標
 	};
 
-	pipeline.Init(dev, shader, inputLayout, _countof(inputLayout), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, D3D12_FILL_MODE_WIREFRAME);
+	pipeline.Init(dev, shader, inputLayout, _countof(inputLayout), D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE, D3D12_FILL_MODE_SOLID);
 
 #pragma region  WorldMatrix初期値
 	scale = Vector3D(1.0f, 1.0f, 1.0f);

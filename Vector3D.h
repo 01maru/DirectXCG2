@@ -29,3 +29,6 @@ public:
 const Vector3D operator-(const Vector3D& v1, const Vector3D& v2);
 const Vector3D operator*(const Vector3D& v, float s);
 const Vector3D operator*(float s, const Vector3D& v);
+
+//頂点ABCで作られたポリゴンから法線を計算する。
+Vector3D CreatePolygonNormal(Vector3D a, Vector3D b, Vector3D c);

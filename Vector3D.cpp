@@ -95,3 +95,15 @@ const Vector3D operator*(float s, const Vector3D& v)
 {
 	return v * s;
 }
+
+Vector3D CreatePolygonNormal(Vector3D a, Vector3D b, Vector3D c)
+{
+	Vector3D AB(b - a);
+	Vector3D BC(c - b);
+
+	Vector3D normal = AB;
+	normal.cross(BC);
+	normal.normalize();
+
+	return normal;
+}
