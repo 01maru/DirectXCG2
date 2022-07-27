@@ -11,19 +11,27 @@ D3D_FEATURE_LEVEL levels[] = {
 
 void MyDirectX::DebugLayer()
 {
-#ifdef _DEBUG
 	//	ƒIƒ“
 	ComPtr<ID3D12Debug1> debugController;
 	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
 		debugController->EnableDebugLayer();
 		debugController->SetEnableGPUBasedValidation(TRUE);
+		debugController->Release();
 	}
-#endif
+
+	ComPtr<ID3D12InfoQueue> infoQueue;
+	if (SUCCEEDED(device->QueryInterface(IID_PPV_ARGS(&infoQueue)))) {
+		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);
+		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);
+		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);
+	}
 }
 
 MyDirectX::MyDirectX(HWND hwnd)
 {
+#ifdef _DEBUG
 	DebugLayer();
+#endif
 
 #pragma region GPU—ñ‹“
 #pragma region Adapter
